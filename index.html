@@ -27,7 +27,6 @@
 
   <!-- LOGIN -->
   <div id="vista-login" style="max-width: 440px; margin: 30px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
-    
     <img id="logo-sistema" src="logo.png" alt="Carnicería El Buen Corte" class="logo-real" onerror="activarCargadorFallback()" />
 
     <div id="cargador-manual" style="display: none; border: 2px dashed #d4af37; padding: 16px; border-radius: 8px; margin-bottom: 20px; cursor: pointer;" onclick="document.getElementById('file-logo').click()">
@@ -53,9 +52,6 @@
         <button onclick="cancelarLogin()" class="btn-gray" style="flex: 1;">Volver</button>
         <button onclick="verificarLogin()" class="btn-gold" style="flex: 1;">Ingresar</button>
       </div>
-      <div id="link-olvido" style="display: none; margin-top: 16px;">
-        <a href="javascript:void(0)" onclick="alert('Código enviado a erick.ev405@gmail.com')" style="color: #d4af37; font-size: 0.85rem; text-decoration: none;">¿Olvidaste tu contraseña?</a>
-      </div>
     </div>
   </div>
 
@@ -64,7 +60,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
       <div>
         <h2 style="font-size: 1.4rem; font-weight: 700;">Terminal de Caja 1</h2>
-        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta y Suplidores</span>
+        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta</span>
       </div>
       <div style="display: flex; gap: 10px;">
         <button onclick="hacerCuadre()" class="btn-gray">Hacer Cuadre</button>
@@ -82,7 +78,7 @@
                 <th>Código PLU</th>
                 <th>Corte</th>
                 <th>Monto (RD$)</th>
-                <th style="text-align: right;">Opciones / Ajustes</th>
+                <th style="text-align: right;">Ajustes / Opciones</th>
               </tr>
             </thead>
             <tbody id="cuerpo-tabla-caja"></tbody>
@@ -93,9 +89,6 @@
       <div style="flex: 1.1; background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; height: fit-content;">
         <span style="color: #888; font-size: 0.85rem;">TOTAL DE CUENTA</span>
         <div id="total-cuenta-texto" style="font-size: 2.8rem; color: #d4af37; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
-        <div style="margin: 16px 0; padding-top: 14px; border-top: 1px solid #222;">
-          <p style="color: #888; font-size: 0.85rem;">Condición: <strong style="color: #fff;">Efectivo / Suplidor</strong></p>
-        </div>
         <button onclick="abrirModalCobro()" class="btn-green">Cobrar Venta</button>
       </div>
     </div>
@@ -105,31 +98,33 @@
   <div id="vista-admin" style="display: none; max-width: 1100px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
       <div>
-        <h2 style="font-size: 1.4rem; font-weight: 700;">Panel de Administración</h2>
-        <span style="font-size: 0.8rem; color: #888;">Auditoría de Modificaciones y Descuentos</span>
+        <h2 style="font-size: 1.4rem; font-weight: 700;">Panel de Administración Gerencial</h2>
+        <span style="font-size: 0.8rem; color: #888;">Ventas en Vivo e Historial Jerárquico</span>
       </div>
       <div style="display: flex; gap: 10px;">
-        <button onclick="mostrarFrecuentes()" class="btn-gold">Ventas Frecuentes</button>
+        <button onclick="abrirHistorialVentas()" class="btn-gold">Historial de Ventas</button>
         <button onclick="cerrarSesion()" class="btn-red">Salir</button>
       </div>
     </div>
 
-    <div style="display: flex; gap: 24px;">
-      <div style="flex: 1; background: #141414; padding: 28px 20px; border-radius: 10px; text-align: center; border: 1px solid #222; height: fit-content;">
-        <span style="color: #888; font-size: 0.85rem;">VENTAS DEL DÍA</span>
-        <div id="admin-total-dia" style="font-size: 2.6rem; color: #22c55e; font-weight: 800; margin: 15px 0;">RD$ 0.00</div>
+    <div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px;">
+      <div style="background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; text-align: center;">
+        <span style="color: #888; font-size: 0.85rem;">VENTAS EN VIVO (HOY)</span>
+        <div id="admin-total-dia" style="font-size: 2.8rem; color: #22c55e; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
         <p id="admin-conteo-articulos" style="color: #888; font-size: 0.9rem;">0 artículos facturados hoy</p>
       </div>
+    </div>
+
+    <div style="display: flex; gap: 24px;">
       <div style="flex: 2; background: #141414; padding: 22px; border-radius: 10px; border: 1px solid #222;">
-        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">Auditoría: Modificaciones y Cancelaciones</h3>
-        <p style="color: #666; font-size: 0.8rem; margin-bottom: 12px;">Registro de descuentos, precios de suplidor y anulaciones</p>
+        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">Auditoría de Modificaciones / Precios Especiales</h3>
         <table class="tabla">
           <thead>
             <tr>
               <th>Hora</th>
               <th>Corte</th>
               <th>Monto</th>
-              <th>Detalle / Motivo</th>
+              <th>Detalle</th>
             </tr>
           </thead>
           <tbody id="cuerpo-tabla-auditoria"></tbody>
@@ -138,8 +133,19 @@
     </div>
   </div>
 
+  <!-- MODAL HISTORIAL DE VENTAS JERÁRQUICO -->
+  <div id="modal-historial" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; z-index: 1000;">
+    <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 24px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 id="historial-titulo" style="font-size: 1.2rem; color: #d4af37;">Historial de Ventas</h3>
+        <button onclick="cerrarHistorialVentas()" class="btn-gray" style="padding: 6px 14px; font-size: 0.8rem;">Cerrar</button>
+      </div>
+      <div id="contenido-historial"></div>
+    </div>
+  </div>
+
   <!-- MODAL COBRO -->
-  <div id="modal-cobro" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;">
+  <div id="modal-cobro" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 1000;">
     <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 28px; width: 380px; text-align: center;">
       <h3 style="font-size: 1.2rem;">Comprobante de Pago</h3>
       <div id="cobro-total-modal" style="font-size: 2rem; color: #d4af37; font-weight: 800; margin: 15px 0;">RD$ 0.00</div>
@@ -153,16 +159,14 @@
   </div>
 
   <script>
-    // Configuración de conexión con Supabase
     const SUPABASE_URL = 'https://xoaxbyiqpsmofwsyduzo.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_YnX3J_gxfL6txb0F8l-hyQ_2y4k7...';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     function activarCargadorFallback() {
       const guardado = localStorage.getItem('logo_fijo');
-      if (guardado) {
-        document.getElementById('logo-sistema').src = guardado;
-      } else {
+      if (guardado) document.getElementById('logo-sistema').src = guardado;
+      else {
         document.getElementById('logo-sistema').style.display = 'none';
         document.getElementById('cargador-manual').style.display = 'block';
       }
@@ -173,9 +177,8 @@
       if (archivo) {
         const reader = new FileReader();
         reader.onload = function(evt) {
-          const resultado = evt.target.result;
-          localStorage.setItem('logo_fijo', resultado);
-          document.getElementById('logo-sistema').src = resultado;
+          localStorage.setItem('logo_fijo', evt.target.result);
+          document.getElementById('logo-sistema').src = evt.target.result;
           document.getElementById('logo-sistema').style.display = 'block';
           document.getElementById('cargador-manual').style.display = 'none';
         };
@@ -184,9 +187,7 @@
     }
 
     const guardadoPrevio = localStorage.getItem('logo_fijo');
-    if (guardadoPrevio) {
-      document.getElementById('logo-sistema').src = guardadoPrevio;
-    }
+    if (guardadoPrevio) document.getElementById('logo-sistema').src = guardadoPrevio;
 
     var CORTES = {
       "101": "Bistec (Res)", "102": "Bola (Res)", "103": "Osso Buco (Res)", "104": "Pecho (Res)",
@@ -203,16 +204,8 @@
       document.getElementById('opciones-rol').style.display = 'none';
       document.getElementById('cuadro-clave').style.display = 'block';
       document.getElementById('input-clave').value = '';
-
-      if (rol === 'cajero') {
-        document.getElementById('titulo-clave').innerText = 'Ingrese PIN de Caja:';
-        document.getElementById('input-clave').placeholder = 'PIN';
-        document.getElementById('link-olvido').style.display = 'none';
-      } else {
-        document.getElementById('titulo-clave').innerText = 'Ingrese Contraseña de Administrador:';
-        document.getElementById('input-clave').placeholder = 'Contraseña';
-        document.getElementById('link-olvido').style.display = 'block';
-      }
+      document.getElementById('titulo-clave').innerText = rol === 'cajero' ? 'Ingrese PIN de Caja:' : 'Ingrese Contraseña de Administrador:';
+      document.getElementById('input-clave').placeholder = rol === 'cajero' ? 'PIN' : 'Contraseña';
       document.getElementById('input-clave').focus();
     }
 
@@ -265,13 +258,13 @@
         total += carrito[i].precio;
         tbody.innerHTML += '<tr>' +
           '<td>' + carrito[i].plu + '</td>' +
-          '<td>' + carrito[i].nombre + (carrito[i].modificado ? ' <span class="badge" style="font-size:0.65rem;">Modificado</span>' : '') + '</td>' +
+          '<td>' + carrito[i].nombre + (carrito[i].modificado ? ' <span class="badge">Modif</span>' : '') + '</td>' +
           '<td>RD$ ' + carrito[i].precio.toFixed(2) + '</td>' +
           '<td style="text-align: right;">' +
             '<button onclick="aplicarDescuento(' + i + ', 10)" class="btn-action">-10%</button>' +
             '<button onclick="aplicarDescuento(' + i + ', 20)" class="btn-action">-20%</button>' +
-            '<button onclick="cambiarPrecioManual(' + i + ')" class="btn-action" style="background:#d4af37; color:#000;">Suplidor/Manual</button>' +
-            '<button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">Anular</button>' +
+            '<button onclick="cambiarPrecioManual(' + i + ')" class="btn-action" style="background:#d4af37; color:#000;">Suplidor</button>' +
+            '<button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">X</button>' +
           '</td>' +
         '</tr>';
       }
@@ -280,72 +273,53 @@
 
     async function aplicarDescuento(idx, porcentaje) {
       var item = carrito[idx];
-      var rebaja = item.originalPrecio * (porcentaje / 100);
-      item.precio = item.originalPrecio - rebaja;
+      item.precio = item.originalPrecio * (1 - porcentaje / 100);
       item.modificado = true;
-      item.detalleModificacion = 'Descuento aplicado: ' + porcentaje + '% (Precio anterior: RD$ ' + item.originalPrecio.toFixed(2) + ')';
-      
+      item.detalleModificacion = 'Descuento ' + porcentaje + '%';
       registrarModificacionEnNube(item, item.detalleModificacion);
       dibujarCarrito();
     }
 
     async function cambiarPrecioManual(idx) {
       var item = carrito[idx];
-      var nuevoPrecioStr = prompt('Ingrese precio especial (Suplidor / Manual) para ' + item.nombre + ':', item.precio);
-      if (nuevoPrecioStr === null) return;
-      var nuevoPrecio = parseFloat(nuevoPrecioStr);
-      if (isNaN(nuevoPrecio) || nuevoPrecio < 0) {
-        alert('Monto inválido.');
-        return;
-      }
-
-      var motivo = prompt('Indique el motivo o nombre del suplidor para este cambio:', 'Venta a Suplidor');
-      if (!motivo) motivo = 'Precio manual asignado';
-
+      var nuevoPrecio = parseFloat(prompt('Precio especial (Suplidor):', item.precio));
+      if (isNaN(nuevoPrecio)) return;
+      var motivo = prompt('Nombre del suplidor / Motivo:', 'Venta a Suplidor');
       item.precio = nuevoPrecio;
       item.modificado = true;
-      item.detalleModificacion = 'Precio manual/suplidor: RD$ ' + nuevoPrecio.toFixed(2) + ' (' + motivo + ')';
-
+      item.detalleModificacion = 'Suplidor: ' + motivo + ' (RD$ ' + nuevoPrecio.toFixed(2) + ')';
       registrarModificacionEnNube(item, item.detalleModificacion);
       dibujarCarrito();
     }
 
     async function registrarModificacionEnNube(item, detalle) {
+      var fechaHoy = new Date().toISOString().split('T')[0];
       var horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       try {
         await supabaseClient.from('cancelaciones').insert([
-          { hora: horaActual, corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle }
+          { fecha: fechaHoy, hora: horaActual, corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle }
         ]);
-      } catch (err) {
-        console.error('Error al registrar modificación en Supabase:', err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     async function borrarArticulo(idx) {
-      var motivo = prompt('Indique motivo de anulación de este corte:');
+      var motivo = prompt('Motivo de anulación:');
       if (!motivo) return;
       var item = carrito[idx];
+      var fechaHoy = new Date().toISOString().split('T')[0];
       var horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
       try {
         await supabaseClient.from('cancelaciones').insert([
-          { hora: horaActual, corte: item.nombre, precio: item.precio, motivo: 'ANULADO: ' + motivo }
+          { fecha: fechaHoy, hora: horaActual, corte: item.nombre, precio: item.precio, motivo: 'ANULADO: ' + motivo }
         ]);
-      } catch (err) {
-        console.error('Error al registrar anulación en Supabase:', err);
-      }
-
+      } catch (err) { console.error(err); }
       carrito.splice(idx, 1);
       dibujarCarrito();
     }
 
     function abrirModalCobro() {
-      if (carrito.length === 0) {
-        alert('No hay artículos agregados.');
-        return;
-      }
-      var total = 0;
-      for (var i = 0; i < carrito.length; i++) total += carrito[i].precio;
+      if (carrito.length === 0) { alert('Carrito vacío'); return; }
+      var total = carrito.reduce((sum, item) => sum + item.precio, 0);
       document.getElementById('cobro-total-modal').innerText = 'Total: RD$ ' + total.toFixed(2);
       document.getElementById('monto-cliente').value = '';
       document.getElementById('devuelta-texto').innerText = 'Devuelta: RD$ 0.00';
@@ -353,113 +327,143 @@
       document.getElementById('monto-cliente').focus();
     }
 
-    function cerrarModalCobro() {
-      document.getElementById('modal-cobro').style.display = 'none';
-    }
+    function cerrarModalCobro() { document.getElementById('modal-cobro').style.display = 'none'; }
 
     function calcularDevuelta() {
-      var total = 0;
-      for (var i = 0; i < carrito.length; i++) total += carrito[i].precio;
+      var total = carrito.reduce((sum, item) => sum + item.precio, 0);
       var pagado = parseFloat(document.getElementById('monto-cliente').value) || 0;
       var cambio = pagado - total;
       document.getElementById('devuelta-texto').innerText = 'Devuelta: RD$ ' + (cambio > 0 ? cambio.toFixed(2) : '0.00');
     }
 
     async function finalizarVenta() {
-      var total = 0;
-      for (var i = 0; i < carrito.length; i++) total += carrito[i].precio;
+      var total = carrito.reduce((sum, item) => sum + item.precio, 0);
       var pagado = parseFloat(document.getElementById('monto-cliente').value) || 0;
-      if (pagado < total) {
-        alert('El importe recibido es inferior al total facturado.');
-        return;
-      }
+      if (pagado < total) { alert('Monto insuficiente'); return; }
 
+      var fechaHoy = new Date().toISOString().split('T')[0];
       try {
         for (var j = 0; j < carrito.length; j++) {
           await supabaseClient.from('ventas').insert([
-            { plu: carrito[j].plu, nombre: carrito[j].nombre + (carrito[j].modificado ? ' (Modif)' : ''), precio: carrito[j].precio }
+            { fecha: fechaHoy, plu: carrito[j].plu, nombre: carrito[j].nombre, precio: carrito[j].precio }
           ]);
         }
       } catch (err) {
-        console.error('Error al guardar ventas en Supabase:', err);
-        alert('Hubo un error al sincronizar con la base de datos.');
+        alert('Error al sincronizar venta con la nube.');
         return;
       }
-
       carrito = [];
       dibujarCarrito();
       cerrarModalCobro();
-      alert('Transacción completada y guardada en la nube con éxito.');
+      alert('Venta guardada en la nube con éxito.');
       document.getElementById('escaner').focus();
     }
 
-    async function hacerCuadre() {
-      if (confirm('¿Proceder al cierre del turno y reiniciar balance diario?')) {
-        alert('Turno cerrado correctamente.');
-      }
-    }
-
     async function actualizarAdmin() {
+      var fechaHoy = new Date().toISOString().split('T')[0];
       try {
-        const { data: ventas, error: errVentas } = await supabaseClient.from('ventas').select('*');
-        if (errVentas) throw errVentas;
+        const { data: ventas } = await supabaseClient.from('ventas').select('*').eq('fecha', fechaHoy);
+        let totalVentas = (ventas || []).reduce((acc, v) => acc + v.precio, 0);
+        document.getElementById('admin-total-dia').innerText = 'RD$ ' + totalVentas.toFixed(2);
+        document.getElementById('admin-conteo-articulos').innerText = (ventas || []).length + ' artículos facturados hoy';
 
-        let total = 0;
-        if (ventas) {
-          for (let i = 0; i < ventas.length; i++) {
-            total += ventas[i].precio;
-          }
-          document.getElementById('admin-total-dia').innerText = 'RD$ ' + total.toFixed(2);
-          document.getElementById('admin-conteo-articulos').innerText = ventas.length + ' artículos facturados en total';
-        }
-
-        const { data: cancelaciones, error: errCancel } = await supabaseClient.from('cancelaciones').select('*');
-        if (errCancel) throw errCancel;
-
+        const { data: cancelaciones } = await supabaseClient.from('cancelaciones').select('*');
         var tbody = document.getElementById('cuerpo-tabla-auditoria');
         tbody.innerHTML = '';
-        if (cancelaciones) {
-          for (let k = 0; k < cancelaciones.length; k++) {
-            var esModif = cancelaciones[k].motivo && cancelaciones[k].motivo.includes('[MODIFICADO]');
-            var colorTexto = esModif ? 'color:#d4af37;' : 'color:#ef4444;';
-            tbody.innerHTML += '<tr>' +
-              '<td>' + (cancelaciones[k].hora || '') + '</td>' +
-              '<td>' + cancelaciones[k].corte + '</td>' +
-              '<td>RD$ ' + cancelaciones[k].precio.toFixed(2) + '</td>' +
-              '<td style="' + colorTexto + '">' + cancelaciones[k].motivo + '</td>' +
-            '</tr>';
-          }
-        }
-      } catch (err) {
-        console.error('Error cargando datos del administrador:', err);
-      }
+        (cancelaciones || []).forEach(c => {
+          var esModif = c.motivo && c.motivo.includes('[MODIFICADO]');
+          tbody.innerHTML += <tr><td>${c.hora||''}</td><td>${c.corte}</td><td>RD$ ${c.precio.toFixed(2)}</td><td style="${esModif?'color:#d4af37;':'color:#ef4444;'}">${c.motivo}</td></tr>;
+        });
+      } catch (err) { console.error(err); }
     }
 
-    async function mostrarFrecuentes() {
+    // HISTORIAL JERÁRQUICO (AÑO -> MES -> DÍA)
+    async function abrirHistorialVentas() {
+      document.getElementById('modal-historial').style.display = 'flex';
+      document.getElementById('contenido-historial').innerHTML = '<p style="text-align:center; color:#888;">Cargando historial...</p>';
+      
       try {
         const { data: ventas, error } = await supabaseClient.from('ventas').select('*');
         if (error) throw error;
-
-        if (!ventas || ventas.length === 0) {
-          alert('No existen registros de venta almacenados.');
-          return;
-        }
-
-        var resumen = {};
-        for (var i = 0; i < ventas.length; i++) {
-          var corte = ventas[i].nombre;
-          if (!resumen[corte]) resumen[corte] = 0;
-          resumen[corte]++;
-        }
-
-        var texto = "REPORTE: CORTES MÁS FRECUENTES (NUBE)\n\n";
-        for (var item in resumen) {
-          texto += "• " + item + ": " + resumen[item] + " und\n";
-        }
-        alert(texto);
+        window.VENTAS_GLOBALES = ventas || [];
+        mostrarAniosHistorial();
       } catch (err) {
-        console.error('Error al generar reporte:', err);
+        document.getElementById('contenido-historial').innerHTML = '<p style="color:#ef4444;">Error al cargar ventas.</p>';
       }
+    }
+
+    function cerrarHistorialVentas() { document.getElementById('modal-historial').style.display = 'none'; }
+
+    function mostrarAniosHistorial() {
+      document.getElementById('historial-titulo').innerText = 'Historial de Ventas - Años';
+      var anios = {};
+      window.VENTAS_GLOBALES.forEach(v => {
+        if (!v.fecha) return;
+        var anio = v.fecha.split('-')[0];
+        if (!anios[anio]) anios[anio] = 0;
+        anios[anio] += v.precio;
+      });
+
+      var html = '<div style="display:flex; flex-direction:column; gap:10px;">';
+      var llavesAnios = Object.keys(anios).sort().reverse();
+      if (llavesAnios.length === 0) { html += '<p style="color:#888;">No hay registros de ventas todavía.</p>'; }
+      llavesAnios.forEach(anio => {
+        html += `<button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333;">
+          <span style="font-size:1.1rem; color:#fff; font-weight:bold;">Año ${anio}</span>
+          <span style="color:#d4af37; font-weight:bold;">RD$ ${anios[anio].toFixed(2)}</span>
+        </button>`;
+      });
+      html += '</div>';
+      document.getElementById('contenido-historial').innerHTML = html;
+    }
+
+    function mostrarMesesHistorial(anio) {
+      document.getElementById('historial-titulo').innerText = 'Ventas ' + anio + ' - Meses';
+      var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      var meses = {};
+      
+      window.VENTAS_GLOBALES.forEach(v => {
+        if (!v.fecha || !v.fecha.startsWith(anio)) return;
+        var mesNum = v.fecha.split('-')[1];
+        if (!meses[mesNum]) meses[mesNum] = 0;
+        meses[mesNum] += v.precio;
+      });
+
+      var html = '<button onclick="mostrarAniosHistorial()" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem;">← Volver a Años</button>';
+      html += '<div style="display:flex; flex-direction:column; gap:10px;">';
+      Object.keys(meses).sort().reverse().forEach(mesNum => {
+        var nombreMes = mesesNombres[parseInt(mesNum, 10)];
+        html += `<button onclick="mostrarDiasHistorial('${anio}', '${mesNum}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333;">
+          <span style="font-size:1.1rem; color:#fff; font-weight:bold;">${nombreMes} (${anio})</span>
+          <span style="color:#d4af37; font-weight:bold;">RD$ ${meses[mesNum].toFixed(2)}</span>
+        </button>`;
+      });
+      html += '</div>';
+      document.getElementById('contenido-historial').innerHTML = html;
+    }
+
+    function mostrarDiasHistorial(anio, mesNum) {
+      var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      document.getElementById('historial-titulo').innerText = 'Ventas de ' + mesesNombres[parseInt(mesNum, 10)] + ' ' + anio + ' - Días';
+      var dias = {};
+
+      window.VENTAS_GLOBALES.forEach(v => {
+        if (!v.fecha || !v.fecha.startsWith(anio + '-' + mesNum)) return;
+        var dia = v.fecha;
+        if (!dias[dia]) dias[dia] = 0;
+        dias[dia] += v.precio;
+      });
+
+      var html = <button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem;">← Volver a Meses</button>;
+      html += '<div style="display:flex; flex-direction:column; gap:10px;">';
+      Object.keys(dias).sort().reverse().forEach(dia => {
+        html += `<div style="display:flex; justify-content:space-between; padding:14px; background:#1a1a1a; border:1px solid #333; border-radius:8px;">
+          <span style="color:#fff; font-weight:500;">Día: ${dia}</span>
+          <span style="color:#22c55e; font-weight:bold;">RD$ ${dias[dia].toFixed(2)}</span>
+        </div>`;
+      });
+      html += '</div>';
+      document.getElementById('contenido-historial').innerHTML = html;
     }
   </script>
 </body>
