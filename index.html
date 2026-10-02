@@ -13,6 +13,7 @@
     .btn-red { background: #8b181b; color: #fff; padding: 10px 18px; }
     .btn-green { background: #22c55e; color: #000; padding: 14px 20px; font-size: 1.15rem; width: 100%; margin-top: 15px; font-weight: bold; }
     .btn-gray { background: #262626; color: #fff; padding: 12px 20px; border: 1px solid #383838; }
+    .btn-action { background: #333; color: #d4af37; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #444; margin-right: 4px; }
 
     .caja-input { width: 100%; padding: 14px; background: #141414; border: 1px solid #d4af37; color: #fff; font-size: 1.05rem; text-align: center; border-radius: 8px; margin: 12px 0; outline: none; }
     .tabla { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -63,7 +64,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
       <div>
         <h2 style="font-size: 1.4rem; font-weight: 700;">Terminal de Caja 1</h2>
-        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta</span>
+        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta y Suplidores</span>
       </div>
       <div style="display: flex; gap: 10px;">
         <button onclick="hacerCuadre()" class="btn-gray">Hacer Cuadre</button>
@@ -81,7 +82,7 @@
                 <th>Código PLU</th>
                 <th>Corte</th>
                 <th>Monto (RD$)</th>
-                <th style="text-align: right;">Acción</th>
+                <th style="text-align: right;">Opciones / Ajustes</th>
               </tr>
             </thead>
             <tbody id="cuerpo-tabla-caja"></tbody>
@@ -93,7 +94,7 @@
         <span style="color: #888; font-size: 0.85rem;">TOTAL DE CUENTA</span>
         <div id="total-cuenta-texto" style="font-size: 2.8rem; color: #d4af37; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
         <div style="margin: 16px 0; padding-top: 14px; border-top: 1px solid #222;">
-          <p style="color: #888; font-size: 0.85rem;">Condición de pago: <strong style="color: #fff;">Efectivo</strong></p>
+          <p style="color: #888; font-size: 0.85rem;">Condición: <strong style="color: #fff;">Efectivo / Suplidor</strong></p>
         </div>
         <button onclick="abrirModalCobro()" class="btn-green">Cobrar Venta</button>
       </div>
@@ -105,7 +106,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
       <div>
         <h2 style="font-size: 1.4rem; font-weight: 700;">Panel de Administración</h2>
-        <span style="font-size: 0.8rem; color: #888;">Auditoría y Desempeño</span>
+        <span style="font-size: 0.8rem; color: #888;">Auditoría de Modificaciones y Descuentos</span>
       </div>
       <div style="display: flex; gap: 10px;">
         <button onclick="mostrarFrecuentes()" class="btn-gold">Ventas Frecuentes</button>
@@ -120,15 +121,15 @@
         <p id="admin-conteo-articulos" style="color: #888; font-size: 0.9rem;">0 artículos facturados hoy</p>
       </div>
       <div style="flex: 2; background: #141414; padding: 22px; border-radius: 10px; border: 1px solid #222;">
-        <h3 style="color: #ef4444; font-size: 1.05rem; margin-bottom: 6px;">Auditoría: Cortes Cancelados</h3>
-        <p style="color: #666; font-size: 0.8rem; margin-bottom: 12px;">Registro de anulaciones justificadas por cajero</p>
+        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">Auditoría: Modificaciones y Cancelaciones</h3>
+        <p style="color: #666; font-size: 0.8rem; margin-bottom: 12px;">Registro de descuentos, precios de suplidor y anulaciones</p>
         <table class="tabla">
           <thead>
             <tr>
               <th>Hora</th>
               <th>Corte</th>
               <th>Monto</th>
-              <th>Motivo Registrado</th>
+              <th>Detalle / Motivo</th>
             </tr>
           </thead>
           <tbody id="cuerpo-tabla-auditoria"></tbody>
@@ -250,7 +251,7 @@
           var plu = parseInt(cod.substring(1, 5), 10).toString();
           var precio = parseFloat(cod.substring(5, 10)) / 100;
           var nombre = CORTES[plu] || ("Corte #" + plu);
-          carrito.push({ plu: plu, nombre: nombre, precio: precio || 120 });
+          carrito.push({ plu: plu, nombre: nombre, precio: precio || 120, originalPrecio: precio || 120, modificado: false });
           dibujarCarrito();
         }
       }
@@ -264,24 +265,71 @@
         total += carrito[i].precio;
         tbody.innerHTML += '<tr>' +
           '<td>' + carrito[i].plu + '</td>' +
-          '<td>' + carrito[i].nombre + '</td>' +
+          '<td>' + carrito[i].nombre + (carrito[i].modificado ? ' <span class="badge" style="font-size:0.65rem;">Modificado</span>' : '') + '</td>' +
           '<td>RD$ ' + carrito[i].precio.toFixed(2) + '</td>' +
-          '<td style="text-align: right;"><button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 10px; border-radius:4px; font-size:0.8rem;">Anular</button></td>' +
+          '<td style="text-align: right;">' +
+            '<button onclick="aplicarDescuento(' + i + ', 10)" class="btn-action">-10%</button>' +
+            '<button onclick="aplicarDescuento(' + i + ', 20)" class="btn-action">-20%</button>' +
+            '<button onclick="cambiarPrecioManual(' + i + ')" class="btn-action" style="background:#d4af37; color:#000;">Suplidor/Manual</button>' +
+            '<button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">Anular</button>' +
+          '</td>' +
         '</tr>';
       }
       document.getElementById('total-cuenta-texto').innerText = 'RD$ ' + total.toFixed(2);
     }
 
+    async function aplicarDescuento(idx, porcentaje) {
+      var item = carrito[idx];
+      var rebaja = item.originalPrecio * (porcentaje / 100);
+      item.precio = item.originalPrecio - rebaja;
+      item.modificado = true;
+      item.detalleModificacion = 'Descuento aplicado: ' + porcentaje + '% (Precio anterior: RD$ ' + item.originalPrecio.toFixed(2) + ')';
+      
+      registrarModificacionEnNube(item, item.detalleModificacion);
+      dibujarCarrito();
+    }
+
+    async function cambiarPrecioManual(idx) {
+      var item = carrito[idx];
+      var nuevoPrecioStr = prompt('Ingrese precio especial (Suplidor / Manual) para ' + item.nombre + ':', item.precio);
+      if (nuevoPrecioStr === null) return;
+      var nuevoPrecio = parseFloat(nuevoPrecioStr);
+      if (isNaN(nuevoPrecio) || nuevoPrecio < 0) {
+        alert('Monto inválido.');
+        return;
+      }
+
+      var motivo = prompt('Indique el motivo o nombre del suplidor para este cambio:', 'Venta a Suplidor');
+      if (!motivo) motivo = 'Precio manual asignado';
+
+      item.precio = nuevoPrecio;
+      item.modificado = true;
+      item.detalleModificacion = 'Precio manual/suplidor: RD$ ' + nuevoPrecio.toFixed(2) + ' (' + motivo + ')';
+
+      registrarModificacionEnNube(item, item.detalleModificacion);
+      dibujarCarrito();
+    }
+
+    async function registrarModificacionEnNube(item, detalle) {
+      var horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      try {
+        await supabaseClient.from('cancelaciones').insert([
+          { hora: horaActual, corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle }
+        ]);
+      } catch (err) {
+        console.error('Error al registrar modificación en Supabase:', err);
+      }
+    }
+
     async function borrarArticulo(idx) {
-      var motivo = prompt('Indique motivo de anulación:');
+      var motivo = prompt('Indique motivo de anulación de este corte:');
       if (!motivo) return;
       var item = carrito[idx];
       var horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       
-      // Guardar cancelación en Supabase (asegúrate de tener una tabla llamada 'cancelaciones')
       try {
         await supabaseClient.from('cancelaciones').insert([
-          { hora: horaActual, corte: item.nombre, precio: item.precio, motivo: motivo }
+          { hora: horaActual, corte: item.nombre, precio: item.precio, motivo: 'ANULADO: ' + motivo }
         ]);
       } catch (err) {
         console.error('Error al registrar anulación en Supabase:', err);
@@ -326,11 +374,10 @@
         return;
       }
 
-      // Guardar cada artículo del carrito en la tabla 'ventas' de Supabase
       try {
         for (var j = 0; j < carrito.length; j++) {
           await supabaseClient.from('ventas').insert([
-            { plu: carrito[j].plu, nombre: carrito[j].nombre, precio: carrito[j].precio }
+            { plu: carrito[j].plu, nombre: carrito[j].nombre + (carrito[j].modificado ? ' (Modif)' : ''), precio: carrito[j].precio }
           ]);
         }
       } catch (err) {
@@ -347,15 +394,13 @@
     }
 
     async function hacerCuadre() {
-      if (confirm('¿Proceder al cierre del turno y reiniciar balance diario en la nube?')) {
-        // Aquí podrías agregar lógica adicional de cierre si lo deseas
+      if (confirm('¿Proceder al cierre del turno y reiniciar balance diario?')) {
         alert('Turno cerrado correctamente.');
       }
     }
 
     async function actualizarAdmin() {
       try {
-        // Consultar ventas del día desde Supabase
         const { data: ventas, error: errVentas } = await supabaseClient.from('ventas').select('*');
         if (errVentas) throw errVentas;
 
@@ -368,7 +413,6 @@
           document.getElementById('admin-conteo-articulos').innerText = ventas.length + ' artículos facturados en total';
         }
 
-        // Consultar cancelaciones / auditoría desde Supabase
         const { data: cancelaciones, error: errCancel } = await supabaseClient.from('cancelaciones').select('*');
         if (errCancel) throw errCancel;
 
@@ -376,11 +420,13 @@
         tbody.innerHTML = '';
         if (cancelaciones) {
           for (let k = 0; k < cancelaciones.length; k++) {
+            var esModif = cancelaciones[k].motivo && cancelaciones[k].motivo.includes('[MODIFICADO]');
+            var colorTexto = esModif ? 'color:#d4af37;' : 'color:#ef4444;';
             tbody.innerHTML += '<tr>' +
               '<td>' + (cancelaciones[k].hora || '') + '</td>' +
               '<td>' + cancelaciones[k].corte + '</td>' +
               '<td>RD$ ' + cancelaciones[k].precio.toFixed(2) + '</td>' +
-              '<td style="color:#ef4444;">' + cancelaciones[k].motivo + '</td>' +
+              '<td style="' + colorTexto + '">' + cancelaciones[k].motivo + '</td>' +
             '</tr>';
           }
         }
