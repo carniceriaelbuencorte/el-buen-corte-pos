@@ -18,7 +18,6 @@
     .tabla th { padding: 12px 10px; border-bottom: 1px solid #2a2a2a; text-align: left; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; }
     .tabla td { padding: 14px 10px; border-bottom: 1px solid #1c1c1c; font-size: 0.95rem; }
     .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; color: #d4af37; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); }
-    .logo-real { width: 100%; max-width: 320px; height: auto; display: block; margin: 0 auto 24px auto; border-radius: 8px; }
   </style>
 </head>
 <body>
@@ -125,7 +124,7 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIAL DE VENTAS -->
+  <!-- MODAL HISTORIAL -->
   <div id="modal-historial" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; z-index: 1000;">
     <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 24px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 12px; margin-bottom: 16px;">
@@ -247,8 +246,8 @@
       var item = carrito[idx];
       item.precio = item.originalPrecio * (1 - porcentaje / 100);
       item.modificado = true;
-      item.detalleModificacion = 'Descuento ' + porcentaje + '%';
-      registrarModificacionEnNube(item, item.detalleModificacion);
+      var detalle = 'Descuento ' + porcentaje + '%';
+      registrarModificacionEnNube(item, detalle);
       dibujarCarrito();
     }
 
@@ -259,8 +258,8 @@
       var motivo = prompt('Nombre del suplidor / Motivo:', 'Venta a Suplidor');
       item.precio = nuevoPrecio;
       item.modificado = true;
-      item.detalleModificacion = 'Suplidor: ' + motivo + ' (RD$ ' + nuevoPrecio.toFixed(2) + ')';
-      registrarModificacionEnNube(item, item.detalleModificacion);
+      var detalle = 'Suplidor: ' + motivo + ' (RD$ ' + nuevoPrecio.toFixed(2) + ')';
+      registrarModificacionEnNube(item, detalle);
       dibujarCarrito();
     }
 
@@ -352,7 +351,6 @@
     async function abrirHistorialVentas() {
       document.getElementById('modal-historial').style.display = 'flex';
       document.getElementById('contenido-historial').innerHTML = '<p style="text-align:center; color:#888;">Cargando historial...</p>';
-      
       try {
         const { data: ventas, error } = await supabaseClient.from('ventas').select('*');
         if (error) throw error;
@@ -374,7 +372,6 @@
         if (!anios[anio]) anios[anio] = 0;
         anios[anio] += v.precio;
       });
-
       var html = '<div style="display:flex; flex-direction:column; gap:10px;">';
       var llavesAnios = Object.keys(anios).sort().reverse();
       if (llavesAnios.length === 0) { html += '<p style="color:#888;">No hay registros de ventas todavía.</p>'; }
@@ -392,14 +389,12 @@
       document.getElementById('historial-titulo').innerText = 'Ventas ' + anio + ' - Meses';
       var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       var meses = {};
-      
       window.VENTAS_GLOBALES.forEach(v => {
         if (!v.fecha || !v.fecha.startsWith(anio)) return;
         var mesNum = v.fecha.split('-')[1];
         if (!meses[mesNum]) meses[mesNum] = 0;
         meses[mesNum] += v.precio;
       });
-
       var html = '<button onclick="mostrarAniosHistorial()" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem; cursor:pointer;">← Volver a Años</button>';
       html += '<div style="display:flex; flex-direction:column; gap:10px;">';
       Object.keys(meses).sort().reverse().forEach(mesNum => {
@@ -417,14 +412,12 @@
       var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       document.getElementById('historial-titulo').innerText = 'Ventas de ' + mesesNombres[parseInt(mesNum, 10)] + ' ' + anio + ' - Días';
       var dias = {};
-
       window.VENTAS_GLOBALES.forEach(v => {
         if (!v.fecha || !v.fecha.startsWith(anio + '-' + mesNum)) return;
         var dia = v.fecha;
         if (!dias[dia]) dias[dia] = 0;
         dias[dia] += v.precio;
       });
-
       var html = <button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem; cursor:pointer;">← Volver a Meses</button>;
       html += '<div style="display:flex; flex-direction:column; gap:10px;">';
       Object.keys(dias).sort().reverse().forEach(dia => {
