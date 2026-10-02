@@ -4,33 +4,35 @@
   <meta charset="UTF-8">
   <title>Carnicería El Buen Corte - POS</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #0b0b0b; color: #f3f4f6; min-height: 100vh; padding: 24px; }
     button { cursor: pointer; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; }
     .btn-gold { background: #d4af37; color: #000; padding: 12px 20px; }
     .btn-red { background: #8b181b; color: #fff; padding: 10px 18px; }
     .btn-green { background: #22c55e; color: #000; padding: 14px 20px; font-size: 1.15rem; width: 100%; margin-top: 15px; font-weight: bold; }
     .btn-gray { background: #262626; color: #fff; padding: 12px 20px; border: 1px solid #383838; }
+    .btn-action { background: #333; color: #d4af37; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #444; margin-right: 4px; }
     .caja-input { width: 100%; padding: 14px; background: #141414; border: 1px solid #d4af37; color: #fff; font-size: 1.05rem; text-align: center; border-radius: 8px; margin: 12px 0; outline: none; }
     .tabla { width: 100%; border-collapse: collapse; margin-top: 15px; }
     .tabla th { padding: 12px 10px; border-bottom: 1px solid #2a2a2a; text-align: left; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; }
     .tabla td { padding: 14px 10px; border-bottom: 1px solid #1c1c1c; font-size: 0.95rem; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; color: #d4af37; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); }
   </style>
 </head>
 <body>
 
   <!-- LOGIN -->
-  <div id="vista-login" style="max-width: 440px; margin: 40px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
+  <div id="vista-login" style="max-width: 440px; margin: 30px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
     <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 1.5rem;">Carnicería El Buen Corte</h2>
 
     <div id="opciones-rol" style="display: flex; gap: 14px;">
-      <button onclick="seleccionarRol('cajero')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 10px; cursor: pointer;">
-        <span style="font-size: 1.1rem; font-weight: bold; display: block; margin-bottom: 6px;">CAJERO</span>
-        <span style="font-size: 0.75rem; color: #d4af37;">Punto de Venta</span>
+      <button onclick="seleccionarRol('cajero')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;">
+        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">CAJERO</span>
+        <span class="badge">Punto de Venta</span>
       </button>
-      <button onclick="seleccionarRol('admin')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 10px; cursor: pointer;">
-        <span style="font-size: 1.1rem; font-weight: bold; display: block; margin-bottom: 6px;">ADMINISTRADOR</span>
-        <span style="font-size: 0.75rem; color: #d4af37;">Supervisión</span>
+      <button onclick="seleccionarRol('admin')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;">
+        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">ADMINISTRADOR</span>
+        <span class="badge">Supervisión</span>
       </button>
     </div>
 
@@ -38,45 +40,151 @@
       <h3 id="titulo-clave" style="margin-bottom: 8px; font-size: 1rem; color: #ddd; font-weight: 500;"></h3>
       <input type="password" id="input-clave" class="caja-input" />
       <div style="display: flex; gap: 10px; margin-top: 8px;">
-        <button onclick="volver()" class="btn-gray" style="flex: 1;">Volver</button>
-        <button onclick="entrar()" class="btn-gold" style="flex: 1;">Ingresar</button>
+        <button onclick="volverLogin()" class="btn-gray" style="flex: 1;">Volver</button>
+        <button onclick="procesarIngreso()" class="btn-gold" style="flex: 1;">Ingresar</button>
       </div>
     </div>
   </div>
 
   <!-- CAJERO -->
-  <div id="vista-cajero" style="display: none; max-width: 1000px; margin: 0 auto;">
+  <div id="vista-cajero" style="display: none; max-width: 1100px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
-      <h2 style="font-size: 1.4rem;">Terminal de Caja 1</h2>
-      <button onclick="salir()" class="btn-red">Salir</button>
+      <div>
+        <h2 style="font-size: 1.4rem; font-weight: 700;">Terminal de Caja 1</h2>
+        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta</span>
+      </div>
+      <div>
+        <button onclick="cerrarSesion()" class="btn-red">Salir</button>
+      </div>
     </div>
-    <div style="background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; text-align: center;">
-      <h3 style="color: #22c55e; font-size: 1.5rem; margin-bottom: 10px;">¡Caja Abierta con Éxito!</h3>
-      <p style="color: #aaa;">El sistema operativo de venta está listo para recibir códigos de balanza.</p>
+
+    <div style="display: flex; gap: 24px;">
+      <div style="flex: 2;">
+        <input type="text" id="escaner" class="caja-input" placeholder="Escanear código de balanza..." onkeydown="leerCodigo(event)" style="margin-top: 0;" />
+        <div style="background: #141414; border-radius: 10px; padding: 18px; min-height: 320px; border: 1px solid #222;">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Código PLU</th>
+                <th>Corte</th>
+                <th>Monto (RD$)</th>
+                <th style="text-align: right;">Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpo-tabla-caja"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="flex: 1.1; background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; height: fit-content;">
+        <span style="color: #888; font-size: 0.85rem;">TOTAL DE CUENTA</span>
+        <div id="total-cuenta-texto" style="font-size: 2.8rem; color: #d4af37; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
+        <button onclick="abrirModalCobro()" class="btn-green">Cobrar Venta</button>
+      </div>
     </div>
   </div>
 
   <!-- ADMIN -->
-  <div id="vista-admin" style="display: none; max-width: 1000px; margin: 0 auto;">
+  <div id="vista-admin" style="display: none; max-width: 1100px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
-      <h2 style="font-size: 1.4rem;">Panel de Administración Gerencial</h2>
-      <button onclick="salir()" class="btn-red">Salir</button>
+      <div>
+        <h2 style="font-size: 1.4rem; font-weight: 700;">Panel de Administración Gerencial</h2>
+        <span style="font-size: 0.8rem; color: #888;">Ventas en Vivo e Historial Jerárquico</span>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button onclick="abrirHistorialVentas()" class="btn-gold">Historial de Ventas</button>
+        <button onclick="cerrarSesion()" class="btn-red">Salir</button>
+      </div>
     </div>
-    <div style="background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; text-align: center;">
-      <h3 style="color: #d4af37; font-size: 1.5rem; margin-bottom: 10px;">¡Panel de Admin Activo!</h3>
-      <p style="color: #aaa;">Supervisión y control gerencial habilitados.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px;">
+      <div style="background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; text-align: center;">
+        <span style="color: #888; font-size: 0.85rem;">VENTAS EN VIVO (HOY)</span>
+        <div id="admin-total-dia" style="font-size: 2.8rem; color: #22c55e; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
+        <p id="admin-conteo-articulos" style="color: #888; font-size: 0.9rem;">0 artículos facturados hoy</p>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 24px;">
+      <div style="flex: 2; background: #141414; padding: 22px; border-radius: 10px; border: 1px solid #222;">
+        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">Auditoría de Modificaciones / Precios Especiales</h3>
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Corte</th>
+              <th>Monto</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpo-tabla-auditoria"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL HISTORIAL -->
+  <div id="modal-historial" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; z-index: 1000;">
+    <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 24px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 id="historial-titulo" style="font-size: 1.2rem; color: #d4af37;">Historial de Ventas</h3>
+        <button onclick="cerrarHistorialVentas()" class="btn-gray" style="padding: 6px 14px; font-size: 0.8rem;">Cerrar</button>
+      </div>
+      <div id="contenido-historial"></div>
+    </div>
+  </div>
+
+  <!-- MODAL COBRO -->
+  <div id="modal-cobro" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 1000;">
+    <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 28px; width: 380px; text-align: center;">
+      <h3 style="font-size: 1.2rem;">Comprobante de Pago</h3>
+      <div id="cobro-total-modal" style="font-size: 2rem; color: #d4af37; font-weight: 800; margin: 15px 0;">RD$ 0.00</div>
+      <input type="number" id="monto-cliente" class="caja-input" placeholder="Monto recibido RD$" oninput="calcularDevuelta()" />
+      <div id="devuelta-texto" style="font-size: 1.25rem; color: #22c55e; margin-bottom: 18px; font-weight: 600;">Devuelta: RD$ 0.00</div>
+      <div style="display: flex; gap: 10px;">
+        <button onclick="cerrarModalCobro()" class="btn-gray" style="flex: 1;">Cancelar</button>
+        <button onclick="finalizarVenta()" class="btn-green" style="flex: 1; margin: 0; font-size: 1rem;">Confirmar</button>
+      </div>
     </div>
   </div>
 
   <script>
+    const SUPABASE_URL = 'https://xoaxbyiqpsmofwsyduzo.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_YnX3J_gxfL6txb0F8l-hyQ_2y4k7...';
+
+    // Petición REST directa nativa (sin librerías pesadas externas que bloqueen la página)
+    async function supabaseFetch(tabla, metodo = 'GET', cuerpo = null) {
+      try {
+        let headers = {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        };
+        let opciones = { method: metodo, headers: headers };
+        if (cuerpo) opciones.body = JSON.stringify(cuerpo);
+        let respuesta = await fetch(${SUPABASE_URL}/rest/v1/${tabla}, opciones);
+        if (!respuesta.ok) return [];
+        return await respuesta.json();
+      } catch (e) {
+        return [];
+      }
+    }
+
     var rolActual = '';
+    var carrito = [];
+    var CORTES = {
+      "101": "Bistec (Res)", "102": "Bola (Res)", "103": "Osso Buco (Res)", "104": "Pecho (Res)",
+      "105": "Punta de Palomilla (Res)", "106": "Roti (Res)", "107": "Carne Molida (Res)", "108": "Steaks (Res)",
+      "201": "Chuleta (Cerdo)", "202": "Lomo (Cerdo)", "203": "Panceta (Cerdo)", "204": "Chicharrón (Cerdo)",
+      "205": "Costilla (Cerdo)", "206": "Carne Genérica (Cerdo)"
+    };
 
     function seleccionarRol(rol) {
       rolActual = rol;
       document.getElementById('opciones-rol').style.display = 'none';
       document.getElementById('cuadro-clave').style.display = 'block';
       document.getElementById('input-clave').value = '';
-      
       if (rol === 'cajero') {
         document.getElementById('titulo-clave').innerText = 'Ingrese PIN de Caja (1810):';
       } else {
@@ -85,30 +193,225 @@
       document.getElementById('input-clave').focus();
     }
 
-    function volver() {
+    function volverLogin() {
       document.getElementById('cuadro-clave').style.display = 'none';
       document.getElementById('opciones-rol').style.display = 'flex';
       rolActual = '';
     }
 
-    function entrar() {
+    function procesarIngreso() {
       var pass = document.getElementById('input-clave').value.trim();
       if (rolActual === 'cajero' && pass === '1810') {
         document.getElementById('vista-login').style.display = 'none';
         document.getElementById('vista-cajero').style.display = 'block';
+        document.getElementById('escaner').focus();
       } else if (rolActual === 'admin' && pass === 'newyorksteak') {
         document.getElementById('vista-login').style.display = 'none';
         document.getElementById('vista-admin').style.display = 'block';
+        actualizarAdmin();
       } else {
         alert('Clave incorrecta');
       }
     }
 
-    function salir() {
+    function cerrarSesion() {
       document.getElementById('vista-cajero').style.display = 'none';
       document.getElementById('vista-admin').style.display = 'none';
-      volver();
+      volverLogin();
       document.getElementById('vista-login').style.display = 'block';
+    }
+
+    function leerCodigo(e) {
+      if (e.key === 'Enter') {
+        var cod = e.target.value.trim();
+        e.target.value = '';
+        if (cod.length >= 7) {
+          var plu = parseInt(cod.substring(1, 5), 10).toString();
+          var precio = parseFloat(cod.substring(5, 10)) / 100;
+          var nombre = CORTES[plu] || ("Corte #" + plu);
+          carrito.push({ plu: plu, nombre: nombre, precio: precio || 120, originalPrecio: precio || 120, modificado: false });
+          dibujarCarrito();
+        }
+      }
+    }
+
+    function dibujarCarrito() {
+      var tbody = document.getElementById('cuerpo-tabla-caja');
+      tbody.innerHTML = '';
+      var total = 0;
+      for (var i = 0; i < carrito.length; i++) {
+        total += carrito[i].precio;
+        tbody.innerHTML += '<tr>' +
+          '<td>' + carrito[i].plu + '</td>' +
+          '<td>' + carrito[i].nombre + (carrito[i].modificado ? ' <span class="badge">Modif</span>' : '') + '</td>' +
+          '<td>RD$ ' + carrito[i].precio.toFixed(2) + '</td>' +
+          '<td style="text-align: right;">' +
+            '<button onclick="aplicarDescuento(' + i + ', 10)" class="btn-action">-10%</button>' +
+            '<button onclick="aplicarDescuento(' + i + ', 20)" class="btn-action">-20%</button>' +
+            '<button onclick="cambiarPrecioManual(' + i + ')" class="btn-action" style="background:#d4af37; color:#000;">Suplidor</button>' +
+            '<button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">X</button>' +
+          '</td>' +
+        '</tr>';
+      }
+      document.getElementById('total-cuenta-texto').innerText = 'RD$ ' + total.toFixed(2);
+    }
+
+    async function aplicarDescuento(idx, porcentaje) {
+      var item = carrito[idx];
+      item.precio = item.originalPrecio * (1 - porcentaje / 100);
+      item.modificado = true;
+      var detalle = 'Descuento ' + porcentaje + '%';
+      await supabaseFetch('cancelaciones', 'POST', { fecha: new Date().toISOString().split('T')[0], hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle });
+      dibujarCarrito();
+    }
+
+    async function cambiarPrecioManual(idx) {
+      var item = carrito[idx];
+      var nuevoPrecio = parseFloat(prompt('Precio especial (Suplidor):', item.precio));
+      if (isNaN(nuevoPrecio)) return;
+      var motivo = prompt('Nombre del suplidor / Motivo:', 'Venta a Suplidor');
+      item.precio = nuevoPrecio;
+      item.modificado = true;
+      var detalle = 'Suplidor: ' + motivo + ' (RD$ ' + nuevoPrecio.toFixed(2) + ')';
+      await supabaseFetch('cancelaciones', 'POST', { fecha: new Date().toISOString().split('T')[0], hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle });
+      dibujarCarrito();
+    }
+
+    async function borrarArticulo(idx) {
+      var motivo = prompt('Motivo de anulación:');
+      if (!motivo) return;
+      var item = carrito[idx];
+      await supabaseFetch('cancelaciones', 'POST', { fecha: new Date().toISOString().split('T')[0], hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), corte: item.nombre, precio: item.precio, motivo: 'ANULADO: ' + motivo });
+      carrito.splice(idx, 1);
+      dibujarCarrito();
+    }
+
+    function abrirModalCobro() {
+      if (carrito.length === 0) { alert('Carrito vacío'); return; }
+      var total = carrito.reduce((sum, item) => sum + item.precio, 0);
+      document.getElementById('cobro-total-modal').innerText = 'Total: RD$ ' + total.toFixed(2);
+      document.getElementById('monto-cliente').value = '';
+      document.getElementById('devuelta-texto').innerText = 'Devuelta: RD$ 0.00';
+      document.getElementById('modal-cobro').style.display = 'flex';
+      document.getElementById('monto-cliente').focus();
+    }
+
+    function cerrarModalCobro() { document.getElementById('modal-cobro').style.display = 'none'; }
+
+    function calcularDevuelta() {
+      var total = carrito.reduce((sum, item) => sum + item.precio, 0);
+      var pagado = parseFloat(document.getElementById('monto-cliente').value) || 0;
+      var cambio = pagado - total;
+      document.getElementById('devuelta-texto').innerText = 'Devuelta: RD$ ' + (cambio > 0 ? cambio.toFixed(2) : '0.00');
+    }
+
+    async function finalizarVenta() {
+      var total = carrito.reduce((sum, item) => sum + item.precio, 0);
+      var pagado = parseFloat(document.getElementById('monto-cliente').value) || 0;
+      if (pagado < total) { alert('Monto insuficiente'); return; }
+
+      var fechaHoy = new Date().toISOString().split('T')[0];
+      for (var j = 0; j < carrito.length; j++) {
+        await supabaseFetch('ventas', 'POST', { fecha: fechaHoy, plu: carrito[j].plu, nombre: carrito[j].nombre, precio: carrito[j].precio });
+      }
+      carrito = [];
+      dibujarCarrito();
+      cerrarModalCobro();
+      alert('Venta guardada con éxito.');
+      document.getElementById('escaner').focus();
+    }
+
+    async function actualizarAdmin() {
+      var fechaHoy = new Date().toISOString().split('T')[0];
+      var ventas = await supabaseFetch(ventas?fecha=eq.${fechaHoy});
+      let totalVentas = (ventas || []).reduce((acc, v) => acc + v.precio, 0);
+      document.getElementById('admin-total-dia').innerText = 'RD$ ' + totalVentas.toFixed(2);
+      document.getElementById('admin-conteo-articulos').innerText = (ventas || []).length + ' artículos facturados hoy';
+
+      var cancelaciones = await supabaseFetch('cancelaciones');
+      var tbody = document.getElementById('cuerpo-tabla-auditoria');
+      tbody.innerHTML = '';
+      (cancelaciones || []).forEach(c => {
+        var esModif = c.motivo && c.motivo.includes('[MODIFICADO]');
+        tbody.innerHTML += <tr><td>${c.hora||''}</td><td>${c.corte}</td><td>RD$ ${c.precio.toFixed(2)}</td><td style="${esModif?'color:#d4af37;':'color:#ef4444;'}">${c.motivo}</td></tr>;
+      });
+    }
+
+    async function abrirHistorialVentas() {
+      document.getElementById('modal-historial').style.display = 'flex';
+      document.getElementById('contenido-historial').innerHTML = '<p style="text-align:center; color:#888;">Cargando historial...</p>';
+      var ventas = await supabaseFetch('ventas');
+      window.VENTAS_GLOBALES = ventas || [];
+      mostrarAniosHistorial();
+    }
+
+    function cerrarHistorialVentas() { document.getElementById('modal-historial').style.display = 'none'; }
+
+    function mostrarAniosHistorial() {
+      document.getElementById('historial-titulo').innerText = 'Historial de Ventas - Años';
+      var anios = {};
+      window.VENTAS_GLOBALES.forEach(v => {
+        if (!v.fecha) return;
+        var anio = v.fecha.split('-')[0];
+        if (!anios[anio]) anios[anio] = 0;
+        anios[anio] += v.precio;
+      });
+      var html = '<div style="display:flex; flex-direction:column; gap:10px;">';
+      var llavesAnios = Object.keys(anios).sort().reverse();
+      if (llavesAnios.length === 0) { html += '<p style="color:#888;">No hay registros de ventas todavía.</p>'; }
+      llavesAnios.forEach(anio => {
+        html += `<button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333; cursor:pointer;">
+          <span style="font-size:1.1rem; color:#fff; font-weight:bold;">Año ${anio}</span>
+          <span style="color:#d4af37; font-weight:bold;">RD$ ${anios[anio].toFixed(2)}</span>
+        </button>`;
+      });
+      html += '</div>';
+      document.getElementById('contenido-historial').innerHTML = html;
+    }
+
+    function mostrarMesesHistorial(anio) {
+      document.getElementById('historial-titulo').innerText = 'Ventas ' + anio + ' - Meses';
+      var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      var meses = {};
+      window.VENTAS_GLOBALES.forEach(v => {
+        if (!v.fecha || !v.fecha.startsWith(anio)) return;
+        var mesNum = v.fecha.split('-')[1];
+        if (!meses[mesNum]) meses[mesNum] = 0;
+        meses[mesNum] += v.precio;
+      });
+      var html = '<button onclick="mostrarAniosHistorial()" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem; cursor:pointer;">← Volver a Años</button>';
+      html += '<div style="display:flex; flex-direction:column; gap:10px;">';
+      Object.keys(meses).sort().reverse().forEach(mesNum => {
+        var nombreMes = mesesNombres[parseInt(mesNum, 10)];
+        html += `<button onclick="mostrarDiasHistorial('${anio}', '${mesNum}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333; cursor:pointer;">
+          <span style="font-size:1.1rem; color:#fff; font-weight:bold;">${nombreMes} (${anio})</span>
+          <span style="color:#d4af37; font-weight:bold;">RD$ ${meses[mesNum].toFixed(2)}</span>
+        </button>`;
+      });
+      html += '</div>';
+      document.getElementById('contenido-historial').innerHTML = html;
+    }
+
+    function mostrarDiasHistorial(anio, mesNum) {
+      var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      document.getElementById('historial-titulo').innerText = 'Ventas de ' + mesesNombres[parseInt(mesNum, 10)] + ' ' + anio + ' - Días';
+      var dias = {};
+      window.VENTAS_GLOBALES.forEach(v => {
+        if (!v.fecha || !v.fecha.startsWith(anio + '-' + mesNum)) return;
+        var dia = v.fecha;
+        if (!dias[dia]) dias[dia] = 0;
+        dias[dia] += v.precio;
+      });
+      var html = <button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem; cursor:pointer;">← Volver a Meses</button>;
+      html += '<div style="display:flex; flex-direction:column; gap:10px;">';
+      Object.keys(dias).sort().reverse().forEach(dia => {
+        html += `<div style="display:flex; justify-content:space-between; padding:14px; background:#1a1a1a; border:1px solid #333; border-radius:8px;">
+          <span style="color:#fff; font-weight:500;">Día: ${dia}</span>
+          <span style="color:#22c55e; font-weight:bold;">RD$ ${dias[dia].toFixed(2)}</span>
+        </div>`;
+      });
+      html += '</div>';
+      document.getElementById('contenido-historial').innerHTML = html;
     }
   </script>
 </body>
