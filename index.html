@@ -25,19 +25,14 @@
 
   <!-- LOGIN -->
   <div id="vista-login" style="max-width: 440px; margin: 30px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
-    <img id="logo-sistema" src="logo.png" alt="Carnicería El Buen Corte" class="logo-real" onerror="activarCargadorFallback()" />
-
-    <div id="cargador-manual" style="display: none; border: 2px dashed #d4af37; padding: 16px; border-radius: 8px; margin-bottom: 20px; cursor: pointer;" onclick="document.getElementById('file-logo').click()">
-      <p style="color: #d4af37; font-size: 0.9rem; font-weight: bold;">Haga clic aquí para seleccionar su foto de logo</p>
-      <input type="file" id="file-logo" accept="image/*" style="display: none;" onchange="procesarLogoLocal(event)">
-    </div>
+    <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 1.5rem;">Carnicería El Buen Corte</h2>
 
     <div id="opciones-rol" style="display: flex; gap: 14px;">
-      <button onclick="seleccionarRol('cajero')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;">
+      <button onclick="cambiarVistaRol('cajero')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;">
         <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">CAJERO</span>
         <span class="badge">Punto de Venta</span>
       </button>
-      <button onclick="seleccionarRol('admin')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;">
+      <button onclick="cambiarVistaRol('admin')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;">
         <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">ADMINISTRADOR</span>
         <span class="badge">Supervisión</span>
       </button>
@@ -45,10 +40,10 @@
 
     <div id="cuadro-clave" style="display: none; margin-top: 24px;">
       <h3 id="titulo-clave" style="margin-bottom: 8px; font-size: 1rem; color: #ddd; font-weight: 500;"></h3>
-      <input type="password" id="input-clave" class="caja-input" placeholder="" onkeydown="if(event.key==='Enter') verificarLogin()" />
+      <input type="password" id="input-clave" class="caja-input" placeholder="" />
       <div style="display: flex; gap: 10px; margin-top: 8px;">
-        <button onclick="cancelarLogin()" class="btn-gray" style="flex: 1;">Volver</button>
-        <button onclick="verificarLogin()" class="btn-gold" style="flex: 1;">Ingresar</button>
+        <button onclick="volverLogin()" class="btn-gray" style="flex: 1;">Volver</button>
+        <button onclick="procesarIngreso()" class="btn-gold" style="flex: 1;">Ingresar</button>
       </div>
     </div>
   </div>
@@ -60,14 +55,14 @@
         <h2 style="font-size: 1.4rem; font-weight: 700;">Terminal de Caja 1</h2>
         <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta</span>
       </div>
-      <div style="display: flex; gap: 10px;">
+      <div>
         <button onclick="cerrarSesion()" class="btn-red">Salir</button>
       </div>
     </div>
 
     <div style="display: flex; gap: 24px;">
       <div style="flex: 2;">
-        <input type="text" id="escaner" class="caja-input" placeholder="Escanear código de balanza..." onkeydown="leerCodigo(event)" autofocus style="margin-top: 0;" />
+        <input type="text" id="escaner" class="caja-input" placeholder="Escanear código de balanza..." onkeydown="leerCodigo(event)" style="margin-top: 0;" />
         <div style="background: #141414; border-radius: 10px; padding: 18px; min-height: 320px; border: 1px solid #222;">
           <table class="tabla">
             <thead>
@@ -130,7 +125,7 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIAL DE VENTAS JERÁRQUICO -->
+  <!-- MODAL HISTORIAL DE VENTAS -->
   <div id="modal-historial" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; z-index: 1000;">
     <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 24px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 12px; margin-bottom: 16px;">
@@ -160,31 +155,8 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_YnX3J_gxfL6txb0F8l-hyQ_2y4k7...';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    function activarCargadorFallback() {
-      const guardado = localStorage.getItem('logo_fijo');
-      if (guardado) document.getElementById('logo-sistema').src = guardado;
-      else {
-        document.getElementById('logo-sistema').style.display = 'none';
-        document.getElementById('cargador-manual').style.display = 'block';
-      }
-    }
-
-    function procesarLogoLocal(e) {
-      const archivo = e.target.files[0];
-      if (archivo) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          localStorage.setItem('logo_fijo', evt.target.result);
-          document.getElementById('logo-sistema').src = evt.target.result;
-          document.getElementById('logo-sistema').style.display = 'block';
-          document.getElementById('cargador-manual').style.display = 'none';
-        };
-        reader.readAsDataURL(archivo);
-      }
-    }
-
-    const guardadoPrevio = localStorage.getItem('logo_fijo');
-    if (guardadoPrevio) document.getElementById('logo-sistema').src = guardadoPrevio;
+    var rolSeleccionado = '';
+    var carrito = [];
 
     var CORTES = {
       "101": "Bistec (Res)", "102": "Bola (Res)", "103": "Osso Buco (Res)", "104": "Pecho (Res)",
@@ -193,44 +165,46 @@
       "205": "Costilla (Cerdo)", "206": "Carne Genérica (Cerdo)"
     };
 
-    var rolActual = '';
-    var carrito = [];
-
-    function seleccionarRol(rol) {
-      rolActual = rol;
+    function cambiarVistaRol(rol) {
+      rolSeleccionado = rol;
       document.getElementById('opciones-rol').style.display = 'none';
       document.getElementById('cuadro-clave').style.display = 'block';
       document.getElementById('input-clave').value = '';
-      document.getElementById('titulo-clave').innerText = rol === 'cajero' ? 'Ingrese PIN de Caja:' : 'Ingrese Contraseña de Administrador:';
-      document.getElementById('input-clave').placeholder = rol === 'cajero' ? 'PIN' : 'Contraseña';
+      if (rol === 'cajero') {
+        document.getElementById('titulo-clave').innerText = 'Ingrese PIN de Caja (1810):';
+        document.getElementById('input-clave').placeholder = 'PIN';
+      } else {
+        document.getElementById('titulo-clave').innerText = 'Ingrese Contraseña de Admin:';
+        document.getElementById('input-clave').placeholder = 'Contraseña';
+      }
       document.getElementById('input-clave').focus();
     }
 
-    function cancelarLogin() {
+    function volverLogin() {
       document.getElementById('cuadro-clave').style.display = 'none';
       document.getElementById('opciones-rol').style.display = 'flex';
-      rolActual = '';
+      rolSeleccionado = '';
     }
 
-    function verificarLogin() {
-      var clave = document.getElementById('input-clave').value.trim();
-      if (rolActual === 'cajero' && clave === '1810') {
+    function procesarIngreso() {
+      var val = document.getElementById('input-clave').value.trim();
+      if (rolSeleccionado === 'cajero' && val === '1810') {
         document.getElementById('vista-login').style.display = 'none';
         document.getElementById('vista-cajero').style.display = 'block';
         document.getElementById('escaner').focus();
-      } else if (rolActual === 'admin' && clave === 'newyorksteak') {
+      } else if (rolSeleccionado === 'admin' && val === 'newyorksteak') {
         document.getElementById('vista-login').style.display = 'none';
         document.getElementById('vista-admin').style.display = 'block';
         actualizarAdmin();
       } else {
-        alert('Credenciales incorrectas.');
+        alert('Clave incorrecta');
       }
     }
 
     function cerrarSesion() {
       document.getElementById('vista-cajero').style.display = 'none';
       document.getElementById('vista-admin').style.display = 'none';
-      cancelarLogin();
+      volverLogin();
       document.getElementById('vista-login').style.display = 'block';
     }
 
@@ -262,7 +236,7 @@
             '<button onclick="aplicarDescuento(' + i + ', 10)" class="btn-action">-10%</button>' +
             '<button onclick="aplicarDescuento(' + i + ', 20)" class="btn-action">-20%</button>' +
             '<button onclick="cambiarPrecioManual(' + i + ')" class="btn-action" style="background:#d4af37; color:#000;">Suplidor</button>' +
-            '<button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem; cursor:pointer;">X</button>' +
+            '<button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">X</button>' +
           '</td>' +
         '</tr>';
       }
@@ -353,7 +327,7 @@
       carrito = [];
       dibujarCarrito();
       cerrarModalCobro();
-      alert('Venta guardada en la nube con éxito.');
+      alert('Venta guardada con éxito.');
       document.getElementById('escaner').focus();
     }
 
