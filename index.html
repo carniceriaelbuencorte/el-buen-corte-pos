@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Carnicería El Buen Corte - POS</title>
+  <!-- Librería oficial de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #0b0b0b; color: #f3f4f6; min-height: 100vh; padding: 24px; }
@@ -12,36 +14,43 @@
     .btn-green { background: #22c55e; color: #000; padding: 14px 20px; font-size: 1.15rem; width: 100%; margin-top: 15px; font-weight: bold; }
     .btn-gray { background: #262626; color: #fff; padding: 12px 20px; border: 1px solid #383838; }
     .btn-action { background: #333; color: #d4af37; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #444; margin-right: 4px; }
+
     .caja-input { width: 100%; padding: 14px; background: #141414; border: 1px solid #d4af37; color: #fff; font-size: 1.05rem; text-align: center; border-radius: 8px; margin: 12px 0; outline: none; }
     .tabla { width: 100%; border-collapse: collapse; margin-top: 15px; }
     .tabla th { padding: 12px 10px; border-bottom: 1px solid #2a2a2a; text-align: left; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; }
     .tabla td { padding: 14px 10px; border-bottom: 1px solid #1c1c1c; font-size: 0.95rem; }
     .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; color: #d4af37; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); }
+    .logo-real { width: 100%; max-width: 320px; height: auto; display: block; margin: 0 auto 24px auto; border-radius: 8px; }
   </style>
 </head>
 <body>
 
   <!-- LOGIN -->
-  <div id="vista-login" style="max-width: 440px; margin: 40px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
-    <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 1.5rem;">Carnicería El Buen Corte</h2>
+  <div id="vista-login" style="max-width: 440px; margin: 30px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
+    <img id="logo-sistema" src="logo.png" alt="Carnicería El Buen Corte" class="logo-real" onerror="activarCargadorFallback()" />
+
+    <div id="cargador-manual" style="display: none; border: 2px dashed #d4af37; padding: 16px; border-radius: 8px; margin-bottom: 20px; cursor: pointer;" onclick="document.getElementById('file-logo').click()">
+      <p style="color: #d4af37; font-size: 0.9rem; font-weight: bold;">Haga clic aquí para seleccionar su foto de logo</p>
+      <input type="file" id="file-logo" accept="image/*" style="display: none;" onchange="procesarLogoLocal(event)">
+    </div>
 
     <div id="opciones-rol" style="display: flex; gap: 14px;">
-      <button onclick="seleccionarRol('cajero')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 10px; cursor: pointer;">
-        <span style="font-size: 1.1rem; font-weight: bold; display: block; margin-bottom: 6px;">CAJERO</span>
+      <button onclick="seleccionarRol('cajero')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">CAJERO</span>
         <span class="badge">Punto de Venta</span>
       </button>
-      <button onclick="seleccionarRol('admin')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 10px; cursor: pointer;">
-        <span style="font-size: 1.1rem; font-weight: bold; display: block; margin-bottom: 6px;">ADMINISTRADOR</span>
+      <button onclick="seleccionarRol('admin')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">ADMINISTRADOR</span>
         <span class="badge">Supervisión</span>
       </button>
     </div>
 
     <div id="cuadro-clave" style="display: none; margin-top: 24px;">
       <h3 id="titulo-clave" style="margin-bottom: 8px; font-size: 1rem; color: #ddd; font-weight: 500;"></h3>
-      <input type="password" id="input-clave" class="caja-input" />
+      <input type="password" id="input-clave" class="caja-input" placeholder="" />
       <div style="display: flex; gap: 10px; margin-top: 8px;">
-        <button onclick="volverLogin()" class="btn-gray" style="flex: 1;">Volver</button>
-        <button onclick="procesarIngreso()" class="btn-gold" style="flex: 1;">Ingresar</button>
+        <button onclick="cancelarLogin()" class="btn-gray" style="flex: 1;">Volver</button>
+        <button onclick="verificarLogin()" class="btn-gold" style="flex: 1;">Ingresar</button>
       </div>
     </div>
   </div>
@@ -51,16 +60,18 @@
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
       <div>
         <h2 style="font-size: 1.4rem; font-weight: 700;">Terminal de Caja 1</h2>
-        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta</span>
+        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta y Gastos</span>
       </div>
-      <div>
+      <div style="display: flex; gap: 10px;">
+        <button onclick="registrarGastoCaja()" class="btn-gray" style="background:#451a03; border-color:#d4af37; color:#d4af37;">Registrar Gasto</button>
+        <button onclick="hacerCuadre()" class="btn-gray">Hacer Cuadre</button>
         <button onclick="cerrarSesion()" class="btn-red">Salir</button>
       </div>
     </div>
 
     <div style="display: flex; gap: 24px;">
       <div style="flex: 2;">
-        <input type="text" id="escaner" class="caja-input" placeholder="Escanear código de balanza..." onkeydown="leerCodigo(event)" style="margin-top: 0;" />
+        <input type="text" id="escaner" class="caja-input" placeholder="Escanear código de balanza..." onkeydown="leerCodigo(event)" autofocus style="margin-top: 0;" />
         <div style="background: #141414; border-radius: 10px; padding: 18px; min-height: 320px; border: 1px solid #222;">
           <table class="tabla">
             <thead>
@@ -68,7 +79,7 @@
                 <th>Código PLU</th>
                 <th>Corte</th>
                 <th>Monto (RD$)</th>
-                <th style="text-align: right;">Opciones</th>
+                <th style="text-align: right;">Ajustes / Opciones</th>
               </tr>
             </thead>
             <tbody id="cuerpo-tabla-caja"></tbody>
@@ -89,7 +100,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
       <div>
         <h2 style="font-size: 1.4rem; font-weight: 700;">Panel de Administración Gerencial</h2>
-        <span style="font-size: 0.8rem; color: #888;">Control de Ventas y Auditoría</span>
+        <span style="font-size: 0.8rem; color: #888;">Control en Vivo, Gastos e Historial</span>
       </div>
       <div style="display: flex; gap: 10px;">
         <button onclick="abrirHistorialVentas()" class="btn-gold">Historial de Ventas</button>
@@ -97,17 +108,22 @@
       </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
       <div style="background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; text-align: center;">
-        <span style="color: #888; font-size: 0.85rem;">VENTAS REGISTRADAS (HOY)</span>
-        <div id="admin-total-dia" style="font-size: 2.8rem; color: #22c55e; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
-        <p id="admin-conteo-articulos" style="color: #888; font-size: 0.9rem;">0 artículos facturados hoy</p>
+        <span style="color: #888; font-size: 0.85rem;">VENTAS EN VIVO (HOY)</span>
+        <div id="admin-total-dia" style="font-size: 2.4rem; color: #22c55e; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
+        <p id="admin-conteo-articulos" style="color: #888; font-size: 0.85rem;">0 artículos facturados hoy</p>
+      </div>
+      <div style="background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; text-align: center;">
+        <span style="color: #888; font-size: 0.85rem;">GASTOS DEL DÍA</span>
+        <div id="admin-total-gastos" style="font-size: 2.4rem; color: #ef4444; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
+        <p id="admin-conteo-gastos" style="color: #888; font-size: 0.85rem;">0 registros de gastos</p>
       </div>
     </div>
 
     <div style="display: flex; gap: 24px;">
       <div style="flex: 2; background: #141414; padding: 22px; border-radius: 10px; border: 1px solid #222;">
-        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">Auditoría de Modificaciones y Anulaciones</h3>
+        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">Auditoría de Modificaciones / Precios Especiales</h3>
         <table class="tabla">
           <thead>
             <tr>
@@ -123,8 +139,8 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIAL -->
-  <div id="modal-historial" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; z-index: 1000;">
+  <!-- MODAL HISTORIAL DE VENTAS JERÁRQUICO -->
+  <div id="modal-historial" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px;">
     <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 24px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 12px; margin-bottom: 16px;">
         <h3 id="historial-titulo" style="font-size: 1.2rem; color: #d4af37;">Historial de Ventas</h3>
@@ -135,7 +151,7 @@
   </div>
 
   <!-- MODAL COBRO -->
-  <div id="modal-cobro" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 1000;">
+  <div id="modal-cobro" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;">
     <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 28px; width: 380px; text-align: center;">
       <h3 style="font-size: 1.2rem;">Comprobante de Pago</h3>
       <div id="cobro-total-modal" style="font-size: 2rem; color: #d4af37; font-weight: 800; margin: 15px 0;">RD$ 0.00</div>
@@ -149,8 +165,36 @@
   </div>
 
   <script>
-    var rolActual = '';
-    var carrito = [];
+    const SUPABASE_URL = 'https://xoaxbyiqpsmofwsyduzo.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_YnX3J_gxfL6txb0F8l-hyQ_2y4k7...';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function activarCargadorFallback() {
+      const guardado = localStorage.getItem('logo_fijo');
+      if (guardado) document.getElementById('logo-sistema').src = guardado;
+      else {
+        document.getElementById('logo-sistema').style.display = 'none';
+        document.getElementById('cargador-manual').style.display = 'block';
+      }
+    }
+
+    function procesarLogoLocal(e) {
+      const archivo = e.target.files[0];
+      if (archivo) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          localStorage.setItem('logo_fijo', evt.target.result);
+          document.getElementById('logo-sistema').src = evt.target.result;
+          document.getElementById('logo-sistema').style.display = 'block';
+          document.getElementById('cargador-manual').style.display = 'none';
+        };
+        reader.readAsDataURL(archivo);
+      }
+    }
+
+    const guardadoPrevio = localStorage.getItem('logo_fijo');
+    if (guardadoPrevio) document.getElementById('logo-sistema').src = guardadoPrevio;
+
     var CORTES = {
       "101": "Bistec (Res)", "102": "Bola (Res)", "103": "Osso Buco (Res)", "104": "Pecho (Res)",
       "105": "Punta de Palomilla (Res)", "106": "Roti (Res)", "107": "Carne Molida (Res)", "108": "Steaks (Res)",
@@ -158,62 +202,43 @@
       "205": "Costilla (Cerdo)", "206": "Carne Genérica (Cerdo)"
     };
 
-    function obtenerVentasLocal() {
-      try { return JSON.parse(localStorage.getItem('bc_ventas') || '[]'); } catch(e) { return []; }
-    }
-    function guardarVentaLocal(v) {
-      var lista = obtenerVentasLocal();
-      lista.push(v);
-      localStorage.setItem('bc_ventas', JSON.stringify(lista));
-    }
-
-    function obtenerAuditoriaLocal() {
-      try { return JSON.parse(localStorage.getItem('bc_auditoria') || '[]'); } catch(e) { return []; }
-    }
-    function guardarAuditoriaLocal(a) {
-      var lista = obtenerAuditoriaLocal();
-      lista.push(a);
-      localStorage.setItem('bc_auditoria', JSON.stringify(lista));
-    }
+    var rolActual = '';
+    var carrito = [];
 
     function seleccionarRol(rol) {
       rolActual = rol;
       document.getElementById('opciones-rol').style.display = 'none';
       document.getElementById('cuadro-clave').style.display = 'block';
       document.getElementById('input-clave').value = '';
-      if (rol === 'cajero') {
-        document.getElementById('titulo-clave').innerText = 'Ingrese PIN de Caja (1810):';
-      } else {
-        document.getElementById('titulo-clave').innerText = 'Ingrese Contraseña de Admin:';
-      }
+      document.getElementById('titulo-clave').innerText = rol === 'cajero' ? 'Ingrese PIN de Caja:' : 'Ingrese Contraseña de Administrador:';
+      document.getElementById('input-clave').placeholder = rol === 'cajero' ? 'PIN' : 'Contraseña';
       document.getElementById('input-clave').focus();
     }
 
-    function volverLogin() {
+    function cancelarLogin() {
       document.getElementById('cuadro-clave').style.display = 'none';
       document.getElementById('opciones-rol').style.display = 'flex';
-      rolActual = '';
     }
 
-    function procesarIngreso() {
-      var pass = document.getElementById('input-clave').value.trim();
-      if (rolActual === 'cajero' && pass === '1810') {
+    function verificarLogin() {
+      var clave = document.getElementById('input-clave').value.trim();
+      if (rolActual === 'cajero' && clave === '1810') {
         document.getElementById('vista-login').style.display = 'none';
         document.getElementById('vista-cajero').style.display = 'block';
         document.getElementById('escaner').focus();
-      } else if (rolActual === 'admin' && pass === 'newyorksteak') {
+      } else if (rolActual === 'admin' && clave === 'newyorksteak') {
         document.getElementById('vista-login').style.display = 'none';
         document.getElementById('vista-admin').style.display = 'block';
         actualizarAdmin();
       } else {
-        alert('Clave incorrecta');
+        alert('Credenciales incorrectas.');
       }
     }
 
     function cerrarSesion() {
       document.getElementById('vista-cajero').style.display = 'none';
       document.getElementById('vista-admin').style.display = 'none';
-      volverLogin();
+      cancelarLogin();
       document.getElementById('vista-login').style.display = 'block';
     }
 
@@ -252,34 +277,68 @@
       document.getElementById('total-cuenta-texto').innerText = 'RD$ ' + total.toFixed(2);
     }
 
-    function aplicarDescuento(idx, porcentaje) {
+    async function aplicarDescuento(idx, porcentaje) {
       var item = carrito[idx];
       item.precio = item.originalPrecio * (1 - porcentaje / 100);
       item.modificado = true;
-      var detalle = 'Descuento ' + porcentaje + '%';
-      guardarAuditoriaLocal({ fecha: new Date().toISOString().split('T')[0], hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle });
+      item.detalleModificacion = 'Descuento ' + porcentaje + '%';
+      registrarModificacionEnNube(item, item.detalleModificacion);
       dibujarCarrito();
     }
 
-    function cambiarPrecioManual(idx) {
+    async function cambiarPrecioManual(idx) {
       var item = carrito[idx];
       var nuevoPrecio = parseFloat(prompt('Precio especial (Suplidor):', item.precio));
       if (isNaN(nuevoPrecio)) return;
       var motivo = prompt('Nombre del suplidor / Motivo:', 'Venta a Suplidor');
       item.precio = nuevoPrecio;
       item.modificado = true;
-      var detalle = 'Suplidor: ' + motivo + ' (RD$ ' + nuevoPrecio.toFixed(2) + ')';
-      guardarAuditoriaLocal({ fecha: new Date().toISOString().split('T')[0], hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle });
+      item.detalleModificacion = 'Suplidor: ' + motivo + ' (RD$ ' + nuevoPrecio.toFixed(2) + ')';
+      registrarModificacionEnNube(item, item.detalleModificacion);
       dibujarCarrito();
     }
 
-    function borrarArticulo(idx) {
+    async function registrarModificacionEnNube(item, detalle) {
+      var fechaHoy = new Date().toISOString().split('T')[0];
+      var horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      try {
+        await supabaseClient.from('cancelaciones').insert([
+          { fecha: fechaHoy, hora: horaActual, corte: item.nombre, precio: item.precio, motivo: '[MODIFICADO] ' + detalle }
+        ]);
+      } catch (err) { console.error(err); }
+    }
+
+    async function borrarArticulo(idx) {
       var motivo = prompt('Motivo de anulación:');
       if (!motivo) return;
       var item = carrito[idx];
-      guardarAuditoriaLocal({ fecha: new Date().toISOString().split('T')[0], hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), corte: item.nombre, precio: item.precio, motivo: 'ANULADO: ' + motivo });
+      var fechaHoy = new Date().toISOString().split('T')[0];
+      var horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      try {
+        await supabaseClient.from('cancelaciones').insert([
+          { fecha: fechaHoy, hora: horaActual, corte: item.nombre, precio: item.precio, motivo: 'ANULADO: ' + motivo }
+        ]);
+      } catch (err) { console.error(err); }
       carrito.splice(idx, 1);
       dibujarCarrito();
+    }
+
+    async function registrarGastoCaja() {
+      var concepto = prompt('Concepto del gasto (ej. Compra de hielo, Suministros):');
+      if (!concepto) return;
+      var monto = parseFloat(prompt('Monto del gasto en RD$:'));
+      if (isNaN(monto) || monto <= 0) { alert('Monto inválido'); return; }
+
+      var fechaHoy = new Date().toISOString().split('T')[0];
+      var horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      try {
+        await supabaseClient.from('gastos').insert([
+          { fecha: fechaHoy, hora: horaActual, concepto: concepto, monto: monto }
+        ]);
+        alert('Gasto registrado con éxito.');
+      } catch (err) {
+        alert('Error al registrar el gasto.');
+      }
     }
 
     function abrirModalCobro() {
@@ -301,42 +360,68 @@
       document.getElementById('devuelta-texto').innerText = 'Devuelta: RD$ ' + (cambio > 0 ? cambio.toFixed(2) : '0.00');
     }
 
-    function finalizarVenta() {
+    async function finalizarVenta() {
       var total = carrito.reduce((sum, item) => sum + item.precio, 0);
       var pagado = parseFloat(document.getElementById('monto-cliente').value) || 0;
       if (pagado < total) { alert('Monto insuficiente'); return; }
 
       var fechaHoy = new Date().toISOString().split('T')[0];
-      for (var j = 0; j < carrito.length; j++) {
-        guardarVentaLocal({ fecha: fechaHoy, plu: carrito[j].plu, nombre: carrito[j].nombre, precio: carrito[j].precio });
+      try {
+        for (var j = 0; j < carrito.length; j++) {
+          await supabaseClient.from('ventas').insert([
+            { fecha: fechaHoy, plu: carrito[j].plu, nombre: carrito[j].nombre, precio: carrito[j].precio }
+          ]);
+        }
+      } catch (err) {
+        alert('Error al sincronizar venta con la nube.');
+        return;
       }
       carrito = [];
       dibujarCarrito();
       cerrarModalCobro();
-      alert('Venta guardada con éxito.');
+      alert('Venta guardada en la nube con éxito.');
       document.getElementById('escaner').focus();
     }
 
-    function actualizarAdmin() {
+    async function actualizarAdmin() {
       var fechaHoy = new Date().toISOString().split('T')[0];
-      var ventas = obtenerVentasLocal().filter(v => v.fecha === fechaHoy);
-      let totalVentas = ventas.reduce((acc, v) => acc + v.precio, 0);
-      document.getElementById('admin-total-dia').innerText = 'RD$ ' + totalVentas.toFixed(2);
-      document.getElementById('admin-conteo-articulos').innerText = ventas.length + ' artículos facturados hoy';
+      try {
+        // Ventas en vivo de hoy
+        const { data: ventas } = await supabaseClient.from('ventas').select('*').eq('fecha', fechaHoy);
+        let totalVentas = (ventas || []).reduce((acc, v) => acc + v.precio, 0);
+        document.getElementById('admin-total-dia').innerText = 'RD$ ' + totalVentas.toFixed(2);
+        document.getElementById('admin-conteo-articulos').innerText = (ventas || []).length + ' artículos facturados hoy';
 
-      var cancelaciones = obtenerAuditoriaLocal();
-      var tbody = document.getElementById('cuerpo-tabla-auditoria');
-      tbody.innerHTML = '';
-      cancelaciones.forEach(c => {
-        var esModif = c.motivo && c.motivo.includes('[MODIFICADO]');
-        tbody.innerHTML += <tr><td>${c.hora||''}</td><td>${c.corte}</td><td>RD$ ${c.precio.toFixed(2)}</td><td style="${esModif?'color:#d4af37;':'color:#ef4444;'}">${c.motivo}</td></tr>;
-      });
+        // Gastos de hoy
+        const { data: gastos } = await supabaseClient.from('gastos').select('*').eq('fecha', fechaHoy);
+        let totalGastos = (gastos || []).reduce((acc, g) => acc + g.monto, 0);
+        document.getElementById('admin-total-gastos').innerText = 'RD$ ' + totalGastos.toFixed(2);
+        document.getElementById('admin-conteo-gastos').innerText = (gastos || []).length + ' registros de gastos';
+
+        // Auditoría
+        const { data: cancelaciones } = await supabaseClient.from('cancelaciones').select('*');
+        var tbody = document.getElementById('cuerpo-tabla-auditoria');
+        tbody.innerHTML = '';
+        (cancelaciones || []).forEach(c => {
+          var esModif = c.motivo && c.motivo.includes('[MODIFICADO]');
+          tbody.innerHTML += <tr><td>${c.hora||''}</td><td>${c.corte}</td><td>RD$ ${c.precio.toFixed(2)}</td><td style="${esModif?'color:#d4af37;':'color:#ef4444;'}">${c.motivo}</td></tr>;
+        });
+      } catch (err) { console.error(err); }
     }
 
-    function abrirHistorialVentas() {
+    // HISTORIAL JERÁRQUICO (AÑO -> MES -> DÍA)
+    async function abrirHistorialVentas() {
       document.getElementById('modal-historial').style.display = 'flex';
-      window.VENTAS_GLOBALES = obtenerVentasLocal();
-      mostrarAniosHistorial();
+      document.getElementById('contenido-historial').innerHTML = '<p style="text-align:center; color:#888;">Cargando historial...</p>';
+      
+      try {
+        const { data: ventas, error } = await supabaseClient.from('ventas').select('*');
+        if (error) throw error;
+        window.VENTAS_GLOBALES = ventas || [];
+        mostrarAniosHistorial();
+      } catch (err) {
+        document.getElementById('contenido-historial').innerHTML = '<p style="color:#ef4444;">Error al cargar ventas.</p>';
+      }
     }
 
     function cerrarHistorialVentas() { document.getElementById('modal-historial').style.display = 'none'; }
@@ -350,11 +435,12 @@
         if (!anios[anio]) anios[anio] = 0;
         anios[anio] += v.precio;
       });
+
       var html = '<div style="display:flex; flex-direction:column; gap:10px;">';
       var llavesAnios = Object.keys(anios).sort().reverse();
       if (llavesAnios.length === 0) { html += '<p style="color:#888;">No hay registros de ventas todavía.</p>'; }
       llavesAnios.forEach(anio => {
-        html += `<button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333; cursor:pointer;">
+        html += `<button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333;">
           <span style="font-size:1.1rem; color:#fff; font-weight:bold;">Año ${anio}</span>
           <span style="color:#d4af37; font-weight:bold;">RD$ ${anios[anio].toFixed(2)}</span>
         </button>`;
@@ -367,17 +453,19 @@
       document.getElementById('historial-titulo').innerText = 'Ventas ' + anio + ' - Meses';
       var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       var meses = {};
+      
       window.VENTAS_GLOBALES.forEach(v => {
         if (!v.fecha || !v.fecha.startsWith(anio)) return;
         var mesNum = v.fecha.split('-')[1];
         if (!meses[mesNum]) meses[mesNum] = 0;
         meses[mesNum] += v.precio;
       });
-      var html = '<button onclick="mostrarAniosHistorial()" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem; cursor:pointer;">← Volver a Años</button>';
+
+      var html = '<button onclick="mostrarAniosHistorial()" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem;">← Volver a Años</button>';
       html += '<div style="display:flex; flex-direction:column; gap:10px;">';
       Object.keys(meses).sort().reverse().forEach(mesNum => {
         var nombreMes = mesesNombres[parseInt(mesNum, 10)];
-        html += `<button onclick="mostrarDiasHistorial('${anio}', '${mesNum}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333; cursor:pointer;">
+        html += `<button onclick="mostrarDiasHistorial('${anio}', '${mesNum}')" class="btn-gray" style="display:flex; justify-content:space-between; padding:16px; background:#1a1a1a; border-color:#333;">
           <span style="font-size:1.1rem; color:#fff; font-weight:bold;">${nombreMes} (${anio})</span>
           <span style="color:#d4af37; font-weight:bold;">RD$ ${meses[mesNum].toFixed(2)}</span>
         </button>`;
@@ -390,13 +478,15 @@
       var mesesNombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       document.getElementById('historial-titulo').innerText = 'Ventas de ' + mesesNombres[parseInt(mesNum, 10)] + ' ' + anio + ' - Días';
       var dias = {};
+
       window.VENTAS_GLOBALES.forEach(v => {
         if (!v.fecha || !v.fecha.startsWith(anio + '-' + mesNum)) return;
         var dia = v.fecha;
         if (!dias[dia]) dias[dia] = 0;
         dias[dia] += v.precio;
       });
-      var html = <button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem; cursor:pointer;">← Volver a Meses</button>;
+
+      var html = <button onclick="mostrarMesesHistorial('${anio}')" class="btn-gray" style="margin-bottom:14px; padding:6px 12px; font-size:0.8rem;">← Volver a Meses</button>;
       html += '<div style="display:flex; flex-direction:column; gap:10px;">';
       Object.keys(dias).sort().reverse().forEach(dia => {
         html += `<div style="display:flex; justify-content:space-between; padding:14px; background:#1a1a1a; border:1px solid #333; border-radius:8px;">
