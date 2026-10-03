@@ -3,389 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <title>Carnicería El Buen Corte - POS</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0b0b0b; color: #f3f4f6; min-height: 100vh; padding: 24px; }
+    button { cursor: pointer; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; }
+    .btn-gold { background: #d4af37; color: #000; padding: 12px 20px; }
+    .btn-red { background: #8b181b; color: #fff; padding: 10px 18px; }
+    .btn-green { background: #22c55e; color: #000; padding: 14px 20px; font-size: 1.15rem; width: 100%; margin-top: 15px; font-weight: bold; }
+    .btn-gray { background: #262626; color: #fff; padding: 12px 20px; border: 1px solid #383838; }
+    .btn-action { background: #333; color: #d4af37; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #444; margin-right: 4px; }
 
-    body {
-      background-color: #0b0b0b;
-      color: #f3f4f6;
-      min-height: 100vh;
-      padding: 24px;
-    }
-
-    button {
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .btn-gold {
-      background: #d4af37;
-      color: #000;
-      padding: 12px 20px;
-    }
-
-    .btn-red {
-      background: #8b181b;
-      color: #fff;
-      padding: 10px 18px;
-    }
-
-    .btn-green {
-      background: #22c55e;
-      color: #000;
-      padding: 14px 20px;
-      font-size: 1.15rem;
-      width: 100%;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    .btn-gray {
-      background: #262626;
-      color: #fff;
-      padding: 12px 20px;
-      border: 1px solid #383838;
-    }
-
-    .btn-action {
-      background: #333;
-      color: #d4af37;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      border: 1px solid #444;
-      margin-right: 4px;
-    }
-
-    .caja-input {
-      width: 100%;
-      padding: 14px;
-      background: #141414;
-      border: 1px solid #d4af37;
-      color: #fff;
-      font-size: 1.05rem;
-      text-align: center;
-      border-radius: 8px;
-      margin: 12px 0;
-      outline: none;
-    }
-
-    .tabla {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-
-    .tabla th {
-      padding: 12px 10px;
-      border-bottom: 1px solid #2a2a2a;
-      text-align: left;
-      color: #9ca3af;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-    }
-
-    .tabla td {
-      padding: 14px 10px;
-      border-bottom: 1px solid #1c1c1c;
-      font-size: 0.95rem;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      color: #d4af37;
-      background: rgba(212, 175, 55, 0.1);
-      border: 1px solid rgba(212, 175, 55, 0.3);
-    }
-
-    .logo-real {
-      width: 100%;
-      max-width: 320px;
-      height: auto;
-      display: block;
-      margin: 0 auto 24px auto;
-      border-radius: 8px;
-    }
+    .caja-input { width: 100%; padding: 14px; background: #141414; border: 1px solid #d4af37; color: #fff; font-size: 1.05rem; text-align: center; border-radius: 8px; margin: 12px 0; outline: none; }
+    .tabla { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .tabla th { padding: 12px 10px; border-bottom: 1px solid #2a2a2a; text-align: left; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; }
+    .tabla td { padding: 14px 10px; border-bottom: 1px solid #1c1c1c; font-size: 0.95rem; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; color: #d4af37; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); }
+    .logo-real { width: 100%; max-width: 320px; height: auto; display: block; margin: 0 auto 24px auto; border-radius: 8px; }
   </style>
 </head>
-
 <body>
 
   <!-- LOGIN -->
-  <div id="vista-login"
-       style="max-width: 440px; margin: 30px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
+  <div id="vista-login" style="max-width: 440px; margin: 30px auto; text-align: center; background: #141414; padding: 32px 24px; border-radius: 12px; border: 1px solid #262626;">
+    
+    <img id="logo-sistema" src="logo.png" alt="Carnicería El Buen Corte" class="logo-real" onerror="activarCargadorFallback()" />
 
-    <img id="logo-sistema"
-         src="logo.png"
-         alt="Carnicería El Buen Corte"
-         class="logo-real"
-         onerror="activarCargadorFallback()" />
-
-    <div id="cargador-manual"
-         style="display: none; border: 2px dashed #d4af37; padding: 16px; border-radius: 8px; margin-bottom: 20px; cursor: pointer;"
-         onclick="document.getElementById('file-logo').click()">
-
-      <p style="color: #d4af37; font-size: 0.9rem; font-weight: bold;">
-        Haga clic aquí para seleccionar su foto de logo
-      </p>
-
-      <input type="file"
-             id="file-logo"
-             accept="image/*"
-             style="display: none;"
-             onchange="procesarLogoLocal(event)">
+    <div id="cargador-manual" style="display: none; border: 2px dashed #d4af37; padding: 16px; border-radius: 8px; margin-bottom: 20px; cursor: pointer;" onclick="document.getElementById('file-logo').click()">
+      <p style="color: #d4af37; font-size: 0.9rem; font-weight: bold;">Haga clic aquí para seleccionar su foto de logo</p>
+      <input type="file" id="file-logo" accept="image/*" style="display: none;" onchange="procesarLogoLocal(event)">
     </div>
 
     <div id="opciones-rol" style="display: flex; gap: 14px;">
-
-      <button onclick="seleccionarRol('cajero')"
-              style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-
-        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">
-          CAJERO
-        </span>
-
-        <span class="badge">
-          Punto de Venta
-        </span>
+      <button onclick="seleccionarRol('cajero')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">CAJERO</span>
+        <span class="badge">Punto de Venta</span>
       </button>
-
-      <button onclick="seleccionarRol('admin')"
-              style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-
-        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">
-          ADMINISTRADOR
-        </span>
-
-        <span class="badge">
-          Supervisión
-        </span>
+      <button onclick="seleccionarRol('admin')" style="flex: 1; padding: 22px 12px; background: #1a1a1a; color: #f3f4f6; border: 1px solid #333; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <span style="font-size: 1.1rem; font-weight: bold; color: #fff;">ADMINISTRADOR</span>
+        <span class="badge">Supervisión</span>
       </button>
-
     </div>
 
     <div id="cuadro-clave" style="display: none; margin-top: 24px;">
-
-      <h3 id="titulo-clave"
-          style="margin-bottom: 8px; font-size: 1rem; color: #ddd; font-weight: 500;">
-      </h3>
-
-      <input type="password"
-             id="input-clave"
-             class="caja-input"
-             placeholder=""
-             onkeydown="manejarEnterLogin(event)" />
-
+      <h3 id="titulo-clave" style="margin-bottom: 8px; font-size: 1rem; color: #ddd; font-weight: 500;"></h3>
+      <input type="password" id="input-clave" class="caja-input" placeholder="" />
       <div style="display: flex; gap: 10px; margin-top: 8px;">
-
-        <button onclick="cancelarLogin()"
-                class="btn-gray"
-                style="flex: 1;">
-          Volver
-        </button>
-
-        <button onclick="verificarLogin()"
-                class="btn-gold"
-                style="flex: 1;">
-          Ingresar
-        </button>
-
+        <button onclick="cancelarLogin()" class="btn-gray" style="flex: 1;">Volver</button>
+        <button onclick="verificarLogin()" class="btn-gold" style="flex: 1;">Ingresar</button>
       </div>
-
-      <div id="link-olvido"
-           style="display: none; margin-top: 16px;">
-
-        <a href="javascript:void(0)"
-           onclick="alert('Código enviado a erick.ev405@gmail.com')"
-           style="color: #d4af37; font-size: 0.85rem; text-decoration: none;">
-          ¿Olvidaste tu contraseña?
-        </a>
-
+      <div id="link-olvido" style="display: none; margin-top: 16px;">
+        <a href="javascript:void(0)" onclick="alert('Código enviado a erick.ev405@gmail.com')" style="color: #d4af37; font-size: 0.85rem; text-decoration: none;">¿Olvidaste tu contraseña?</a>
       </div>
     </div>
   </div>
 
-
   <!-- CAJERO -->
-  <div id="vista-cajero"
-       style="display: none; max-width: 1100px; margin: 0 auto;">
-
+  <div id="vista-cajero" style="display: none; max-width: 1100px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
-
       <div>
-        <h2 style="font-size: 1.4rem; font-weight: 700;">
-          Terminal de Caja 1
-        </h2>
-
-        <span style="font-size: 0.8rem; color: #888;">
-          Operaciones de Venta y Suplidores
-        </span>
+        <h2 style="font-size: 1.4rem; font-weight: 700;">Terminal de Caja 1</h2>
+        <span style="font-size: 0.8rem; color: #888;">Operaciones de Venta y Suplidores</span>
       </div>
-
       <div style="display: flex; gap: 10px;">
-
-        <button onclick="hacerCuadre()" class="btn-gray">
-          Hacer Cuadre
-        </button>
-
-        <button onclick="cerrarSesion()" class="btn-red">
-          Salir
-        </button>
-
+        <button onclick="hacerCuadre()" class="btn-gray">Hacer Cuadre</button>
+        <button onclick="cerrarSesion()" class="btn-red">Salir</button>
       </div>
     </div>
 
-
     <div style="display: flex; gap: 24px;">
-
       <div style="flex: 2;">
-
-        <input type="text"
-               id="escaner"
-               class="caja-input"
-               placeholder="Escanear código de balanza..."
-               onkeydown="leerCodigo(event)"
-               autocomplete="off"
-               inputmode="numeric"
-               autofocus
-               style="margin-top: 0;" />
-
+        <input type="text" id="escaner" class="caja-input" placeholder="Escanear código de balanza..." onkeydown="leerCodigo(event)" autofocus style="margin-top: 0;" />
         <div style="background: #141414; border-radius: 10px; padding: 18px; min-height: 320px; border: 1px solid #222;">
-
           <table class="tabla">
-
             <thead>
               <tr>
                 <th>Código PLU</th>
                 <th>Corte</th>
                 <th>Monto (RD$)</th>
-                <th style="text-align: right;">
-                  Opciones / Ajustes
-                </th>
+                <th style="text-align: right;">Opciones / Ajustes</th>
               </tr>
             </thead>
-
             <tbody id="cuerpo-tabla-caja"></tbody>
-
           </table>
-
         </div>
       </div>
-
 
       <div style="flex: 1.1; background: #141414; padding: 24px; border-radius: 10px; border: 1px solid #222; height: fit-content;">
-
-        <span style="color: #888; font-size: 0.85rem;">
-          TOTAL DE CUENTA
-        </span>
-
-        <div id="total-cuenta-texto"
-             style="font-size: 2.8rem; color: #d4af37; font-weight: 800; margin: 10px 0;">
-          RD$ 0.00
-        </div>
-
+        <span style="color: #888; font-size: 0.85rem;">TOTAL DE CUENTA</span>
+        <div id="total-cuenta-texto" style="font-size: 2.8rem; color: #d4af37; font-weight: 800; margin: 10px 0;">RD$ 0.00</div>
         <div style="margin: 16px 0; padding-top: 14px; border-top: 1px solid #222;">
-
-          <p style="color: #888; font-size: 0.85rem;">
-            Condición:
-            <strong style="color: #fff;">
-              Efectivo / Suplidor
-            </strong>
-          </p>
-
+          <p style="color: #888; font-size: 0.85rem;">Condición: <strong style="color: #fff;">Efectivo / Suplidor</strong></p>
         </div>
-
-        <button onclick="abrirModalCobro()" class="btn-green">
-          Cobrar Venta
-        </button>
-
+        <button onclick="abrirModalCobro()" class="btn-green">Cobrar Venta</button>
       </div>
-
     </div>
   </div>
 
-
   <!-- ADMIN -->
-  <div id="vista-admin"
-       style="display: none; max-width: 1100px; margin: 0 auto;">
-
+  <div id="vista-admin" style="display: none; max-width: 1100px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 16px; margin-bottom: 24px;">
-
       <div>
-
-        <h2 style="font-size: 1.4rem; font-weight: 700;">
-          Panel de Administración
-        </h2>
-
-        <span style="font-size: 0.8rem; color: #888;">
-          Auditoría de Modificaciones y Descuentos
-        </span>
-
+        <h2 style="font-size: 1.4rem; font-weight: 700;">Panel de Administración</h2>
+        <span style="font-size: 0.8rem; color: #888;">Auditoría de Modificaciones y Descuentos</span>
       </div>
-
       <div style="display: flex; gap: 10px;">
-
-        <button onclick="mostrarFrecuentes()" class="btn-gold">
-          Ventas Frecuentes
-        </button>
-
-        <button onclick="cerrarSesion()" class="btn-red">
-          Salir
-        </button>
-
+        <button onclick="mostrarFrecuentes()" class="btn-gold">Ventas Frecuentes</button>
+        <button onclick="cerrarSesion()" class="btn-red">Salir</button>
       </div>
-
     </div>
 
-
     <div style="display: flex; gap: 24px;">
-
       <div style="flex: 1; background: #141414; padding: 28px 20px; border-radius: 10px; text-align: center; border: 1px solid #222; height: fit-content;">
-
-        <span style="color: #888; font-size: 0.85rem;">
-          VENTAS DEL DÍA
-        </span>
-
-        <div id="admin-total-dia"
-             style="font-size: 2.6rem; color: #22c55e; font-weight: 800; margin: 15px 0;">
-          RD$ 0.00
-        </div>
-
-        <p id="admin-conteo-articulos"
-           style="color: #888; font-size: 0.9rem;">
-          0 artículos facturados
-        </p>
-
+        <span style="color: #888; font-size: 0.85rem;">VENTAS DEL DÍA</span>
+        <div id="admin-total-dia" style="font-size: 2.6rem; color: #22c55e; font-weight: 800; margin: 15px 0;">RD$ 0.00</div>
+        <p id="admin-conteo-articulos" style="color: #888; font-size: 0.9rem;">0 artículos facturados hoy</p>
       </div>
-
-
       <div style="flex: 2; background: #141414; padding: 22px; border-radius: 10px; border: 1px solid #222;">
-
-        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">
-          Auditoría: Modificaciones y Cancelaciones
-        </h3>
-
-        <p style="color: #666; font-size: 0.8rem; margin-bottom: 12px;">
-          Registro de descuentos, precios de suplidor y anulaciones
-        </p>
-
+        <h3 style="color: #d4af37; font-size: 1.05rem; margin-bottom: 6px;">Auditoría: Modificaciones y Cancelaciones</h3>
+        <p style="color: #666; font-size: 0.8rem; margin-bottom: 12px;">Registro de descuentos, precios de suplidor y anulaciones</p>
         <table class="tabla">
-
           <thead>
             <tr>
               <th>Hora</th>
@@ -394,158 +131,83 @@
               <th>Detalle / Motivo</th>
             </tr>
           </thead>
-
           <tbody id="cuerpo-tabla-auditoria"></tbody>
-
         </table>
-
       </div>
-
     </div>
   </div>
-
 
   <!-- MODAL COBRO -->
-  <div id="modal-cobro"
-       style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;">
-
+  <div id="modal-cobro" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;">
     <div style="background: #141414; border: 1px solid #333; border-radius: 12px; padding: 28px; width: 380px; text-align: center;">
-
-      <h3 style="font-size: 1.2rem;">
-        Comprobante de Pago
-      </h3>
-
-      <div id="cobro-total-modal"
-           style="font-size: 2rem; color: #d4af37; font-weight: 800; margin: 15px 0;">
-        RD$ 0.00
-      </div>
-
-      <input type="number"
-             id="monto-cliente"
-             class="caja-input"
-             placeholder="Monto recibido RD$"
-             oninput="calcularDevuelta()" />
-
-      <div id="devuelta-texto"
-           style="font-size: 1.25rem; color: #22c55e; margin-bottom: 18px; font-weight: 600;">
-        Devuelta: RD$ 0.00
-      </div>
-
+      <h3 style="font-size: 1.2rem;">Comprobante de Pago</h3>
+      <div id="cobro-total-modal" style="font-size: 2rem; color: #d4af37; font-weight: 800; margin: 15px 0;">RD$ 0.00</div>
+      <input type="number" id="monto-cliente" class="caja-input" placeholder="Monto recibido RD$" oninput="calcularDevuelta()" />
+      <div id="devuelta-texto" style="font-size: 1.25rem; color: #22c55e; margin-bottom: 18px; font-weight: 600;">Devuelta: RD$ 0.00</div>
       <div style="display: flex; gap: 10px;">
-
-        <button onclick="cerrarModalCobro()"
-                class="btn-gray"
-                style="flex: 1;">
-          Cancelar
-        </button>
-
-        <button onclick="finalizarVenta()"
-                class="btn-green"
-                style="flex: 1; margin: 0; font-size: 1rem;">
-          Confirmar
-        </button>
-
+        <button onclick="cerrarModalCobro()" class="btn-gray" style="flex: 1;">Cancelar</button>
+        <button onclick="finalizarVenta()" class="btn-green" style="flex: 1; margin: 0; font-size: 1rem;">Confirmar</button>
       </div>
-
     </div>
   </div>
 
-
   <script>
+    // =========================================================
+    // CONEXIÓN CON SUPABASE
+    // =========================================================
 
-    /* =========================================================
-       SUPABASE
-       ========================================================= */
-
-    const SUPABASE_URL =
-      'https://xoaxbyiqpsmofwsyduzo.supabase.co';
-
-    const SUPABASE_ANON_KEY =
-      'sb_publishable_YnX3J_gxfL6txb0F8l-hyQ_2y4k7...';
-
-    const supabaseClient =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
+    const SUPABASE_URL = 'https://xoaxbyiqpsmofwsyduzo.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_YnX3J_gxfL6txb0F8l-hyQ_2y4k7...';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
-    /* =========================================================
-       LOGO
-       ========================================================= */
+    // =========================================================
+    // LOGO
+    // =========================================================
 
     function activarCargadorFallback() {
-
-      const guardado =
-        localStorage.getItem('logo_fijo');
+      const guardado = localStorage.getItem('logo_fijo');
 
       if (guardado) {
-
-        document.getElementById('logo-sistema').src =
-          guardado;
-
+        document.getElementById('logo-sistema').src = guardado;
       } else {
-
-        document.getElementById('logo-sistema').style.display =
-          'none';
-
-        document.getElementById('cargador-manual').style.display =
-          'block';
+        document.getElementById('logo-sistema').style.display = 'none';
+        document.getElementById('cargador-manual').style.display = 'block';
       }
     }
 
-
     function procesarLogoLocal(e) {
+      const archivo = e.target.files[0];
 
-      const archivo =
-        e.target.files[0];
+      if (archivo) {
+        const reader = new FileReader();
 
-      if (!archivo) return;
+        reader.onload = function(evt) {
+          const resultado = evt.target.result;
 
-      const reader =
-        new FileReader();
+          localStorage.setItem('logo_fijo', resultado);
 
-      reader.onload =
-        function(evt) {
-
-          const resultado =
-            evt.target.result;
-
-          localStorage.setItem(
-            'logo_fijo',
-            resultado
-          );
-
-          document.getElementById('logo-sistema').src =
-            resultado;
-
-          document.getElementById('logo-sistema').style.display =
-            'block';
-
-          document.getElementById('cargador-manual').style.display =
-            'none';
+          document.getElementById('logo-sistema').src = resultado;
+          document.getElementById('logo-sistema').style.display = 'block';
+          document.getElementById('cargador-manual').style.display = 'none';
         };
 
-      reader.readAsDataURL(archivo);
+        reader.readAsDataURL(archivo);
+      }
     }
 
-
-    const guardadoPrevio =
-      localStorage.getItem('logo_fijo');
+    const guardadoPrevio = localStorage.getItem('logo_fijo');
 
     if (guardadoPrevio) {
-
-      document.getElementById('logo-sistema').src =
-        guardadoPrevio;
+      document.getElementById('logo-sistema').src = guardadoPrevio;
     }
 
 
-    /* =========================================================
-       CORTES / PLU
-       ========================================================= */
+    // =========================================================
+    // CORTES / PLU
+    // =========================================================
 
     var CORTES = {
-
       "101": "Bistec (Res)",
       "102": "Bola (Res)",
       "103": "Osso Buco (Res)",
@@ -554,7 +216,6 @@
       "106": "Roti (Res)",
       "107": "Carne Molida (Res)",
       "108": "Steaks (Res)",
-
       "201": "Chuleta (Cerdo)",
       "202": "Lomo (Cerdo)",
       "203": "Panceta (Cerdo)",
@@ -568,44 +229,25 @@
     var carrito = [];
 
 
-    /* =========================================================
-       LOGIN
-       ========================================================= */
+    // =========================================================
+    // LOGIN
+    // =========================================================
 
     function seleccionarRol(rol) {
-
       rolActual = rol;
 
-      document.getElementById('opciones-rol').style.display =
-        'none';
-
-      document.getElementById('cuadro-clave').style.display =
-        'block';
-
-      document.getElementById('input-clave').value =
-        '';
+      document.getElementById('opciones-rol').style.display = 'none';
+      document.getElementById('cuadro-clave').style.display = 'block';
+      document.getElementById('input-clave').value = '';
 
       if (rol === 'cajero') {
-
-        document.getElementById('titulo-clave').innerText =
-          'Ingrese PIN de Caja:';
-
-        document.getElementById('input-clave').placeholder =
-          'PIN';
-
-        document.getElementById('link-olvido').style.display =
-          'none';
-
+        document.getElementById('titulo-clave').innerText = 'Ingrese PIN de Caja:';
+        document.getElementById('input-clave').placeholder = 'PIN';
+        document.getElementById('link-olvido').style.display = 'none';
       } else {
-
-        document.getElementById('titulo-clave').innerText =
-          'Ingrese Contraseña de Administrador:';
-
-        document.getElementById('input-clave').placeholder =
-          'Contraseña';
-
-        document.getElementById('link-olvido').style.display =
-          'block';
+        document.getElementById('titulo-clave').innerText = 'Ingrese Contraseña de Administrador:';
+        document.getElementById('input-clave').placeholder = 'Contraseña';
+        document.getElementById('link-olvido').style.display = 'block';
       }
 
       document.getElementById('input-clave').focus();
@@ -613,106 +255,64 @@
 
 
     function cancelarLogin() {
-
-      document.getElementById('cuadro-clave').style.display =
-        'none';
-
-      document.getElementById('opciones-rol').style.display =
-        'flex';
-
-      document.getElementById('input-clave').value =
-        '';
-
-      rolActual = '';
-    }
-
-
-    function manejarEnterLogin(e) {
-
-      if (e.key === 'Enter') {
-
-        e.preventDefault();
-
-        verificarLogin();
-      }
+      document.getElementById('cuadro-clave').style.display = 'none';
+      document.getElementById('opciones-rol').style.display = 'flex';
     }
 
 
     function verificarLogin() {
+      var clave = document.getElementById('input-clave').value.trim();
 
-      var clave =
-        document.getElementById('input-clave').value.trim();
+      if (rolActual === 'cajero' && clave === '1810') {
 
-      if (
-        rolActual === 'cajero' &&
-        clave === '1810'
-      ) {
+        document.getElementById('vista-login').style.display = 'none';
+        document.getElementById('vista-cajero').style.display = 'block';
 
-        document.getElementById('vista-login').style.display =
-          'none';
+        document.getElementById('escaner').focus();
 
-        document.getElementById('vista-cajero').style.display =
-          'block';
+      } else if (rolActual === 'admin' && clave === 'newyorksteak') {
 
-        setTimeout(function() {
-
-          document.getElementById('escaner').focus();
-
-        }, 100);
-
-      } else if (
-        rolActual === 'admin' &&
-        clave === 'newyorksteak'
-      ) {
-
-        document.getElementById('vista-login').style.display =
-          'none';
-
-        document.getElementById('vista-admin').style.display =
-          'block';
+        document.getElementById('vista-login').style.display = 'none';
+        document.getElementById('vista-admin').style.display = 'block';
 
         actualizarAdmin();
 
       } else {
 
         alert('Credenciales incorrectas.');
+
       }
     }
 
 
     function cerrarSesion() {
-
-      document.getElementById('vista-cajero').style.display =
-        'none';
-
-      document.getElementById('vista-admin').style.display =
-        'none';
-
-      document.getElementById('vista-login').style.display =
-        'block';
+      document.getElementById('vista-cajero').style.display = 'none';
+      document.getElementById('vista-admin').style.display = 'none';
 
       cancelarLogin();
+
+      document.getElementById('vista-login').style.display = 'block';
     }
 
 
-    /* =========================================================
-       ESCÁNER DE BALANZA
-       
-       FORMATO ACTUAL CONFIRMADO:
-
-       2000102253467
-
-       20       = prefijo
-       00102    = PLU 102
-       25346    = RD$253.46
-       7        = dígito final de la etiqueta
-
-       IMPORTANTE:
-       NO usamos includes().
-       NO buscamos el PLU dentro de todo el código.
-       NO usamos los últimos 6 dígitos.
-       NO usamos precios predeterminados.
-       ========================================================= */
+    // =========================================================
+    // ESCÁNER DE BALANZA
+    // =========================================================
+    //
+    // FORMATO ACTUAL:
+    //
+    // 20 + 5 dígitos PLU + 5 dígitos PRECIO + 1 dígito final
+    //
+    // Ejemplo:
+    //
+    // 2000102253467
+    //
+    // 20       = prefijo
+    // 00102    = PLU 102
+    // 25346    = RD$253.46
+    // 7        = dígito final
+    //
+    // =========================================================
 
     function leerCodigo(e) {
 
@@ -720,362 +320,192 @@
         return;
       }
 
-      e.preventDefault();
+      var cod = e.target.value.trim();
 
-      var input =
-        e.target;
+      e.target.value = '';
 
-      var cod =
-        input.value.trim();
-
-      input.value = '';
-
-      if (!cod) {
-        return;
-      }
-
-
-      /* Elimina espacios que pudiera mandar el escáner */
-      cod =
-        cod.replace(/\s/g, '');
-
-
-      /*
-       * CÓDIGO DE BALANZA DE 13 DÍGITOS
-       */
+      // El código actual de la balanza debe tener 13 dígitos.
       if (/^\d{13}$/.test(cod)) {
 
-        /*
-         * Posiciones:
-         *
-         * 0-1   = prefijo
-         * 2-6   = PLU de 5 dígitos
-         * 7-11  = precio en centavos
-         * 12    = dígito final
-         */
+        // Posiciones 2 a 6 = PLU
+        var plu = cod.substring(2, 7);
 
-        var pluBruto =
-          cod.substring(2, 7);
+        // Quitamos ceros iniciales.
+        plu = plu.replace(/^0+/, '') || '0';
 
-        var plu =
-          pluBruto.replace(/^0+/, '');
+        // Posiciones 7 a 11 = precio en centavos.
+        var totalCodificado = cod.substring(7, 12);
 
-        if (!plu) {
-          plu = '0';
-        }
+        var precio = Number(totalCodificado) / 100;
 
-
-        var totalCodificado =
-          cod.substring(7, 12);
-
-        var precio =
-          Number(totalCodificado) / 100;
-
-
-        /*
-         * Verificación básica de los datos.
-         * No se valida el último dígito con EAN-13,
-         * porque la balanza utiliza su propio formato.
-         */
-
-        if (
-          !/^\d{5}$/.test(pluBruto) ||
-          !/^\d{5}$/.test(totalCodificado) ||
-          !isFinite(precio) ||
-          precio <= 0
-        ) {
-
-          alert(
-            'Código de balanza no válido:\n' +
-            cod
-          );
-
-          input.focus();
-
-          return;
-        }
-
-
-        /*
-         * Verificamos que el PLU exista.
-         */
-
+        // Verificamos que el PLU exista.
         if (!CORTES[plu]) {
-
-          alert(
-            'El código fue leído correctamente, pero el PLU ' +
-            plu +
-            ' no está configurado en el sistema.\n\n' +
-            'Código: ' +
-            cod
-          );
-
-          input.focus();
-
+          alert('PLU no registrado: ' + plu);
           return;
         }
 
+        // Verificamos que el precio sea válido.
+        if (!Number.isFinite(precio) || precio <= 0) {
+          alert('No se pudo leer correctamente el precio del código.');
+          return;
+        }
 
-        /*
-         * Agregamos el artículo con el precio REAL
-         * que viene en la etiqueta.
-         */
+        var nombre = CORTES[plu];
 
         carrito.push({
-
           plu: plu,
-
-          nombre: CORTES[plu],
-
+          nombre: nombre,
           precio: precio,
-
           originalPrecio: precio,
-
           modificado: false
-
         });
-
 
         dibujarCarrito();
 
-        input.focus();
-
         return;
       }
 
+      // Si se escribe un PLU manualmente, permitimos mostrarlo,
+      // pero no inventamos ningún precio.
+      if (cod.length > 0) {
 
-      /*
-       * Si no es un código de 13 dígitos,
-       * NO inventamos un precio.
-       *
-       * Si el usuario escribe directamente un PLU
-       * configurado, lo informamos y pedimos etiqueta,
-       * porque el PLU por sí solo no contiene el precio.
-       */
+        var pluManual = cod.replace(/^0+/, '') || '0';
 
-      if (
-        CORTES[cod]
-      ) {
+        if (!CORTES[pluManual]) {
+          alert('PLU no registrado: ' + pluManual);
+          return;
+        }
 
-        alert(
-          'El PLU ' +
-          cod +
-          ' está configurado como ' +
-          CORTES[cod] +
-          ', pero para agregarlo a la venta debe escanear la etiqueta de la balanza, porque el PLU solo no contiene el precio.'
-        );
+        alert('Para registrar el precio correctamente debe escanear la etiqueta de la balanza.');
 
-      } else {
-
-        alert(
-          'Código no reconocido.\n\n' +
-          'Escanee una etiqueta de la balanza de 13 dígitos.'
-        );
       }
-
-
-      input.focus();
     }
 
 
-    /* =========================================================
-       CARRITO
-       ========================================================= */
+    // =========================================================
+    // CARRITO
+    // =========================================================
 
     function dibujarCarrito() {
 
-      var tbody =
-        document.getElementById(
-          'cuerpo-tabla-caja'
-        );
+      var tbody = document.getElementById('cuerpo-tabla-caja');
 
-      tbody.innerHTML =
-        '';
+      tbody.innerHTML = '';
 
-      var total =
-        0;
+      var total = 0;
 
+      for (var i = 0; i < carrito.length; i++) {
 
-      for (
-        var i = 0;
-        i < carrito.length;
-        i++
-      ) {
-
-        var precio =
-          Number(carrito[i].precio) || 0;
-
-        total +=
-          precio;
-
-
-        var nombreSeguro =
-          escaparHTML(
-            carrito[i].nombre
-          );
-
+        total += carrito[i].precio;
 
         tbody.innerHTML +=
-
           '<tr>' +
 
-            '<td>' +
-              escaparHTML(carrito[i].plu) +
-            '</td>' +
+          '<td>' +
+            carrito[i].plu +
+          '</td>' +
 
-            '<td>' +
-              nombreSeguro +
+          '<td>' +
+            carrito[i].nombre +
+            (carrito[i].modificado
+              ? ' <span class="badge" style="font-size:0.65rem;">Modificado</span>'
+              : '') +
+          '</td>' +
 
-              (
-                carrito[i].modificado
-                  ? ' <span class="badge" style="font-size:0.65rem;">Modificado</span>'
-                  : ''
-              ) +
+          '<td>' +
+            'RD$ ' +
+            carrito[i].precio.toFixed(2) +
+          '</td>' +
 
-            '</td>' +
+          '<td style="text-align: right;">' +
 
-            '<td>' +
-              'RD$ ' +
-              precio.toFixed(2) +
-            '</td>' +
+            '<button onclick="aplicarDescuento(' + i + ', 10)" class="btn-action">' +
+              '-10%' +
+            '</button>' +
 
-            '<td style="text-align: right;">' +
+            '<button onclick="aplicarDescuento(' + i + ', 20)" class="btn-action">' +
+              '-20%' +
+            '</button>' +
 
-              '<button onclick="aplicarDescuento(' +
-                i +
-                ', 10)" class="btn-action">' +
-                '-10%' +
-              '</button>' +
+            '<button onclick="cambiarPrecioManual(' + i + ')" class="btn-action" style="background:#d4af37; color:#000;">' +
+              'Suplidor/Manual' +
+            '</button>' +
 
-              '<button onclick="aplicarDescuento(' +
-                i +
-                ', 20)" class="btn-action">' +
-                '-20%' +
-              '</button>' +
+            '<button onclick="borrarArticulo(' + i + ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">' +
+              'Anular' +
+            '</button>' +
 
-              '<button onclick="cambiarPrecioManual(' +
-                i +
-                ')" class="btn-action" style="background:#d4af37; color:#000;">' +
-                'Suplidor/Manual' +
-              '</button>' +
-
-              '<button onclick="borrarArticulo(' +
-                i +
-                ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">' +
-                'Anular' +
-              '</button>' +
-
-            '</td>' +
+          '</td>' +
 
           '</tr>';
       }
 
-
-      document.getElementById(
-        'total-cuenta-texto'
-      ).innerText =
-        'RD$ ' +
-        total.toFixed(2);
+      document.getElementById('total-cuenta-texto').innerText =
+        'RD$ ' + total.toFixed(2);
     }
 
 
-    /* =========================================================
-       DESCUENTOS
-       ========================================================= */
+    // =========================================================
+    // DESCUENTO
+    // =========================================================
 
-    async function aplicarDescuento(
-      idx,
-      porcentaje
-    ) {
+    async function aplicarDescuento(idx, porcentaje) {
 
-      var item =
-        carrito[idx];
-
-      if (!item) {
-        return;
-      }
-
-
-      var precioOriginal =
-        Number(item.originalPrecio);
-
+      var item = carrito[idx];
 
       var rebaja =
-        precioOriginal *
-        (porcentaje / 100);
-
+        item.originalPrecio * (porcentaje / 100);
 
       item.precio =
-        precioOriginal -
-        rebaja;
+        item.originalPrecio - rebaja;
 
-
-      item.modificado =
-        true;
-
+      item.modificado = true;
 
       item.detalleModificacion =
         'Descuento aplicado: ' +
         porcentaje +
         '% (Precio anterior: RD$ ' +
-        precioOriginal.toFixed(2) +
+        item.originalPrecio.toFixed(2) +
         ')';
 
-
-      await registrarModificacionEnNube(
+      registrarModificacionEnNube(
         item,
         item.detalleModificacion
       );
-
 
       dibujarCarrito();
     }
 
 
-    /* =========================================================
-       PRECIO MANUAL
-       ========================================================= */
+    // =========================================================
+    // PRECIO MANUAL / SUPLIDOR
+    // =========================================================
 
     async function cambiarPrecioManual(idx) {
 
-      var item =
-        carrito[idx];
-
-      if (!item) {
-        return;
-      }
-
+      var item = carrito[idx];
 
       var nuevoPrecioStr =
         prompt(
           'Ingrese precio especial (Suplidor / Manual) para ' +
           item.nombre +
           ':',
-          Number(item.precio).toFixed(2)
+          item.precio
         );
-
 
       if (nuevoPrecioStr === null) {
         return;
       }
 
-
       var nuevoPrecio =
-        parseFloat(
-          nuevoPrecioStr.replace(',', '.')
-        );
+        parseFloat(nuevoPrecioStr);
 
-
-      if (
-        isNaN(nuevoPrecio) ||
-        nuevoPrecio < 0
-      ) {
+      if (isNaN(nuevoPrecio) || nuevoPrecio < 0) {
 
         alert('Monto inválido.');
 
         return;
       }
-
 
       var motivo =
         prompt(
@@ -1083,19 +513,13 @@
           'Venta a Suplidor'
         );
 
-
       if (!motivo) {
-        motivo =
-          'Precio manual asignado';
+        motivo = 'Precio manual asignado';
       }
 
+      item.precio = nuevoPrecio;
 
-      item.precio =
-        nuevoPrecio;
-
-      item.modificado =
-        true;
-
+      item.modificado = true;
 
       item.detalleModificacion =
         'Precio manual/suplidor: RD$ ' +
@@ -1104,92 +528,20 @@
         motivo +
         ')';
 
-
-      await registrarModificacionEnNube(
+      registrarModificacionEnNube(
         item,
         item.detalleModificacion
       );
-
 
       dibujarCarrito();
     }
 
 
-    /* =========================================================
-       REGISTRAR MODIFICACIONES
-       ========================================================= */
+    // =========================================================
+    // REGISTRAR MODIFICACIÓN
+    // =========================================================
 
-    async function registrarModificacionEnNube(
-      item,
-      detalle
-    ) {
-
-      var ahora =
-        new Date();
-
-      var horaActual =
-        ahora.toLocaleTimeString(
-          [],
-          {
-            hour: '2-digit',
-            minute: '2-digit'
-          }
-        );
-
-
-      try {
-
-        var resultado =
-          await supabaseClient
-            .from('cancelaciones')
-            .insert([
-              {
-                hora: horaActual,
-                corte: item.nombre,
-                precio: Number(item.precio),
-                motivo: '[MODIFICADO] ' + detalle
-              }
-            ]);
-
-
-        if (resultado.error) {
-          throw resultado.error;
-        }
-
-      } catch (err) {
-
-        console.error(
-          'Error al registrar modificación en Supabase:',
-          err
-        );
-      }
-    }
-
-
-    /* =========================================================
-       ANULAR ARTÍCULO
-       ========================================================= */
-
-    async function borrarArticulo(idx) {
-
-      var item =
-        carrito[idx];
-
-      if (!item) {
-        return;
-      }
-
-
-      var motivo =
-        prompt(
-          'Indique motivo de anulación de este corte:'
-        );
-
-
-      if (!motivo) {
-        return;
-      }
-
+    async function registrarModificacionEnNube(item, detalle) {
 
       var horaActual =
         new Date().toLocaleTimeString(
@@ -1200,25 +552,68 @@
           }
         );
 
+      try {
+
+        await supabaseClient
+          .from('cancelaciones')
+          .insert([
+            {
+              hora: horaActual,
+              corte: item.nombre,
+              precio: item.precio,
+              motivo: '[MODIFICADO] ' + detalle
+            }
+          ]);
+
+      } catch (err) {
+
+        console.error(
+          'Error al registrar modificación en Supabase:',
+          err
+        );
+
+      }
+    }
+
+
+    // =========================================================
+    // ANULAR PRODUCTO
+    // =========================================================
+
+    async function borrarArticulo(idx) {
+
+      var motivo =
+        prompt(
+          'Indique motivo de anulación de este corte:'
+        );
+
+      if (!motivo) {
+        return;
+      }
+
+      var item = carrito[idx];
+
+      var horaActual =
+        new Date().toLocaleTimeString(
+          [],
+          {
+            hour: '2-digit',
+            minute: '2-digit'
+          }
+        );
 
       try {
 
-        var resultado =
-          await supabaseClient
-            .from('cancelaciones')
-            .insert([
-              {
-                hora: horaActual,
-                corte: item.nombre,
-                precio: Number(item.precio),
-                motivo: 'ANULADO: ' + motivo
-              }
-            ]);
-
-
-        if (resultado.error) {
-          throw resultado.error;
-        }
+        await supabaseClient
+          .from('cancelaciones')
+          .insert([
+            {
+              hora: horaActual,
+              corte: item.nombre,
+              precio: item.precio,
+              motivo: 'ANULADO: ' + motivo
+            }
+          ]);
 
       } catch (err) {
 
@@ -1227,185 +622,97 @@
           err
         );
 
-        alert(
-          'No se pudo registrar la anulación en la nube. El artículo no fue eliminado.'
-        );
-
-        return;
       }
 
-
-      carrito.splice(
-        idx,
-        1
-      );
-
+      carrito.splice(idx, 1);
 
       dibujarCarrito();
-
-      document.getElementById(
-        'escaner'
-      ).focus();
     }
 
 
-    /* =========================================================
-       COBRO
-       ========================================================= */
-
-    function obtenerTotalCarrito() {
-
-      var total =
-        0;
-
-      for (
-        var i = 0;
-        i < carrito.length;
-        i++
-      ) {
-
-        total +=
-          Number(carrito[i].precio) || 0;
-      }
-
-      return total;
-    }
-
+    // =========================================================
+    // COBRO
+    // =========================================================
 
     function abrirModalCobro() {
 
-      if (
-        carrito.length === 0
-      ) {
+      if (carrito.length === 0) {
 
-        alert(
-          'No hay artículos agregados.'
-        );
+        alert('No hay artículos agregados.');
 
         return;
       }
 
+      var total = 0;
 
-      var total =
-        obtenerTotalCarrito();
+      for (var i = 0; i < carrito.length; i++) {
+        total += carrito[i].precio;
+      }
 
+      document.getElementById('cobro-total-modal').innerText =
+        'Total: RD$ ' + total.toFixed(2);
 
-      document.getElementById(
-        'cobro-total-modal'
-      ).innerText =
-        'Total: RD$ ' +
-        total.toFixed(2);
+      document.getElementById('monto-cliente').value = '';
 
-
-      document.getElementById(
-        'monto-cliente'
-      ).value =
-        '';
-
-
-      document.getElementById(
-        'devuelta-texto'
-      ).innerText =
+      document.getElementById('devuelta-texto').innerText =
         'Devuelta: RD$ 0.00';
 
-
-      document.getElementById(
-        'modal-cobro'
-      ).style.display =
+      document.getElementById('modal-cobro').style.display =
         'flex';
 
-
-      document.getElementById(
-        'monto-cliente'
-      ).focus();
+      document.getElementById('monto-cliente').focus();
     }
 
 
     function cerrarModalCobro() {
 
-      document.getElementById(
-        'modal-cobro'
-      ).style.display =
+      document.getElementById('modal-cobro').style.display =
         'none';
-
-
-      setTimeout(function() {
-
-        var escaner =
-          document.getElementById('escaner');
-
-        if (escaner) {
-          escaner.focus();
-        }
-
-      }, 100);
     }
 
 
     function calcularDevuelta() {
 
-      var total =
-        obtenerTotalCarrito();
+      var total = 0;
 
+      for (var i = 0; i < carrito.length; i++) {
+        total += carrito[i].precio;
+      }
 
       var pagado =
         parseFloat(
-          document.getElementById(
-            'monto-cliente'
-          ).value
+          document.getElementById('monto-cliente').value
         ) || 0;
 
-
       var cambio =
-        pagado -
-        total;
+        pagado - total;
 
-
-      document.getElementById(
-        'devuelta-texto'
-      ).innerText =
+      document.getElementById('devuelta-texto').innerText =
         'Devuelta: RD$ ' +
-        (
-          cambio > 0
-            ? cambio.toFixed(2)
-            : '0.00'
-        );
+        (cambio > 0
+          ? cambio.toFixed(2)
+          : '0.00');
     }
 
 
-    /* =========================================================
-       FINALIZAR VENTA
-       ========================================================= */
+    // =========================================================
+    // FINALIZAR VENTA
+    // =========================================================
 
     async function finalizarVenta() {
 
-      if (
-        carrito.length === 0
-      ) {
+      var total = 0;
 
-        alert(
-          'No hay artículos en la venta.'
-        );
-
-        return;
+      for (var i = 0; i < carrito.length; i++) {
+        total += carrito[i].precio;
       }
-
-
-      var total =
-        obtenerTotalCarrito();
-
 
       var pagado =
         parseFloat(
-          document.getElementById(
-            'monto-cliente'
-          ).value
+          document.getElementById('monto-cliente').value
         ) || 0;
 
-
-      if (
-        pagado < total
-      ) {
+      if (pagado < total) {
 
         alert(
           'El importe recibido es inferior al total facturado.'
@@ -1414,39 +721,23 @@
         return;
       }
 
-
       try {
 
-        for (
-          var j = 0;
-          j < carrito.length;
-          j++
-        ) {
+        for (var j = 0; j < carrito.length; j++) {
 
-          var venta =
-            await supabaseClient
-              .from('ventas')
-              .insert([
-                {
-                  plu: carrito[j].plu,
-
-                  nombre:
-                    carrito[j].nombre +
-                    (
-                      carrito[j].modificado
-                        ? ' (Modif)'
-                        : ''
-                    ),
-
-                  precio:
-                    Number(carrito[j].precio)
-                }
-              ]);
-
-
-          if (venta.error) {
-            throw venta.error;
-          }
+          await supabaseClient
+            .from('ventas')
+            .insert([
+              {
+                plu: carrito[j].plu,
+                nombre:
+                  carrito[j].nombre +
+                  (carrito[j].modificado
+                    ? ' (Modif)'
+                    : ''),
+                precio: carrito[j].precio
+              }
+            ]);
         }
 
       } catch (err) {
@@ -1457,36 +748,29 @@
         );
 
         alert(
-          'Hubo un error al sincronizar con la base de datos. La venta no fue completada.'
+          'Hubo un error al sincronizar con la base de datos.'
         );
 
         return;
       }
 
-
-      carrito =
-        [];
-
+      carrito = [];
 
       dibujarCarrito();
 
       cerrarModalCobro();
 
-
       alert(
         'Transacción completada y guardada en la nube con éxito.'
       );
 
-
-      document.getElementById(
-        'escaner'
-      ).focus();
+      document.getElementById('escaner').focus();
     }
 
 
-    /* =========================================================
-       CUADRE
-       ========================================================= */
+    // =========================================================
+    // CUADRE
+    // =========================================================
 
     async function hacerCuadre() {
 
@@ -1503,9 +787,9 @@
     }
 
 
-    /* =========================================================
-       ADMINISTRACIÓN
-       ========================================================= */
+    // =========================================================
+    // ADMINISTRACIÓN
+    // =========================================================
 
     async function actualizarAdmin() {
 
@@ -1519,46 +803,26 @@
             .from('ventas')
             .select('*');
 
-
         if (errVentas) {
           throw errVentas;
         }
 
-
-        var total =
-          0;
-
+        let total = 0;
 
         if (ventas) {
 
-          for (
-            var i = 0;
-            i < ventas.length;
-            i++
-          ) {
+          for (let i = 0; i < ventas.length; i++) {
 
-            total +=
-              Number(ventas[i].precio) || 0;
+            total += ventas[i].precio;
           }
+
+          document.getElementById('admin-total-dia').innerText =
+            'RD$ ' + total.toFixed(2);
+
+          document.getElementById('admin-conteo-articulos').innerText =
+            ventas.length +
+            ' artículos facturados en total';
         }
-
-
-        document.getElementById(
-          'admin-total-dia'
-        ).innerText =
-          'RD$ ' +
-          total.toFixed(2);
-
-
-        document.getElementById(
-          'admin-conteo-articulos'
-        ).innerText =
-          (
-            ventas
-              ? ventas.length
-              : 0
-          ) +
-          ' artículos facturados en total';
 
 
         const {
@@ -1569,81 +833,56 @@
             .from('cancelaciones')
             .select('*');
 
-
         if (errCancel) {
           throw errCancel;
         }
-
 
         var tbody =
           document.getElementById(
             'cuerpo-tabla-auditoria'
           );
 
-
-        tbody.innerHTML =
-          '';
-
+        tbody.innerHTML = '';
 
         if (cancelaciones) {
 
           for (
-            var k = 0;
+            let k = 0;
             k < cancelaciones.length;
             k++
           ) {
 
-            var registro =
-              cancelaciones[k];
-
-
             var esModif =
-              registro.motivo &&
-              registro.motivo.includes(
+              cancelaciones[k].motivo &&
+              cancelaciones[k].motivo.includes(
                 '[MODIFICADO]'
               );
-
 
             var colorTexto =
               esModif
                 ? 'color:#d4af37;'
                 : 'color:#ef4444;';
 
-
-            var precioRegistro =
-              Number(
-                registro.precio
-              ) || 0;
-
-
             tbody.innerHTML +=
-
               '<tr>' +
 
-                '<td>' +
-                  escaparHTML(
-                    registro.hora || ''
-                  ) +
-                '</td>' +
+              '<td>' +
+                (cancelaciones[k].hora || '') +
+              '</td>' +
 
-                '<td>' +
-                  escaparHTML(
-                    registro.corte || ''
-                  ) +
-                '</td>' +
+              '<td>' +
+                cancelaciones[k].corte +
+              '</td>' +
 
-                '<td>' +
-                  'RD$ ' +
-                  precioRegistro.toFixed(2) +
-                '</td>' +
+              '<td>RD$ ' +
+                cancelaciones[k].precio.toFixed(2) +
+              '</td>' +
 
-                '<td style="' +
-                  colorTexto +
-                  '">' +
-                  escaparHTML(
-                    registro.motivo || ''
-                  ) +
-                '</td>' +
+              '<td style="' +
+                colorTexto +
+              '">' +
+                cancelaciones[k].motivo +
+              '</td>' +
 
               '</tr>';
           }
@@ -1659,9 +898,9 @@
     }
 
 
-    /* =========================================================
-       VENTAS FRECUENTES
-       ========================================================= */
+    // =========================================================
+    // VENTAS FRECUENTES
+    // =========================================================
 
     async function mostrarFrecuentes() {
 
@@ -1675,16 +914,11 @@
             .from('ventas')
             .select('*');
 
-
         if (error) {
           throw error;
         }
 
-
-        if (
-          !ventas ||
-          ventas.length === 0
-        ) {
+        if (!ventas || ventas.length === 0) {
 
           alert(
             'No existen registros de venta almacenados.'
@@ -1693,10 +927,7 @@
           return;
         }
 
-
-        var resumen =
-          {};
-
+        var resumen = {};
 
         for (
           var i = 0;
@@ -1705,39 +936,27 @@
         ) {
 
           var corte =
-            ventas[i].nombre ||
-            'Sin nombre';
+            ventas[i].nombre;
 
-
-          if (
-            !resumen[corte]
-          ) {
-
-            resumen[corte] =
-              0;
+          if (!resumen[corte]) {
+            resumen[corte] = 0;
           }
-
 
           resumen[corte]++;
         }
 
-
         var texto =
-          'REPORTE: CORTES MÁS FRECUENTES (NUBE)\n\n';
+          "REPORTE: CORTES MÁS FRECUENTES (NUBE)\n\n";
 
-
-        for (
-          var item in resumen
-        ) {
+        for (var item in resumen) {
 
           texto +=
-            '• ' +
+            "• " +
             item +
-            ': ' +
+            ": " +
             resumen[item] +
-            ' und\n';
+            " und\n";
         }
-
 
         alert(texto);
 
@@ -1747,55 +966,9 @@
           'Error al generar reporte:',
           err
         );
-
-        alert(
-          'No se pudo generar el reporte.'
-        );
       }
     }
-
-
-    /* =========================================================
-       SEGURIDAD PARA TEXTO MOSTRADO EN HTML
-       ========================================================= */
-
-    function escaparHTML(texto) {
-
-      return String(texto)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-
-    /* =========================================================
-       TECLADO
-       ========================================================= */
-
-    document.addEventListener(
-      'keydown',
-      function(e) {
-
-        /*
-         * Si se presiona Escape mientras está abierto
-         * el cobro, se cierra.
-         */
-
-        if (
-          e.key === 'Escape' &&
-          document.getElementById(
-            'modal-cobro'
-          ).style.display === 'flex'
-        ) {
-
-          cerrarModalCobro();
-        }
-      }
-    );
 
   </script>
-
 </body>
 </html>
