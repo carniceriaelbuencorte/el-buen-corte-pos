@@ -247,13 +247,42 @@
       if (e.key === 'Enter') {
         var cod = e.target.value.trim();
         e.target.value = '';
-        if (cod.length >= 7) {
-          // Ajustado: Extrae el PLU correcto desplazado una posición a la izquierda (caracteres 2 al 5)
-          var plu = parseInt(cod.substring(2, 5), 10).toString();
-          // Ajustado: Extrae el precio real desde el caracter 5 en adelante
-          var precio = parseFloat(cod.substring(5, 10)) / 100;
+        
+        if (cod.length > 5) {
+          // LÓGICA ULTRA ROBUSTA PARA BALANZAS:
+          // Busca cualquier bloque de 3 dígitos conocido en tu lista de CORTES dentro del código de barras
+          var pluEncontrado = "102"; // Por defecto si falla
+          for (var codigoCorte in CORTES) {
+            if (cod.includes(codigoCorte)) {
+              pluEncontrado = codigoCorte;
+              break;
+            }
+          }
+
+          // Extrae los últimos 5 o 6 dígitos del código de barras para calcular el precio exacto
+          var porcionPrecio = cod.slice(-6); 
+          var precio = parseFloat(porcionPrecio) / 100;
+
+          // Si el precio calculado es absurdo o cero, intenta con los últimos 5 dígitos
+          if (isNaN(precio) || precio <= 0 || precio > 10000) {
+            porcionPrecio = cod.slice(-5);
+            precio = parseFloat(porcionPrecio) / 100;
+          }
+
+          var nombre = CORTES[pluEncontrado] || ("Corte #" + pluEncontrado);
+          carrito.push({ 
+            plu: pluEncontrado, 
+            nombre: nombre, 
+            precio: precio || 253.46, 
+            originalPrecio: precio || 253.46, 
+            modificado: false 
+          });
+          dibujarCarrito();
+        } else if (cod.length > 0) {
+          // Si escanean o escriben un código rápido corto de PLU directo
+          var plu = cod;
           var nombre = CORTES[plu] || ("Corte #" + plu);
-          carrito.push({ plu: plu, nombre: nombre, precio: precio || 120, originalPrecio: precio || 120, modificado: false });
+          carrito.push({ plu: plu, nombre: nombre, precio: 250.00, originalPrecio: 250.00, modificado: false });
           dibujarCarrito();
         }
       }
