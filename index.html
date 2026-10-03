@@ -248,10 +248,10 @@
         var cod = e.target.value.trim();
         e.target.value = '';
         if (cod.length >= 7) {
-          // Extrae el PLU ajustado a 3 dígitos (ej: '102' para Bola de res)
-          var plu = parseInt(cod.substring(1, 4), 10).toString();
-          // Extrae el precio real desde la posición correcta y lo divide entre 100 para los centavos
-          var precio = parseFloat(cod.substring(4, 9)) / 100;
+          // Extrae el PLU correcto desde la posición exacta de la balanza
+          var plu = parseInt(cod.substring(3, 6), 10).toString();
+          // Extrae el precio real y lo divide entre 100 para los centavos
+          var precio = parseFloat(cod.substring(6, 11)) / 100;
           var nombre = CORTES[plu] || ("Corte #" + plu);
           carrito.push({ plu: plu, nombre: nombre, precio: precio || 120, originalPrecio: precio || 120, modificado: false });
           dibujarCarrito();
