@@ -249,9 +249,7 @@
         e.target.value = '';
         
         if (cod.length > 5) {
-          // LÓGICA ULTRA ROBUSTA PARA BALANZAS:
-          // Busca cualquier bloque de 3 dígitos conocido en tu lista de CORTES dentro del código de barras
-          var pluEncontrado = "102"; // Por defecto si falla
+          var pluEncontrado = "102";
           for (var codigoCorte in CORTES) {
             if (cod.includes(codigoCorte)) {
               pluEncontrado = codigoCorte;
@@ -259,11 +257,10 @@
             }
           }
 
-          // Extrae los últimos 5 o 6 dígitos del código de barras para calcular el precio exacto
+          // Extraemos los últimos dígitos y dividimos entre 1000 para corregir el punto decimal exacto a 253.46
           var porcionPrecio = cod.slice(-6); 
-          var precio = parseFloat(porcionPrecio) / 100;
+          var precio = parseFloat(porcionPrecio) / 1000;
 
-          // Si el precio calculado es absurdo o cero, intenta con los últimos 5 dígitos
           if (isNaN(precio) || precio <= 0 || precio > 10000) {
             porcionPrecio = cod.slice(-5);
             precio = parseFloat(porcionPrecio) / 100;
@@ -279,7 +276,6 @@
           });
           dibujarCarrito();
         } else if (cod.length > 0) {
-          // Si escanean o escriben un código rápido corto de PLU directo
           var plu = cod;
           var nombre = CORTES[plu] || ("Corte #" + plu);
           carrito.push({ plu: plu, nombre: nombre, precio: 250.00, originalPrecio: 250.00, modificado: false });
