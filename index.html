@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carnicería El Buen Corte - POS</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     * {
       box-sizing: border-box;
@@ -227,7 +224,6 @@
       }
     }
   </style>
-
 </head>
 
 <body>
@@ -239,111 +235,112 @@
   <div id="vista-login"
        style="max-width:440px; margin:30px auto; text-align:center; background:#141414; padding:32px 24px; border-radius:12px; border:1px solid #262626;">
 
-<img
-  id="logo-sistema"
-  src="logo.png"
-  alt="Carnicería El Buen Corte"
-  class="logo-real"
-  onerror="activarCargadorFallback()"
-/>
+    <img
+      id="logo-sistema"
+      src="logo.png"
+      alt="Carnicería El Buen Corte"
+      class="logo-real"
+      onerror="activarCargadorFallback()"
+    />
 
-<div
-  id="cargador-manual"
-  style="display:none; border:2px dashed #d4af37; padding:16px; border-radius:8px; margin-bottom:20px; cursor:pointer;"
-  onclick="document.getElementById('file-logo').click()"
->
-  <p style="color:#d4af37; font-size:0.9rem; font-weight:bold;">
-    Haga clic aquí para seleccionar su foto de logo
-  </p>
-
-  <input
-    type="file"
-    id="file-logo"
-    accept="image/*"
-    style="display:none;"
-    onchange="procesarLogoLocal(event)"
-  />
-</div>
-
-<div id="opciones-rol" style="display:flex; gap:14px;">
-
-  <button
-    onclick="seleccionarRol('cajero')"
-    style="flex:1; padding:22px 12px; background:#1a1a1a; color:#f3f4f6; border:1px solid #333; border-radius:10px; display:flex; flex-direction:column; align-items:center; gap:8px;"
-  >
-    <span style="font-size:1.1rem; font-weight:bold; color:#fff;">
-      CAJERO
-    </span>
-
-    <span class="badge">
-      Punto de Venta
-    </span>
-  </button>
-
-  <button
-    onclick="seleccionarRol('admin')"
-    style="flex:1; padding:22px 12px; background:#1a1a1a; color:#f3f4f6; border:1px solid #333; border-radius:10px; display:flex; flex-direction:column; align-items:center; gap:8px;"
-  >
-    <span style="font-size:1.1rem; font-weight:bold; color:#fff;">
-      ADMINISTRADOR
-    </span>
-
-    <span class="badge">
-      Supervisión
-    </span>
-  </button>
-
-</div>
-
-<div id="cuadro-clave" style="display:none; margin-top:24px;">
-
-  <h3
-    id="titulo-clave"
-    style="margin-bottom:8px; font-size:1rem; color:#ddd; font-weight:500;"
-  ></h3>
-
-  <input
-    type="password"
-    id="input-clave"
-    class="caja-input"
-    placeholder=""
-  />
-
-  <div style="display:flex; gap:10px; margin-top:8px;">
-
-    <button
-      onclick="cancelarLogin()"
-      class="btn-gray"
-      style="flex:1;"
+    <div
+      id="cargador-manual"
+      style="display:none; border:2px dashed #d4af37; padding:16px; border-radius:8px; margin-bottom:20px; cursor:pointer;"
+      onclick="document.getElementById('file-logo').click()"
     >
-      Volver
-    </button>
+      <p style="color:#d4af37; font-size:0.9rem; font-weight:bold;">
+        Haga clic aquí para seleccionar su foto de logo
+      </p>
 
-    <button
-      onclick="verificarLogin()"
-      class="btn-gold"
-      style="flex:1;"
-    >
-      Ingresar
-    </button>
+      <input
+        type="file"
+        id="file-logo"
+        accept="image/*"
+        style="display:none;"
+        onchange="procesarLogoLocal(event)"
+      />
+    </div>
+
+    <div id="opciones-rol" style="display:flex; gap:14px;">
+
+      <button
+        onclick="seleccionarRol('cajero')"
+        style="flex:1; padding:22px 12px; background:#1a1a1a; color:#f3f4f6; border:1px solid #333; border-radius:10px; display:flex; flex-direction:column; align-items:center; gap:8px;"
+      >
+        <span style="font-size:1.1rem; font-weight:bold; color:#fff;">
+          CAJERO
+        </span>
+
+        <span class="badge">
+          Punto de Venta
+        </span>
+      </button>
+
+      <button
+        onclick="seleccionarRol('admin')"
+        style="flex:1; padding:22px 12px; background:#1a1a1a; color:#f3f4f6; border:1px solid #333; border-radius:10px; display:flex; flex-direction:column; align-items:center; gap:8px;"
+      >
+        <span style="font-size:1.1rem; font-weight:bold; color:#fff;">
+          ADMINISTRADOR
+        </span>
+
+        <span class="badge">
+          Supervisión
+        </span>
+      </button>
+
+    </div>
+
+    <div id="cuadro-clave" style="display:none; margin-top:24px;">
+
+      <h3
+        id="titulo-clave"
+        style="margin-bottom:8px; font-size:1rem; color:#ddd; font-weight:500;"
+      ></h3>
+
+      <input
+        type="password"
+        id="input-clave"
+        class="caja-input"
+        placeholder=""
+      />
+
+      <div style="display:flex; gap:10px; margin-top:8px;">
+
+        <button
+          onclick="cancelarLogin()"
+          class="btn-gray"
+          style="flex:1;"
+        >
+          Volver
+        </button>
+
+        <button
+          onclick="verificarLogin()"
+          class="btn-gold"
+          style="flex:1;"
+        >
+          Ingresar
+        </button>
+
+      </div>
+
+      <div id="link-olvido" style="display:none; margin-top:16px;">
+
+        <a
+          href="javascript:void(0)"
+          onclick="alert('Código enviado a erick.ev405@gmail.com')"
+          style="color:#d4af37; font-size:0.85rem; text-decoration:none;"
+        >
+          ¿Olvidaste tu contraseña?
+        </a>
+
+      </div>
+
+    </div>
 
   </div>
 
-  <div id="link-olvido" style="display:none; margin-top:16px;">
-
-    <a
-      href="javascript:void(0)"
-      onclick="alert('Código enviado a erick.ev405@gmail.com')"
-      style="color:#d4af37; font-size:0.85rem; text-decoration:none;"
-    >
-      ¿Olvidaste tu contraseña?
-    </a>
-
-  </div>
-
-</div>
-
-  </div>
 
   <!-- =========================================================
        CAJERO
@@ -352,77 +349,330 @@
   <div id="vista-cajero"
        style="display:none; max-width:1100px; margin:0 auto;">
 
-<div
-  style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:16px; margin-bottom:24px;"
->
+    <div
+      style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:16px; margin-bottom:24px;"
+    >
 
-  <div>
-    <h2 style="font-size:1.4rem; font-weight:700;">
-      Terminal de Caja 1
-    </h2>
+      <div>
+        <h2 style="font-size:1.4rem; font-weight:700;">
+          Terminal de Caja 1
+        </h2>
 
-    <span style="font-size:0.8rem; color:#888;">
-      Operaciones de Venta y Suplidores
-    </span>
+        <span style="font-size:0.8rem; color:#888;">
+          Operaciones de Venta y Suplidores
+        </span>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+
+        <button
+          onclick="hacerCuadre()"
+          class="btn-gray"
+        >
+          Hacer Cuadre
+        </button>
+
+        <button
+          onclick="cerrarSesion()"
+          class="btn-red"
+        >
+          Salir
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div style="display:flex; gap:24px;">
+
+      <div style="flex:2;">
+
+        <input
+          type="text"
+          id="escaner"
+          class="caja-input"
+          placeholder="Escanear código de balanza..."
+          onkeydown="leerCodigo(event)"
+          autofocus
+          style="margin-top:0;"
+        />
+
+        <div
+          style="background:#141414; border-radius:10px; padding:18px; min-height:320px; border:1px solid #222;"
+        >
+
+          <table class="tabla">
+
+            <thead>
+
+              <tr>
+                <th>Código PLU</th>
+                <th>Corte</th>
+                <th>Monto (RD$)</th>
+
+                <th style="text-align:right;">
+                  Opciones / Ajustes
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="cuerpo-tabla-caja"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+      <div
+        style="flex:1.1; background:#141414; padding:24px; border-radius:10px; border:1px solid #222; height:fit-content;"
+      >
+
+        <span style="color:#888; font-size:0.85rem;">
+          TOTAL DE CUENTA
+        </span>
+
+        <div
+          id="total-cuenta-texto"
+          style="font-size:2.8rem; color:#d4af37; font-weight:800; margin:10px 0;"
+        >
+          RD$ 0.00
+        </div>
+
+        <div
+          style="margin:16px 0; padding-top:14px; border-top:1px solid #222;"
+        >
+
+          <p style="color:#888; font-size:0.85rem;">
+            Condición:
+            <strong style="color:#fff;">
+              Efectivo / Suplidor
+            </strong>
+          </p>
+
+        </div>
+
+        <button
+          onclick="abrirModalCobro()"
+          class="btn-green"
+        >
+          Cobrar Venta
+        </button>
+
+        <div id="estado-nube" class="estado-nube"></div>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <div style="display:flex; gap:10px;">
 
-    <button
-      onclick="hacerCuadre()"
-      class="btn-gray"
-    >
-      Hacer Cuadre
-    </button>
+  <!-- =========================================================
+       ADMINISTRADOR
+  ========================================================== -->
 
-    <button
-      onclick="cerrarSesion()"
-      class="btn-red"
-    >
-      Salir
-    </button>
-
-  </div>
-
-</div>
-
-
-<div style="display:flex; gap:24px;">
-
-  <div style="flex:2;">
-
-    <input
-      type="text"
-      id="escaner"
-      class="caja-input"
-      placeholder="Escanear código de balanza..."
-      onkeydown="leerCodigo(event)"
-      autofocus
-      style="margin-top:0;"
-    />
+  <div
+    id="vista-admin"
+    style="display:none; max-width:1200px; margin:0 auto;"
+  >
 
     <div
-      style="background:#141414; border-radius:10px; padding:18px; min-height:320px; border:1px solid #222;"
+      style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:16px; margin-bottom:24px;"
     >
+
+      <div>
+
+        <h2 style="font-size:1.4rem; font-weight:700;">
+          Panel de Administración
+        </h2>
+
+        <span style="font-size:0.8rem; color:#888;">
+          Ventas, Cuadres y Auditoría
+        </span>
+
+      </div>
+
+      <div style="display:flex; gap:10px;">
+
+        <button
+          onclick="actualizarAdmin()"
+          class="btn-gray"
+        >
+          Actualizar
+        </button>
+
+        <button
+          onclick="mostrarFrecuentes()"
+          class="btn-gold"
+        >
+          Ventas Frecuentes
+        </button>
+
+        <button
+          onclick="cerrarSesion()"
+          class="btn-red"
+        >
+          Salir
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- RESUMEN DEL DÍA -->
+
+    <div style="display:flex; gap:24px;">
+
+      <div
+        style="flex:1; background:#141414; padding:28px 20px; border-radius:10px; text-align:center; border:1px solid #222; height:fit-content;"
+      >
+
+        <span style="color:#888; font-size:0.85rem;">
+          VENTAS DEL DÍA
+        </span>
+
+        <div
+          id="admin-total-dia"
+          style="font-size:2.6rem; color:#22c55e; font-weight:800; margin:15px 0;"
+        >
+          RD$ 0.00
+        </div>
+
+        <p
+          id="admin-conteo-articulos"
+          style="color:#888; font-size:0.9rem;"
+        >
+          0 artículos facturados hoy
+        </p>
+
+      </div>
+
+
+      <!-- RESUMEN ÚLTIMO CUADRE -->
+
+      <div
+        style="flex:1; background:#141414; padding:22px; border-radius:10px; border:1px solid #222;"
+      >
+
+        <h3
+          style="color:#d4af37; font-size:1.05rem; margin-bottom:10px;"
+        >
+          Último Cuadre
+        </h3>
+
+        <div id="ultimo-cuadre-admin">
+
+          <p style="color:#666; font-size:0.85rem;">
+            No hay cuadres registrados todavía.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DETALLE DE VENTAS -->
+
+    <div class="tarjeta-seccion">
+
+      <h3 class="titulo-seccion">
+        Detalle de Ventas del Día
+      </h3>
+
+      <p class="subtitulo-seccion">
+        Productos vendidos durante el día actual
+      </p>
 
       <table class="tabla">
 
         <thead>
 
           <tr>
-            <th>Código PLU</th>
-            <th>Corte</th>
-            <th>Monto (RD$)</th>
-
-            <th style="text-align:right;">
-              Opciones / Ajustes
-            </th>
-
+            <th>Hora</th>
+            <th>Producto</th>
+            <th>PLU</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
           </tr>
 
         </thead>
 
-        <tbody id="cuerpo-tabla-caja"></tbody>
+        <tbody id="cuerpo-tabla-ventas"></tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- CUADRES -->
+
+    <div class="tarjeta-seccion">
+
+      <h3 class="titulo-seccion">
+        Cuadres de Caja
+      </h3>
+
+      <p class="subtitulo-seccion">
+        Historial de cuadres realizados por la cajera
+      </p>
+
+      <table class="tabla">
+
+        <thead>
+
+          <tr>
+            <th>Fecha / Hora</th>
+            <th>Total vendido</th>
+            <th>Artículos</th>
+            <th>Dinero contado</th>
+            <th>Diferencia</th>
+            <th>Estado</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="cuerpo-tabla-cuadres"></tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- AUDITORÍA -->
+
+    <div class="tarjeta-seccion">
+
+      <h3 class="titulo-seccion">
+        Auditoría: Modificaciones y Cancelaciones
+      </h3>
+
+      <p class="subtitulo-seccion">
+        Registro de descuentos, precios de suplidor y anulaciones
+      </p>
+
+      <table class="tabla">
+
+        <thead>
+
+          <tr>
+            <th>Hora</th>
+            <th>Corte</th>
+            <th>Monto</th>
+            <th>Detalle / Motivo</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="cuerpo-tabla-auditoria"></tbody>
 
       </table>
 
@@ -430,255 +680,6 @@
 
   </div>
 
-
-  <div
-    style="flex:1.1; background:#141414; padding:24px; border-radius:10px; border:1px solid #222; height:fit-content;"
-  >
-
-    <span style="color:#888; font-size:0.85rem;">
-      TOTAL DE CUENTA
-    </span>
-
-    <div
-      id="total-cuenta-texto"
-      style="font-size:2.8rem; color:#d4af37; font-weight:800; margin:10px 0;"
-    >
-      RD$ 0.00
-    </div>
-
-    <div
-      style="margin:16px 0; padding-top:14px; border-top:1px solid #222;"
-    >
-
-      <p style="color:#888; font-size:0.85rem;">
-        Condición:
-        <strong style="color:#fff;">
-          Efectivo / Suplidor
-        </strong>
-      </p>
-
-    </div>
-
-    <button
-      onclick="abrirModalCobro()"
-      class="btn-green"
-    >
-      Cobrar Venta
-    </button>
-
-    <div id="estado-nube" class="estado-nube"></div>
-
-  </div>
-
-</div>
-
-  </div>
-
-  <!-- =========================================================
-       ADMINISTRADOR
-  ========================================================== -->
-
-  <div id="vista-admin"
-       style="display:none; max-width:1200px; margin:0 auto;">
-
-<div
-  style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:16px; margin-bottom:24px;"
->
-
-  <div>
-
-    <h2 style="font-size:1.4rem; font-weight:700;">
-      Panel de Administración
-    </h2>
-
-    <span style="font-size:0.8rem; color:#888;">
-      Ventas, Cuadres y Auditoría
-    </span>
-
-  </div>
-
-  <div style="display:flex; gap:10px;">
-
-    <button
-      onclick="actualizarAdmin()"
-      class="btn-gray"
-    >
-      Actualizar
-    </button>
-
-    <button
-      onclick="mostrarFrecuentes()"
-      class="btn-gold"
-    >
-      Ventas Frecuentes
-    </button>
-
-    <button
-      onclick="cerrarSesion()"
-      class="btn-red"
-    >
-      Salir
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- RESUMEN DEL DÍA -->
-
-<div style="display:flex; gap:24px;">
-
-  <div
-    style="flex:1; background:#141414; padding:28px 20px; border-radius:10px; text-align:center; border:1px solid #222; height:fit-content;"
-  >
-
-    <span style="color:#888; font-size:0.85rem;">
-      VENTAS DEL DÍA
-    </span>
-
-    <div
-      id="admin-total-dia"
-      style="font-size:2.6rem; color:#22c55e; font-weight:800; margin:15px 0;"
-    >
-      RD$ 0.00
-    </div>
-
-    <p
-      id="admin-conteo-articulos"
-      style="color:#888; font-size:0.9rem;"
-    >
-      0 artículos facturados hoy
-    </p>
-
-  </div>
-
-
-  <!-- RESUMEN ÚLTIMO CUADRE -->
-
-  <div
-    style="flex:1; background:#141414; padding:22px; border-radius:10px; border:1px solid #222;"
-  >
-
-    <h3
-      style="color:#d4af37; font-size:1.05rem; margin-bottom:10px;"
-    >
-      Último Cuadre
-    </h3>
-
-    <div id="ultimo-cuadre-admin">
-
-      <p style="color:#666; font-size:0.85rem;">
-        No hay cuadres registrados todavía.
-      </p>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- DETALLE DE VENTAS -->
-
-<div class="tarjeta-seccion">
-
-  <h3 class="titulo-seccion">
-    Detalle de Ventas del Día
-  </h3>
-
-  <p class="subtitulo-seccion">
-    Productos vendidos durante el día actual
-  </p>
-
-  <table class="tabla">
-
-    <thead>
-
-      <tr>
-        <th>Hora</th>
-        <th>Producto</th>
-        <th>PLU</th>
-        <th>Precio</th>
-        <th>Cantidad</th>
-        <th>Subtotal</th>
-      </tr>
-
-    </thead>
-
-    <tbody id="cuerpo-tabla-ventas"></tbody>
-
-  </table>
-
-</div>
-
-
-<!-- CUADRES -->
-
-<div class="tarjeta-seccion">
-
-  <h3 class="titulo-seccion">
-    Cuadres de Caja
-  </h3>
-
-  <p class="subtitulo-seccion">
-    Historial de cuadres realizados por la cajera
-  </p>
-
-  <table class="tabla">
-
-    <thead>
-
-      <tr>
-        <th>Fecha / Hora</th>
-        <th>Total vendido</th>
-        <th>Artículos</th>
-        <th>Dinero contado</th>
-        <th>Diferencia</th>
-        <th>Estado</th>
-      </tr>
-
-    </thead>
-
-    <tbody id="cuerpo-tabla-cuadres"></tbody>
-
-  </table>
-
-</div>
-
-
-<!-- AUDITORÍA -->
-
-<div class="tarjeta-seccion">
-
-  <h3 class="titulo-seccion">
-    Auditoría: Modificaciones y Cancelaciones
-  </h3>
-
-  <p class="subtitulo-seccion">
-    Registro de descuentos, precios de suplidor y anulaciones
-  </p>
-
-  <table class="tabla">
-
-    <thead>
-
-      <tr>
-        <th>Hora</th>
-        <th>Corte</th>
-        <th>Monto</th>
-        <th>Detalle / Motivo</th>
-      </tr>
-
-    </thead>
-
-    <tbody id="cuerpo-tabla-auditoria"></tbody>
-
-  </table>
-
-</div>
-
-  </div>
 
   <!-- =========================================================
        MODAL COBRO
@@ -689,60 +690,61 @@
     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); align-items:center; justify-content:center;"
   >
 
-<div
-  style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:380px; max-width:95%; text-align:center;"
->
-
-  <h3 style="font-size:1.2rem;">
-    Comprobante de Pago
-  </h3>
-
-  <div
-    id="cobro-total-modal"
-    style="font-size:2rem; color:#d4af37; font-weight:800; margin:15px 0;"
-  >
-    RD$ 0.00
-  </div>
-
-  <input
-    type="number"
-    id="monto-cliente"
-    class="caja-input"
-    placeholder="Monto recibido RD$"
-    oninput="calcularDevuelta()"
-  />
-
-  <div
-    id="devuelta-texto"
-    style="font-size:1.25rem; color:#22c55e; margin-bottom:18px; font-weight:600;"
-  >
-    Devuelta: RD$ 0.00
-  </div>
-
-  <div style="display:flex; gap:10px;">
-
-    <button
-      onclick="cerrarModalCobro()"
-      class="btn-gray"
-      style="flex:1;"
+    <div
+      style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:380px; max-width:95%; text-align:center;"
     >
-      Cancelar
-    </button>
 
-    <button
-      id="btn-confirmar-venta"
-      onclick="finalizarVenta()"
-      class="btn-green"
-      style="flex:1; margin:0; font-size:1rem;"
-    >
-      Confirmar
-    </button>
+      <h3 style="font-size:1.2rem;">
+        Comprobante de Pago
+      </h3>
+
+      <div
+        id="cobro-total-modal"
+        style="font-size:2rem; color:#d4af37; font-weight:800; margin:15px 0;"
+      >
+        RD$ 0.00
+      </div>
+
+      <input
+        type="number"
+        id="monto-cliente"
+        class="caja-input"
+        placeholder="Monto recibido RD$"
+        oninput="calcularDevuelta()"
+      />
+
+      <div
+        id="devuelta-texto"
+        style="font-size:1.25rem; color:#22c55e; margin-bottom:18px; font-weight:600;"
+      >
+        Devuelta: RD$ 0.00
+      </div>
+
+      <div style="display:flex; gap:10px;">
+
+        <button
+          onclick="cerrarModalCobro()"
+          class="btn-gray"
+          style="flex:1;"
+        >
+          Cancelar
+        </button>
+
+        <button
+          id="btn-confirmar-venta"
+          onclick="finalizarVenta()"
+          class="btn-green"
+          style="flex:1; margin:0; font-size:1rem;"
+        >
+          Confirmar
+        </button>
+
+      </div>
+
+    </div>
 
   </div>
 
-</div>
-
-  </div>
 
   <!-- =========================================================
        MODAL CUADRE
@@ -753,120 +755,121 @@
     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); align-items:center; justify-content:center; z-index:1000;"
   >
 
-<div
-  style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:430px; max-width:95%;"
->
-
-  <h3
-    style="font-size:1.3rem; text-align:center;"
-  >
-    Cuadre de Caja
-  </h3>
-
-  <p
-    style="text-align:center; color:#777; font-size:0.85rem; margin-top:6px;"
-  >
-    Verifique el dinero físico antes de confirmar.
-  </p>
-
-
-  <div class="cuadre-resumen">
-
-    <div class="cuadre-fila">
-
-      <span class="cuadre-label">
-        Total vendido
-      </span>
-
-      <span
-        id="cuadre-total-vendido"
-        class="cuadre-valor"
-      >
-        RD$ 0.00
-      </span>
-
-    </div>
-
-
-    <div class="cuadre-fila">
-
-      <span class="cuadre-label">
-        Artículos vendidos
-      </span>
-
-      <span
-        id="cuadre-articulos"
-        class="cuadre-valor"
-      >
-        0
-      </span>
-
-    </div>
-
-  </div>
-
-
-  <label
-    style="display:block; color:#ccc; font-size:0.9rem; margin-top:20px; text-align:left;"
-  >
-    Dinero físico contado
-  </label>
-
-  <input
-    type="number"
-    id="cuadre-efectivo"
-    class="caja-input"
-    placeholder="RD$"
-    step="0.01"
-    min="0"
-    oninput="calcularDiferenciaCuadre()"
-  />
-
-
-  <div
-    style="background:#0f0f0f; border:1px solid #292929; border-radius:8px; padding:15px; text-align:center;"
-  >
-
     <div
-      style="color:#888; font-size:0.85rem;"
+      style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:430px; max-width:95%;"
     >
-      DIFERENCIA
+
+      <h3
+        style="font-size:1.3rem; text-align:center;"
+      >
+        Cuadre de Caja
+      </h3>
+
+      <p
+        style="text-align:center; color:#777; font-size:0.85rem; margin-top:6px;"
+      >
+        Verifique el dinero físico antes de confirmar.
+      </p>
+
+
+      <div class="cuadre-resumen">
+
+        <div class="cuadre-fila">
+
+          <span class="cuadre-label">
+            Total vendido
+          </span>
+
+          <span
+            id="cuadre-total-vendido"
+            class="cuadre-valor"
+          >
+            RD$ 0.00
+          </span>
+
+        </div>
+
+
+        <div class="cuadre-fila">
+
+          <span class="cuadre-label">
+            Artículos vendidos
+          </span>
+
+          <span
+            id="cuadre-articulos"
+            class="cuadre-valor"
+          >
+            0
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <label
+        style="display:block; color:#ccc; font-size:0.9rem; margin-top:20px; text-align:left;"
+      >
+        Dinero físico contado
+      </label>
+
+      <input
+        type="number"
+        id="cuadre-efectivo"
+        class="caja-input"
+        placeholder="RD$"
+        step="0.01"
+        min="0"
+        oninput="calcularDiferenciaCuadre()"
+      />
+
+
+      <div
+        style="background:#0f0f0f; border:1px solid #292929; border-radius:8px; padding:15px; text-align:center;"
+      >
+
+        <div
+          style="color:#888; font-size:0.85rem;"
+        >
+          DIFERENCIA
+        </div>
+
+        <div
+          id="cuadre-diferencia"
+          style="font-size:1.8rem; font-weight:800; color:#fff; margin-top:5px;"
+        >
+          RD$ 0.00
+        </div>
+
+      </div>
+
+
+      <div style="display:flex; gap:10px; margin-top:20px;">
+
+        <button
+          onclick="cerrarModalCuadre()"
+          class="btn-gray"
+          style="flex:1;"
+        >
+          Cancelar
+        </button>
+
+        <button
+          id="btn-confirmar-cuadre"
+          onclick="confirmarCuadre()"
+          class="btn-green"
+          style="flex:1; margin:0;"
+        >
+          Confirmar Cuadre
+        </button>
+
+      </div>
+
     </div>
 
-    <div
-      id="cuadre-diferencia"
-      style="font-size:1.8rem; font-weight:800; color:#fff; margin-top:5px;"
-    >
-      RD$ 0.00
-    </div>
-
   </div>
 
-
-  <div style="display:flex; gap:10px; margin-top:20px;">
-
-    <button
-      onclick="cerrarModalCuadre()"
-      class="btn-gray"
-      style="flex:1;"
-    >
-      Cancelar
-    </button>
-
-    <button
-      id="btn-confirmar-cuadre"
-      onclick="confirmarCuadre()"
-      class="btn-green"
-      style="flex:1; margin:0;"
-    >
-      Confirmar Cuadre
-    </button>
-
-  </div>
-
-</div>
-
-  </div>
 
   <script>
 
@@ -970,15 +973,34 @@
       "104": "Pecho (Res)",
       "105": "Punta de Palomilla (Res)",
       "106": "Roti (Res)",
-      "107": "Carne Molida (Res)",
+      "107": "Carne Molida de Primera (Res)",
       "108": "Steaks (Res)",
+      "109": "Osso Buco C (Res)",
+      "110": "Res Corriente (Res)",
+      "111": "Carne Molida de Segunda (Res)",
 
       "201": "Chuleta (Cerdo)",
       "202": "Lomo (Cerdo)",
       "203": "Panceta (Cerdo)",
       "204": "Chicharrón (Cerdo)",
       "205": "Costilla (Cerdo)",
-      "206": "Carne Genérica (Cerdo)"
+      "206": "Carne Genérica (Cerdo)",
+      "208": "Pata de Cerdo (Cerdo)",
+      "209": "Carne Salada (Cerdo)",
+      "210": "Oreja de Cerdo (Cerdo)",
+      "211": "Hocico de Cerdo (Cerdo)",
+      "212": "Rabo de Cerdo (Cerdo)",
+      "213": "Asadura de Cerdo (Cerdo)",
+      "214": "Bofe de Cerdo (Cerdo)",
+      "215": "Vaso de Cerdo (Cerdo)",
+      "216": "Mondongo de Cerdo (Cerdo)",
+      "217": "Mondongo de Res (Res)",
+      "218": "Cerdo Yunque (Cerdo)",
+      "219": "Churrasco (Res)",
+      "220": "Pata de Res (Res)",
+      "221": "Filete de Res (Res)",
+      "222": "Chuleta de Cerdo c/Cuero (Cerdo)",
+      "223": "Carne Molida de Cerdo (Cerdo)"
     };
 
 
@@ -1927,18 +1949,18 @@
       ) {
 
         alert(
-          'No hay artículos para vender.'
+          'No hay artículos para registrar.'
         );
 
         return;
       }
 
 
-      var totalVenta =
+      var total =
         calcularTotalCarrito();
 
 
-      var pagado =
+      var montoCliente =
         parseFloat(
           document.getElementById(
             'monto-cliente'
@@ -1947,11 +1969,11 @@
 
 
       if (
-        pagado < totalVenta
+        montoCliente < total
       ) {
 
         alert(
-          'El importe recibido es inferior al total facturado.'
+          'El monto recibido es menor que el total.'
         );
 
         return;
@@ -1973,11 +1995,11 @@
 
       try {
 
-        var fechaVenta =
-          new Date().toISOString();
+        var ahora =
+          new Date();
 
 
-        var registrosVenta =
+        var filas =
           [];
 
 
@@ -1991,200 +2013,80 @@
             carrito[i];
 
 
-          var precioFinal =
-            Number(item.precio);
+          filas.push(
+            {
+              fecha:
+                ahora.toISOString(),
 
+              total:
+                Number(
+                  item.precio
+                ) || 0,
 
-          if (!Number.isFinite(precioFinal)) {
-            precioFinal = 0;
-          }
+              metodo_pago:
+                'Efectivo',
 
-
-          var precioOriginal =
-            Number(item.originalPrecio);
-
-
-          if (!Number.isFinite(precioOriginal)) {
-            precioOriginal = precioFinal;
-          }
-
-
-          var descuento =
-            precioOriginal -
-            precioFinal;
-
-
-          if (
-            !Number.isFinite(descuento) ||
-            descuento < 0
-          ) {
-
-            descuento = 0;
-          }
-
-
-          precioFinal =
-            Number(precioFinal.toFixed(2));
-
-          descuento =
-            Number(descuento.toFixed(2));
-
-
-          var registro = {
-
-            fecha: fechaVenta,
-
-            total: precioFinal,
-
-            metodo_pago: 'Efectivo',
-
-            notas: null,
-
-            nombre:
-              String(item.nombre) +
-              (
+              notas:
                 item.modificado
-                  ? ' (Modif)'
-                  : ''
-              ),
+                  ? (
+                      item.detalleModificacion ||
+                      ''
+                    )
+                  : '',
 
-            plu:
-              String(item.plu),
+              nombre:
+                item.nombre,
 
-            precio:
-              precioFinal,
-
-            cantidad:
-              1,
-
-            subtotal:
-              precioFinal,
-
-            descuento:
-              descuento,
-
-            motivo:
-              null
-          };
-
-
-          registrosVenta.push(
-            registro
+              plu:
+                item.plu
+            }
           );
         }
-
-
-        console.log(
-          '=== REGISTROS QUE SE ENVIARÁN A SUPABASE ==='
-        );
-
-        console.log(
-          JSON.stringify(
-            registrosVenta,
-            null,
-            2
-          )
-        );
 
 
         const resultado =
           await supabaseClient
             .from('ventas')
             .insert(
-              registrosVenta
+              filas
             )
             .select();
-
-
-        console.log(
-          '=== RESPUESTA COMPLETA DE SUPABASE ===',
-          resultado
-        );
 
 
         if (resultado.error) {
 
           console.error(
-            'ERROR DE SUPABASE AL GUARDAR VENTA:',
+            'Error Supabase venta:',
             resultado.error
           );
 
-
           alert(
-            'NO SE GUARDÓ LA VENTA.\n\n' +
-            (
-              resultado.error.message ||
-              'Error desconocido de Supabase.'
-            )
+            'NO SE PUDO GUARDAR LA VENTA.\n\n' +
+            resultado.error.message
           );
-
-
-          boton.disabled =
-            false;
-
-          boton.innerText =
-            'Confirmar';
-
 
           return;
         }
 
 
-        var filasGuardadas =
-          resultado.data || [];
-
-
-        console.log(
-          '=== FILAS GUARDADAS REALMENTE ===',
-          filasGuardadas
-        );
-
-
-        var totalInvalido =
-          false;
-
-
-        for (
-          var y = 0;
-          y < filasGuardadas.length;
-          y++
+        if (
+          !resultado.data ||
+          resultado.data.length !== filas.length
         ) {
 
-          if (
-            filasGuardadas[y].total === null ||
-            filasGuardadas[y].total === undefined
-          ) {
-
-            totalInvalido =
-              true;
-
-            break;
-          }
-        }
-
-
-        if (totalInvalido) {
-
-          console.error(
-            'ATENCIÓN: Supabase devolvió una fila con total NULL.'
-          );
-
-
           alert(
-            'SUPABASE GUARDÓ LA FILA PERO DEVOLVIÓ EL TOTAL COMO NULL.\n\n' +
-            'La venta NO se limpiará del carrito para evitar perderla.'
+            'LA VENTA NO SE PUDO CONFIRMAR CORRECTAMENTE.\n\n' +
+            'La base de datos no devolvió todas las filas esperadas.\n' +
+            'La cuenta NO se limpiará del carrito.'
           );
-
-
-          boton.disabled =
-            false;
-
-          boton.innerText =
-            'Confirmar';
-
 
           return;
         }
+
+
+        var devuelta =
+          montoCliente -
+          total;
 
 
         carrito =
@@ -2193,33 +2095,28 @@
 
         dibujarCarrito();
 
-
         cerrarModalCobro();
 
 
-        mostrarEstadoNube(
-          'Venta guardada correctamente en la nube.',
-          false
-        );
-
-
         alert(
-          'Venta guardada correctamente en la nube.'
+          'VENTA REGISTRADA CORRECTAMENTE.\n\n' +
+          'Total: RD$ ' +
+          total.toFixed(2) +
+          '\n' +
+          'Dinero recibido: RD$ ' +
+          montoCliente.toFixed(2) +
+          '\n' +
+          'Devuelta: RD$ ' +
+          devuelta.toFixed(2)
         );
-
-
-        document.getElementById(
-          'escaner'
-        ).focus();
 
 
       } catch (err) {
 
         console.error(
-          'ERROR GENERAL AL GUARDAR VENTA:',
+          'Error general finalizando venta:',
           err
         );
-
 
         alert(
           'NO SE PUDO GUARDAR LA VENTA.\n\n' +
@@ -2228,7 +2125,6 @@
             'Error desconocido.'
           )
         );
-
 
       } finally {
 
@@ -2249,88 +2145,87 @@
 
       try {
 
-        const resultadoVentas =
-          await supabaseClient
-            .from('ventas')
-            .select('*');
-
-
-        if (resultadoVentas.error) {
-
-          throw resultadoVentas.error;
-        }
-
-
-        const ventas =
-          resultadoVentas.data || [];
-
-
-        var fechaHoyRD =
+        var fechaHoy =
           obtenerFechaRD();
 
 
-        var ventasHoy =
-          [];
-
-
-        for (
-          var i = 0;
-          i < ventas.length;
-          i++
-        ) {
-
-          var totalVenta =
-            Number(ventas[i].total);
-
-
-          if (
-            !Number.isFinite(totalVenta)
-          ) {
-            continue;
-          }
-
-
-          if (
-            obtenerFechaVentaRD(
-              ventas[i].fecha
-            ) === fechaHoyRD
-          ) {
-
-            ventasHoy.push(
-              ventas[i]
+        const resultado =
+          await supabaseClient
+            .from('ventas')
+            .select('*')
+            .order(
+              'fecha',
+              {
+                ascending: false
+              }
             );
-          }
+
+
+        if (resultado.error) {
+
+          throw resultado.error;
         }
 
 
-        var totalHoy =
+        var ventas =
+          resultado.data || [];
+
+
+        var ventasHoy =
+          ventas.filter(
+            function(venta) {
+
+              return (
+                venta.fecha &&
+                obtenerFechaVentaRD(
+                  venta.fecha
+                ) === fechaHoy
+              );
+            }
+          );
+
+
+        var totalVentas =
           0;
 
 
         for (
-          var j = 0;
-          j < ventasHoy.length;
-          j++
+          var i = 0;
+          i < ventasHoy.length;
+          i++
         ) {
 
-          totalHoy +=
+          totalVentas +=
             Number(
-              ventasHoy[j].total
+              ventasHoy[i].total
             ) || 0;
         }
 
 
-        totalHoy =
+        totalVentas =
           Number(
-            totalHoy.toFixed(2)
+            totalVentas.toFixed(2)
           );
+
+
+        var modal =
+          document.getElementById(
+            'modal-cuadre'
+          );
+
+
+        modal.dataset.total =
+          totalVentas;
+
+        modal.dataset.articulos =
+          ventasHoy.length;
 
 
         document.getElementById(
           'cuadre-total-vendido'
         ).innerText =
           'RD$ ' +
-          totalHoy.toFixed(2);
+          totalVentas.toFixed(2);
 
 
         document.getElementById(
@@ -2354,24 +2249,10 @@
         document.getElementById(
           'cuadre-diferencia'
         ).className =
-          'diferencia-normal';
+          '';
 
 
-        document.getElementById(
-          'modal-cuadre'
-        ).dataset.total =
-          totalHoy;
-
-
-        document.getElementById(
-          'modal-cuadre'
-        ).dataset.articulos =
-          ventasHoy.length;
-
-
-        document.getElementById(
-          'modal-cuadre'
-        ).style.display =
+        modal.style.display =
           'flex';
 
 
@@ -2387,7 +2268,6 @@
           err
         );
 
-
         alert(
           'No se pudo preparar el cuadre.\n\n' +
           (
@@ -2400,7 +2280,7 @@
 
 
     // =========================================================
-    // CUADRE - CALCULAR DIFERENCIA
+    // CUADRE - DIFERENCIA
     // =========================================================
 
     function calcularDiferenciaCuadre() {
@@ -2411,31 +2291,23 @@
         );
 
 
-      var total =
+      var totalVentas =
         Number(
           modal.dataset.total
         ) || 0;
 
 
-      var contado =
+      var efectivo =
         parseFloat(
           document.getElementById(
             'cuadre-efectivo'
           ).value
-        );
-
-
-      if (
-        !Number.isFinite(contado)
-      ) {
-
-        contado = 0;
-      }
+        ) || 0;
 
 
       var diferencia =
-        contado -
-        total;
+        efectivo -
+        totalVentas;
 
 
       diferencia =
@@ -2599,6 +2471,9 @@
             .from('cuadres')
             .insert([
               {
+                fecha:
+                  new Date().toISOString(),
+
                 total_ventas:
                   totalVentas,
 
@@ -2627,7 +2502,6 @@
             'NO SE PUDO GUARDAR EL CUADRE.\n\n' +
             resultado.error.message
           );
-
 
           return;
         }
@@ -2723,7 +2597,14 @@
         const resultadoVentas =
           await supabaseClient
             .from('ventas')
-            .select('*');
+            .select('*')
+            .order(
+              'fecha',
+              {
+                ascending: false
+              }
+            )
+            .limit(500);
 
 
         if (
@@ -2738,74 +2619,44 @@
           resultadoVentas.data || [];
 
 
-        console.log(
-          'Ventas recibidas desde Supabase:',
-          ventas
-        );
-
-
         var fechaHoyRD =
           obtenerFechaRD();
 
 
-        var ventasValidas =
-          [];
+        var ventasHoy =
+          ventas.filter(
+            function(venta) {
 
-
-        for (
-          var i = 0;
-          i < ventas.length;
-          i++
-        ) {
-
-          var totalFila =
-            Number(
-              ventas[i].total
-            );
-
-
-          if (
-            !Number.isFinite(totalFila)
-          ) {
-            continue;
-          }
-
-
-          if (
-            obtenerFechaVentaRD(
-              ventas[i].fecha
-            ) !== fechaHoyRD
-          ) {
-            continue;
-          }
-
-
-          ventasValidas.push(
-            ventas[i]
+              return (
+                venta.fecha &&
+                obtenerFechaVentaRD(
+                  venta.fecha
+                ) === fechaHoyRD
+              );
+            }
           );
-        }
 
 
-        var total =
+        var totalVentasHoy =
           0;
 
 
         for (
-          var j = 0;
-          j < ventasValidas.length;
-          j++
+          var i = 0;
+          i < ventasHoy.length;
+          i++
         ) {
 
-          total +=
+          totalVentasHoy +=
             Number(
-              ventasValidas[j].total
+              ventasHoy[i].total
             ) || 0;
         }
 
 
-        total =
+        totalVentasHoy =
           Number(
-            total.toFixed(2)
+            totalVentasHoy.toFixed(2)
           );
 
 
@@ -2813,23 +2664,19 @@
           'admin-total-dia'
         ).innerText =
           'RD$ ' +
-          total.toFixed(2);
+          totalVentasHoy.toFixed(2);
 
 
         document.getElementById(
           'admin-conteo-articulos'
         ).innerText =
-          ventasValidas.length +
+          ventasHoy.length +
           (
-            ventasValidas.length === 1
+            ventasHoy.length === 1
               ? ' artículo facturado hoy'
               : ' artículos facturados hoy'
           );
 
-
-        // =====================================================
-        // DETALLE DE VENTAS
-        // =====================================================
 
         var tbodyVentas =
           document.getElementById(
@@ -2842,7 +2689,7 @@
 
 
         if (
-          ventasValidas.length === 0
+          ventasHoy.length === 0
         ) {
 
           tbodyVentas.innerHTML =
@@ -2859,53 +2706,14 @@
 
         } else {
 
-          ventasValidas.sort(
-            function(a, b) {
-
-              return new Date(b.fecha) -
-                     new Date(a.fecha);
-
-            }
-          );
-
-
           for (
             var v = 0;
-            v < ventasValidas.length;
+            v < ventasHoy.length;
             v++
           ) {
 
             var venta =
-              ventasValidas[v];
-
-
-            var precio =
-              Number(
-                venta.precio
-              ) || 0;
-
-
-            var cantidad =
-              Number(
-                venta.cantidad
-              ) || 1;
-
-
-            var subtotal =
-              Number(
-                venta.subtotal
-              );
-
-
-            if (
-              !Number.isFinite(subtotal)
-            ) {
-
-              subtotal =
-                Number(
-                  venta.total
-                ) || 0;
-            }
+              ventasHoy[v];
 
 
             tbodyVentas.innerHTML +=
@@ -2921,7 +2729,7 @@
               '<td>' +
               (
                 venta.nombre ||
-                'Sin nombre'
+                ''
               ) +
               '</td>' +
 
@@ -2933,15 +2741,21 @@
               '</td>' +
 
               '<td>RD$ ' +
-              precio.toFixed(2) +
+              (
+                Number(
+                  venta.total
+                ) || 0
+              ).toFixed(2) +
               '</td>' +
 
-              '<td>' +
-              cantidad +
-              '</td>' +
+              '<td>1</td>' +
 
               '<td>RD$ ' +
-              subtotal.toFixed(2) +
+              (
+                Number(
+                  venta.total
+                ) || 0
+              ).toFixed(2) +
               '</td>' +
 
               '</tr>';
@@ -2956,7 +2770,14 @@
         const resultadoCancelaciones =
           await supabaseClient
             .from('cancelaciones')
-            .select('*');
+            .select('*')
+            .order(
+              'fecha',
+              {
+                ascending: false
+              }
+            )
+            .limit(500);
 
 
         if (
@@ -2971,11 +2792,6 @@
           resultadoCancelaciones.data || [];
 
 
-        // IMPORTANTE:
-        // Solo mostramos en la aplicación las cancelaciones
-        // y modificaciones correspondientes al día actual.
-        // No se elimina ninguna fila de Supabase.
-
         var cancelacionesHoy =
           cancelaciones.filter(
             function(cancelacion) {
@@ -2986,7 +2802,6 @@
                   cancelacion.fecha
                 ) === fechaHoyRD
               );
-
             }
           );
 
@@ -3011,7 +2826,7 @@
 
             '<td colspan="4" style="text-align:center; color:#666; padding:25px;">' +
 
-            'No hay modificaciones ni anulaciones registradas hoy.' +
+            'No hay modificaciones ni cancelaciones hoy.' +
 
             '</td>' +
 
@@ -3019,42 +2834,35 @@
 
         } else {
 
-          cancelacionesHoy.sort(
-            function(a, b) {
-
-              return new Date(b.fecha) -
-                     new Date(a.fecha);
-
-            }
-          );
-
-
           for (
             var k = 0;
             k < cancelacionesHoy.length;
             k++
           ) {
 
+            var cancelacion =
+              cancelacionesHoy[k];
+
+
             var motivo =
-              cancelacionesHoy[k].motivo || '';
-
-
-            var esModif =
-              motivo.includes(
-                '[MODIFICADO]'
-              );
-
-
-            var colorTexto =
-              esModif
-                ? 'color:#d4af37;'
-                : 'color:#ef4444;';
+              cancelacion.motivo ||
+              cancelacion.detalle ||
+              '';
 
 
             var precioCancelacion =
               Number(
-                cancelacionesHoy[k].precio
+                cancelacion.precio ??
+                cancelacion.monto
               ) || 0;
+
+
+            var colorTexto =
+              motivo.indexOf(
+                'ANULADO'
+              ) === 0
+                ? 'color:#ef4444; font-weight:700;'
+                : 'color:#d4af37; font-weight:700;';
 
 
             tbodyAuditoria.innerHTML +=
@@ -3062,14 +2870,15 @@
               '<tr>' +
 
               '<td>' +
-              (
-                cancelacionesHoy[k].hora || ''
+              formatearHoraRD(
+                cancelacion.fecha
               ) +
               '</td>' +
 
               '<td>' +
               (
-                cancelacionesHoy[k].corte || ''
+                cancelacion.corte ||
+                ''
               ) +
               '</td>' +
 
@@ -3185,7 +2994,9 @@
 
               textoDiferencia =
                 'RD$ -' +
-                Math.abs(diferencia).toFixed(2);
+                Math.abs(
+                  diferencia
+                ).toFixed(2);
 
             } else if (
               diferencia > 0
@@ -3239,13 +3050,13 @@
 
               '<td style="' +
               estiloEstado +
-              '; font-weight:700;">' +
+              ' font-weight:700;">' +
               textoDiferencia +
               '</td>' +
 
               '<td style="' +
               estiloEstado +
-              '; font-weight:700;">' +
+              ' font-weight:700;">' +
               estado +
               '</td>' +
 
@@ -3537,14 +3348,6 @@
         var fechaActualRD =
           obtenerFechaRD();
 
-
-        /*
-          Si cambió la fecha en República Dominicana
-          y el administrador está abierto, actualizamos
-          inmediatamente las ventas y auditoría.
-
-          NO se elimina ningún registro de Supabase.
-        */
 
         if (
           fechaActualRD !== ultimaFechaAdmin
