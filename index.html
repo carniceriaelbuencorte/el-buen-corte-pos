@@ -135,6 +135,67 @@
       min-height: 18px;
     }
 
+    .tarjeta-seccion {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 22px;
+      margin-top: 24px;
+    }
+
+    .titulo-seccion {
+      color: #d4af37;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .subtitulo-seccion {
+      color: #666;
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+    }
+
+    .cuadre-resumen {
+      background: #0f0f0f;
+      border: 1px solid #292929;
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .cuadre-fila {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 8px 0;
+      border-bottom: 1px solid #202020;
+    }
+
+    .cuadre-fila:last-child {
+      border-bottom: none;
+    }
+
+    .cuadre-label {
+      color: #888;
+    }
+
+    .cuadre-valor {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .diferencia-normal {
+      color: #22c55e !important;
+    }
+
+    .diferencia-faltante {
+      color: #ef4444 !important;
+    }
+
+    .diferencia-sobrante {
+      color: #d4af37 !important;
+    }
+
     @media (max-width: 800px) {
       body {
         padding: 12px;
@@ -152,6 +213,16 @@
       .tabla th,
       .tabla td {
         padding: 9px 5px;
+      }
+
+      .tabla {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .cuadre-fila {
+        flex-direction: column;
+        gap: 3px;
       }
     }
   </style>
@@ -408,7 +479,7 @@
   ========================================================== -->
 
   <div id="vista-admin"
-       style="display:none; max-width:1100px; margin:0 auto;">
+       style="display:none; max-width:1200px; margin:0 auto;">
 
     <div
       style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:16px; margin-bottom:24px;"
@@ -421,7 +492,7 @@
         </h2>
 
         <span style="font-size:0.8rem; color:#888;">
-          Auditoría de Modificaciones y Descuentos
+          Ventas, Cuadres y Auditoría
         </span>
 
       </div>
@@ -454,6 +525,8 @@
     </div>
 
 
+    <!-- RESUMEN DEL DÍA -->
+
     <div style="display:flex; gap:24px;">
 
       <div
@@ -481,40 +554,127 @@
       </div>
 
 
+      <!-- RESUMEN ÚLTIMO CUADRE -->
+
       <div
-        style="flex:2; background:#141414; padding:22px; border-radius:10px; border:1px solid #222;"
+        style="flex:1; background:#141414; padding:22px; border-radius:10px; border:1px solid #222;"
       >
 
         <h3
-          style="color:#d4af37; font-size:1.05rem; margin-bottom:6px;"
+          style="color:#d4af37; font-size:1.05rem; margin-bottom:10px;"
         >
-          Auditoría: Modificaciones y Cancelaciones
+          Último Cuadre
         </h3>
 
-        <p
-          style="color:#666; font-size:0.8rem; margin-bottom:12px;"
-        >
-          Registro de descuentos, precios de suplidor y anulaciones
-        </p>
+        <div id="ultimo-cuadre-admin">
 
-        <table class="tabla">
+          <p style="color:#666; font-size:0.85rem;">
+            No hay cuadres registrados todavía.
+          </p>
 
-          <thead>
-
-            <tr>
-              <th>Hora</th>
-              <th>Corte</th>
-              <th>Monto</th>
-              <th>Detalle / Motivo</th>
-            </tr>
-
-          </thead>
-
-          <tbody id="cuerpo-tabla-auditoria"></tbody>
-
-        </table>
+        </div>
 
       </div>
+
+    </div>
+
+
+    <!-- DETALLE DE VENTAS -->
+
+    <div class="tarjeta-seccion">
+
+      <h3 class="titulo-seccion">
+        Detalle de Ventas del Día
+      </h3>
+
+      <p class="subtitulo-seccion">
+        Productos vendidos durante el día actual
+      </p>
+
+      <table class="tabla">
+
+        <thead>
+
+          <tr>
+            <th>Hora</th>
+            <th>Producto</th>
+            <th>PLU</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="cuerpo-tabla-ventas"></tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- CUADRES -->
+
+    <div class="tarjeta-seccion">
+
+      <h3 class="titulo-seccion">
+        Cuadres de Caja
+      </h3>
+
+      <p class="subtitulo-seccion">
+        Historial de cuadres realizados por la cajera
+      </p>
+
+      <table class="tabla">
+
+        <thead>
+
+          <tr>
+            <th>Fecha / Hora</th>
+            <th>Total vendido</th>
+            <th>Artículos</th>
+            <th>Dinero contado</th>
+            <th>Diferencia</th>
+            <th>Estado</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="cuerpo-tabla-cuadres"></tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- AUDITORÍA -->
+
+    <div class="tarjeta-seccion">
+
+      <h3 class="titulo-seccion">
+        Auditoría: Modificaciones y Cancelaciones
+      </h3>
+
+      <p class="subtitulo-seccion">
+        Registro de descuentos, precios de suplidor y anulaciones
+      </p>
+
+      <table class="tabla">
+
+        <thead>
+
+          <tr>
+            <th>Hora</th>
+            <th>Corte</th>
+            <th>Monto</th>
+            <th>Detalle / Motivo</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="cuerpo-tabla-auditoria"></tbody>
+
+      </table>
 
     </div>
 
@@ -577,6 +737,131 @@
           style="flex:1; margin:0; font-size:1rem;"
         >
           Confirmar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       MODAL CUADRE
+  ========================================================== -->
+
+  <div
+    id="modal-cuadre"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); align-items:center; justify-content:center; z-index:1000;"
+  >
+
+    <div
+      style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:430px; max-width:95%;"
+    >
+
+      <h3
+        style="font-size:1.3rem; text-align:center;"
+      >
+        Cuadre de Caja
+      </h3>
+
+      <p
+        style="text-align:center; color:#777; font-size:0.85rem; margin-top:6px;"
+      >
+        Verifique el dinero físico antes de confirmar.
+      </p>
+
+
+      <div class="cuadre-resumen">
+
+        <div class="cuadre-fila">
+
+          <span class="cuadre-label">
+            Total vendido
+          </span>
+
+          <span
+            id="cuadre-total-vendido"
+            class="cuadre-valor"
+          >
+            RD$ 0.00
+          </span>
+
+        </div>
+
+
+        <div class="cuadre-fila">
+
+          <span class="cuadre-label">
+            Artículos vendidos
+          </span>
+
+          <span
+            id="cuadre-articulos"
+            class="cuadre-valor"
+          >
+            0
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <label
+        style="display:block; color:#ccc; font-size:0.9rem; margin-top:20px; text-align:left;"
+      >
+        Dinero físico contado
+      </label>
+
+      <input
+        type="number"
+        id="cuadre-efectivo"
+        class="caja-input"
+        placeholder="RD$"
+        step="0.01"
+        min="0"
+        oninput="calcularDiferenciaCuadre()"
+      />
+
+
+      <div
+        style="background:#0f0f0f; border:1px solid #292929; border-radius:8px; padding:15px; text-align:center;"
+      >
+
+        <div
+          style="color:#888; font-size:0.85rem;"
+        >
+          DIFERENCIA
+        </div>
+
+        <div
+          id="cuadre-diferencia"
+          style="font-size:1.8rem; font-weight:800; color:#fff; margin-top:5px;"
+        >
+          RD$ 0.00
+        </div>
+
+      </div>
+
+
+      <div style="display:flex; gap:10px; margin-top:20px;">
+
+        <button
+          onclick="cerrarModalCuadre()"
+          class="btn-gray"
+          style="flex:1;"
+        >
+          Cancelar
+        </button>
+
+        <button
+          id="btn-confirmar-cuadre"
+          onclick="confirmarCuadre()"
+          class="btn-green"
+          style="flex:1; margin:0;"
+        >
+          Confirmar Cuadre
         </button>
 
       </div>
@@ -815,6 +1100,9 @@
       document.getElementById('modal-cobro').style.display =
         'none';
 
+      document.getElementById('modal-cuadre').style.display =
+        'none';
+
       cancelarLogin();
 
       document.getElementById('vista-login').style.display =
@@ -893,6 +1181,91 @@
         error
           ? '#ef4444'
           : '#22c55e';
+    }
+
+
+    // =========================================================
+    // FECHAS - REPÚBLICA DOMINICANA
+    // =========================================================
+
+    function obtenerFechaRD() {
+
+      return new Intl.DateTimeFormat(
+        'en-CA',
+        {
+          timeZone: 'America/Santo_Domingo',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }
+      ).format(
+        new Date()
+      );
+    }
+
+
+    function obtenerFechaVentaRD(fecha) {
+
+      if (!fecha) {
+        return '';
+      }
+
+      return new Intl.DateTimeFormat(
+        'en-CA',
+        {
+          timeZone: 'America/Santo_Domingo',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }
+      ).format(
+        new Date(fecha)
+      );
+    }
+
+
+    function formatearHoraRD(fecha) {
+
+      if (!fecha) {
+        return '';
+      }
+
+      return new Intl.DateTimeFormat(
+        'es-DO',
+        {
+          timeZone: 'America/Santo_Domingo',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        }
+      ).format(
+        new Date(fecha)
+      );
+    }
+
+
+    function formatearFechaHoraRD(fecha) {
+
+      if (!fecha) {
+        return '';
+      }
+
+      return new Intl.DateTimeFormat(
+        'es-DO',
+        {
+          timeZone: 'America/Santo_Domingo',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        }
+      ).format(
+        new Date(fecha)
+      );
     }
 
 
@@ -1574,12 +1947,6 @@
           new Date().toISOString();
 
 
-        /*
-          IMPORTANTE:
-          Construimos explícitamente todos los valores.
-          No dejamos ningún campo importante como undefined.
-        */
-
         var registrosVenta =
           [];
 
@@ -1621,6 +1988,7 @@
             !Number.isFinite(descuento) ||
             descuento < 0
           ) {
+
             descuento = 0;
           }
 
@@ -1689,10 +2057,6 @@
         );
 
 
-        /*
-          Insertamos exactamente esos registros.
-        */
-
         const resultado =
           await supabaseClient
             .from('ventas')
@@ -1736,11 +2100,6 @@
         }
 
 
-        /*
-          Si Supabase devuelve filas, verificamos
-          que realmente tengan total.
-        */
-
         var filasGuardadas =
           resultado.data || [];
 
@@ -1750,31 +2109,6 @@
           filasGuardadas
         );
 
-
-        for (
-          var x = 0;
-          x < filasGuardadas.length;
-          x++
-        ) {
-
-          console.log(
-            'Fila guardada #' +
-            x +
-            ':',
-            filasGuardadas[x]
-          );
-
-          console.log(
-            'TOTAL GUARDADO:',
-            filasGuardadas[x].total
-          );
-        }
-
-
-        /*
-          Si Supabase devuelve una fila pero total
-          aparece NULL, detenemos el proceso y avisamos.
-        */
 
         var totalInvalido =
           false;
@@ -1822,11 +2156,6 @@
           return;
         }
 
-
-        /*
-          Todo correcto.
-          Ahora sí vaciamos el carrito.
-        */
 
         carrito =
           [];
@@ -1883,20 +2212,463 @@
 
 
     // =========================================================
-    // CUADRE
+    // CUADRE - ABRIR
     // =========================================================
 
     async function hacerCuadre() {
 
+      try {
+
+        const resultadoVentas =
+          await supabaseClient
+            .from('ventas')
+            .select('*');
+
+
+        if (resultadoVentas.error) {
+
+          throw resultadoVentas.error;
+        }
+
+
+        const ventas =
+          resultadoVentas.data || [];
+
+
+        var fechaHoyRD =
+          obtenerFechaRD();
+
+
+        var ventasHoy =
+          [];
+
+
+        for (
+          var i = 0;
+          i < ventas.length;
+          i++
+        ) {
+
+          var totalVenta =
+            Number(ventas[i].total);
+
+
+          if (
+            !Number.isFinite(totalVenta)
+          ) {
+            continue;
+          }
+
+
+          if (
+            obtenerFechaVentaRD(
+              ventas[i].fecha
+            ) === fechaHoyRD
+          ) {
+
+            ventasHoy.push(
+              ventas[i]
+            );
+          }
+        }
+
+
+        var totalHoy =
+          0;
+
+
+        for (
+          var j = 0;
+          j < ventasHoy.length;
+          j++
+        ) {
+
+          totalHoy +=
+            Number(
+              ventasHoy[j].total
+            ) || 0;
+        }
+
+
+        totalHoy =
+          Number(
+            totalHoy.toFixed(2)
+          );
+
+
+        document.getElementById(
+          'cuadre-total-vendido'
+        ).innerText =
+          'RD$ ' +
+          totalHoy.toFixed(2);
+
+
+        document.getElementById(
+          'cuadre-articulos'
+        ).innerText =
+          ventasHoy.length;
+
+
+        document.getElementById(
+          'cuadre-efectivo'
+        ).value =
+          '';
+
+
+        document.getElementById(
+          'cuadre-diferencia'
+        ).innerText =
+          'RD$ 0.00';
+
+
+        document.getElementById(
+          'cuadre-diferencia'
+        ).className =
+          'diferencia-normal';
+
+
+        document.getElementById(
+          'modal-cuadre'
+        ).dataset.total =
+          totalHoy;
+
+
+        document.getElementById(
+          'modal-cuadre'
+        ).dataset.articulos =
+          ventasHoy.length;
+
+
+        document.getElementById(
+          'modal-cuadre'
+        ).style.display =
+          'flex';
+
+
+        document.getElementById(
+          'cuadre-efectivo'
+        ).focus();
+
+
+      } catch (err) {
+
+        console.error(
+          'Error preparando cuadre:',
+          err
+        );
+
+
+        alert(
+          'No se pudo preparar el cuadre.\n\n' +
+          (
+            err.message ||
+            'Error desconocido.'
+          )
+        );
+      }
+    }
+
+
+    // =========================================================
+    // CUADRE - CALCULAR DIFERENCIA
+    // =========================================================
+
+    function calcularDiferenciaCuadre() {
+
+      var modal =
+        document.getElementById(
+          'modal-cuadre'
+        );
+
+
+      var total =
+        Number(
+          modal.dataset.total
+        ) || 0;
+
+
+      var contado =
+        parseFloat(
+          document.getElementById(
+            'cuadre-efectivo'
+          ).value
+        );
+
+
       if (
-        confirm(
-          '¿Proceder al cierre del turno y reiniciar balance diario?'
-        )
+        !Number.isFinite(contado)
+      ) {
+
+        contado = 0;
+      }
+
+
+      var diferencia =
+        contado -
+        total;
+
+
+      diferencia =
+        Number(
+          diferencia.toFixed(2)
+        );
+
+
+      var elemento =
+        document.getElementById(
+          'cuadre-diferencia'
+        );
+
+
+      if (
+        diferencia === 0
+      ) {
+
+        elemento.innerText =
+          'RD$ 0.00';
+
+        elemento.className =
+          'diferencia-normal';
+
+        return;
+      }
+
+
+      if (
+        diferencia < 0
+      ) {
+
+        elemento.innerText =
+          'Faltante: RD$ ' +
+          Math.abs(diferencia).toFixed(2);
+
+        elemento.className =
+          'diferencia-faltante';
+
+        return;
+      }
+
+
+      elemento.innerText =
+        'Sobrante: RD$ ' +
+        diferencia.toFixed(2);
+
+      elemento.className =
+        'diferencia-sobrante';
+    }
+
+
+    // =========================================================
+    // CUADRE - CERRAR MODAL
+    // =========================================================
+
+    function cerrarModalCuadre() {
+
+      document.getElementById(
+        'modal-cuadre'
+      ).style.display =
+        'none';
+    }
+
+
+    // =========================================================
+    // CUADRE - GUARDAR
+    // =========================================================
+
+    async function confirmarCuadre() {
+
+      var modal =
+        document.getElementById(
+          'modal-cuadre'
+        );
+
+
+      var totalVentas =
+        Number(
+          modal.dataset.total
+        ) || 0;
+
+
+      var articulos =
+        Number(
+          modal.dataset.articulos
+        ) || 0;
+
+
+      var efectivoTexto =
+        document.getElementById(
+          'cuadre-efectivo'
+        ).value.trim();
+
+
+      if (
+        efectivoTexto === ''
       ) {
 
         alert(
-          'Turno cerrado correctamente.'
+          'Debe ingresar el dinero físico contado.'
         );
+
+        return;
+      }
+
+
+      var efectivoContado =
+        parseFloat(
+          efectivoTexto
+        );
+
+
+      if (
+        !Number.isFinite(efectivoContado) ||
+        efectivoContado < 0
+      ) {
+
+        alert(
+          'El dinero físico contado no es válido.'
+        );
+
+        return;
+      }
+
+
+      efectivoContado =
+        Number(
+          efectivoContado.toFixed(2)
+        );
+
+
+      var diferencia =
+        efectivoContado -
+        totalVentas;
+
+
+      diferencia =
+        Number(
+          diferencia.toFixed(2)
+        );
+
+
+      var boton =
+        document.getElementById(
+          'btn-confirmar-cuadre'
+        );
+
+
+      boton.disabled =
+        true;
+
+      boton.innerText =
+        'Guardando...';
+
+
+      try {
+
+        const resultado =
+          await supabaseClient
+            .from('cuadres')
+            .insert([
+              {
+                total_ventas:
+                  totalVentas,
+
+                articulos:
+                  articulos,
+
+                efectivo_contado:
+                  efectivoContado,
+
+                diferencia:
+                  diferencia
+              }
+            ])
+            .select();
+
+
+        if (resultado.error) {
+
+          console.error(
+            'Error guardando cuadre:',
+            resultado.error
+          );
+
+
+          alert(
+            'NO SE PUDO GUARDAR EL CUADRE.\n\n' +
+            resultado.error.message
+          );
+
+
+          return;
+        }
+
+
+        cerrarModalCuadre();
+
+
+        var mensaje =
+          'CUADRE REALIZADO EXITOSAMENTE.\n\n' +
+          'Total vendido: RD$ ' +
+          totalVentas.toFixed(2) +
+          '\n' +
+          'Dinero contado: RD$ ' +
+          efectivoContado.toFixed(2) +
+          '\n';
+
+
+        if (
+          diferencia === 0
+        ) {
+
+          mensaje +=
+            'Diferencia: RD$ 0.00\n\n' +
+            'La caja está cuadrada.';
+
+        } else if (
+          diferencia < 0
+        ) {
+
+          mensaje +=
+            'Faltante: RD$ ' +
+            Math.abs(diferencia).toFixed(2);
+
+        } else {
+
+          mensaje +=
+            'Sobrante: RD$ ' +
+            diferencia.toFixed(2);
+        }
+
+
+        alert(
+          mensaje
+        );
+
+
+      } catch (err) {
+
+        console.error(
+          'Error general guardando cuadre:',
+          err
+        );
+
+
+        alert(
+          'NO SE PUDO GUARDAR EL CUADRE.\n\n' +
+          (
+            err.message ||
+            'Error desconocido.'
+          )
+        );
+
+
+      } finally {
+
+        boton.disabled =
+          false;
+
+        boton.innerText =
+          'Confirmar Cuadre';
       }
     }
 
@@ -1909,11 +2681,9 @@
 
       try {
 
-        /*
-          Solo utilizamos registros de ventas.
-          Las anulaciones viven en cancelaciones y
-          NO se suman aquí.
-        */
+        // =====================================================
+        // VENTAS
+        // =====================================================
 
         const resultadoVentas =
           await supabaseClient
@@ -1939,14 +2709,9 @@
         );
 
 
-        /*
-          IMPORTANTE:
-          Solamente contamos filas que tengan un
-          total numérico válido.
+        var fechaHoyRD =
+          obtenerFechaRD();
 
-          Las filas antiguas con total NULL
-          no se contabilizan.
-        */
 
         var ventasValidas =
           [];
@@ -1959,17 +2724,30 @@
         ) {
 
           var totalFila =
-            Number(ventas[i].total);
+            Number(
+              ventas[i].total
+            );
 
 
           if (
-            Number.isFinite(totalFila)
+            !Number.isFinite(totalFila)
           ) {
-
-            ventasValidas.push(
-              ventas[i]
-            );
+            continue;
           }
+
+
+          if (
+            obtenerFechaVentaRD(
+              ventas[i].fecha
+            ) !== fechaHoyRD
+          ) {
+            continue;
+          }
+
+
+          ventasValidas.push(
+            ventas[i]
+          );
         }
 
 
@@ -1990,6 +2768,12 @@
         }
 
 
+        total =
+          Number(
+            total.toFixed(2)
+          );
+
+
         document.getElementById(
           'admin-total-dia'
         ).innerText =
@@ -2001,7 +2785,138 @@
           'admin-conteo-articulos'
         ).innerText =
           ventasValidas.length +
-          ' artículos facturados en total';
+          (
+            ventasValidas.length === 1
+              ? ' artículo facturado hoy'
+              : ' artículos facturados hoy'
+          );
+
+
+        // =====================================================
+        // DETALLE DE VENTAS
+        // =====================================================
+
+        var tbodyVentas =
+          document.getElementById(
+            'cuerpo-tabla-ventas'
+          );
+
+
+        tbodyVentas.innerHTML =
+          '';
+
+
+        if (
+          ventasValidas.length === 0
+        ) {
+
+          tbodyVentas.innerHTML =
+
+            '<tr>' +
+
+            '<td colspan="6" style="text-align:center; color:#666; padding:25px;">' +
+
+            'No hay ventas registradas hoy.' +
+
+            '</td>' +
+
+            '</tr>';
+
+        } else {
+
+          /*
+            Ordenamos de la más reciente
+            a la más antigua.
+          */
+
+          ventasValidas.sort(
+            function(a, b) {
+
+              return new Date(b.fecha) -
+                     new Date(a.fecha);
+
+            }
+          );
+
+
+          for (
+            var v = 0;
+            v < ventasValidas.length;
+            v++
+          ) {
+
+            var venta =
+              ventasValidas[v];
+
+
+            var precio =
+              Number(
+                venta.precio
+              ) || 0;
+
+
+            var cantidad =
+              Number(
+                venta.cantidad
+              ) || 1;
+
+
+            var subtotal =
+              Number(
+                venta.subtotal
+              );
+
+
+            if (
+              !Number.isFinite(subtotal)
+            ) {
+
+              subtotal =
+                Number(
+                  venta.total
+                ) || 0;
+            }
+
+
+            tbodyVentas.innerHTML +=
+
+              '<tr>' +
+
+              '<td>' +
+              formatearHoraRD(
+                venta.fecha
+              ) +
+              '</td>' +
+
+              '<td>' +
+              (
+                venta.nombre ||
+                'Sin nombre'
+              ) +
+              '</td>' +
+
+              '<td>' +
+              (
+                venta.plu ||
+                ''
+              ) +
+              '</td>' +
+
+              '<td>RD$ ' +
+              precio.toFixed(2) +
+              '</td>' +
+
+              '<td>' +
+              cantidad +
+              '</td>' +
+
+              '<td>RD$ ' +
+              subtotal.toFixed(2) +
+              '</td>' +
+
+              '</tr>';
+          }
+        }
 
 
         // =====================================================
@@ -2026,71 +2941,390 @@
           resultadoCancelaciones.data || [];
 
 
-        var tbody =
+        var tbodyAuditoria =
           document.getElementById(
             'cuerpo-tabla-auditoria'
           );
 
 
-        tbody.innerHTML =
+        tbodyAuditoria.innerHTML =
           '';
 
 
-        for (
-          var k = 0;
-          k < cancelaciones.length;
-          k++
+        if (
+          cancelaciones.length === 0
         ) {
 
-          var motivo =
-            cancelaciones[k].motivo || '';
-
-
-          var esModif =
-            motivo.includes(
-              '[MODIFICADO]'
-            );
-
-
-          var colorTexto =
-            esModif
-              ? 'color:#d4af37;'
-              : 'color:#ef4444;';
-
-
-          var precioCancelacion =
-            Number(
-              cancelaciones[k].precio
-            ) || 0;
-
-
-          tbody.innerHTML +=
+          tbodyAuditoria.innerHTML =
 
             '<tr>' +
 
-            '<td>' +
-            (
-              cancelaciones[k].hora || ''
-            ) +
-            '</td>' +
+            '<td colspan="4" style="text-align:center; color:#666; padding:25px;">' +
 
-            '<td>' +
-            (
-              cancelaciones[k].corte || ''
-            ) +
-            '</td>' +
+            'No hay modificaciones ni anulaciones registradas.' +
 
-            '<td>RD$ ' +
-            precioCancelacion.toFixed(2) +
-            '</td>' +
-
-            '<td style="' +
-            colorTexto +
-            '">' +
-            motivo +
             '</td>' +
 
             '</tr>';
+
+        } else {
+
+          for (
+            var k = cancelaciones.length - 1;
+            k >= 0;
+            k--
+          ) {
+
+            var motivo =
+              cancelaciones[k].motivo || '';
+
+
+            var esModif =
+              motivo.includes(
+                '[MODIFICADO]'
+              );
+
+
+            var colorTexto =
+              esModif
+                ? 'color:#d4af37;'
+                : 'color:#ef4444;';
+
+
+            var precioCancelacion =
+              Number(
+                cancelaciones[k].precio
+              ) || 0;
+
+
+            tbodyAuditoria.innerHTML +=
+
+              '<tr>' +
+
+              '<td>' +
+              (
+                cancelaciones[k].hora || ''
+              ) +
+              '</td>' +
+
+              '<td>' +
+              (
+                cancelaciones[k].corte || ''
+              ) +
+              '</td>' +
+
+              '<td>RD$ ' +
+              precioCancelacion.toFixed(2) +
+              '</td>' +
+
+              '<td style="' +
+              colorTexto +
+              '">' +
+              motivo +
+              '</td>' +
+
+              '</tr>';
+          }
+        }
+
+
+        // =====================================================
+        // CUADRES
+        // =====================================================
+
+        const resultadoCuadres =
+          await supabaseClient
+            .from('cuadres')
+            .select('*')
+            .order(
+              'fecha',
+              {
+                ascending: false
+              }
+            )
+            .limit(50);
+
+
+        if (
+          resultadoCuadres.error
+        ) {
+
+          throw resultadoCuadres.error;
+        }
+
+
+        const cuadres =
+          resultadoCuadres.data || [];
+
+
+        var tbodyCuadres =
+          document.getElementById(
+            'cuerpo-tabla-cuadres'
+          );
+
+
+        tbodyCuadres.innerHTML =
+          '';
+
+
+        if (
+          cuadres.length === 0
+        ) {
+
+          tbodyCuadres.innerHTML =
+
+            '<tr>' +
+
+            '<td colspan="6" style="text-align:center; color:#666; padding:25px;">' +
+
+            'No hay cuadres registrados todavía.' +
+
+            '</td>' +
+
+            '</tr>';
+
+        } else {
+
+          for (
+            var c = 0;
+            c < cuadres.length;
+            c++
+          ) {
+
+            var cuadre =
+              cuadres[c];
+
+
+            var diferencia =
+              Number(
+                cuadre.diferencia
+              ) || 0;
+
+
+            var estado =
+              'CUADRADO';
+
+
+            var estiloEstado =
+              'color:#22c55e;';
+
+
+            var textoDiferencia =
+              'RD$ 0.00';
+
+
+            if (
+              diferencia < 0
+            ) {
+
+              estado =
+                'FALTANTE';
+
+              estiloEstado =
+                'color:#ef4444;';
+
+              textoDiferencia =
+                'RD$ -' +
+                Math.abs(diferencia).toFixed(2);
+
+            } else if (
+              diferencia > 0
+            ) {
+
+              estado =
+                'SOBRANTE';
+
+              estiloEstado =
+                'color:#d4af37;';
+
+              textoDiferencia =
+                'RD$ +' +
+                diferencia.toFixed(2);
+            }
+
+
+            tbodyCuadres.innerHTML +=
+
+              '<tr>' +
+
+              '<td>' +
+              formatearFechaHoraRD(
+                cuadre.fecha
+              ) +
+              '</td>' +
+
+              '<td>RD$ ' +
+              (
+                Number(
+                  cuadre.total_ventas
+                ) || 0
+              ).toFixed(2) +
+              '</td>' +
+
+              '<td>' +
+              (
+                Number(
+                  cuadre.articulos
+                ) || 0
+              ) +
+              '</td>' +
+
+              '<td>RD$ ' +
+              (
+                Number(
+                  cuadre.efectivo_contado
+                ) || 0
+              ).toFixed(2) +
+              '</td>' +
+
+              '<td style="' +
+              estiloEstado +
+              '; font-weight:700;">' +
+              textoDiferencia +
+              '</td>' +
+
+              '<td style="' +
+              estiloEstado +
+              '; font-weight:700;">' +
+              estado +
+              '</td>' +
+
+              '</tr>';
+          }
+        }
+
+
+        // =====================================================
+        // ÚLTIMO CUADRE
+        // =====================================================
+
+        var ultimoCuadreElemento =
+          document.getElementById(
+            'ultimo-cuadre-admin'
+          );
+
+
+        if (
+          cuadres.length === 0
+        ) {
+
+          ultimoCuadreElemento.innerHTML =
+
+            '<p style="color:#666; font-size:0.85rem;">' +
+            'No hay cuadres registrados todavía.' +
+            '</p>';
+
+        } else {
+
+          var ultimo =
+            cuadres[0];
+
+
+          var diferenciaUltimo =
+            Number(
+              ultimo.diferencia
+            ) || 0;
+
+
+          var textoUltimaDiferencia =
+            'RD$ 0.00';
+
+
+          var claseUltima =
+            'diferencia-normal';
+
+
+          var estadoUltimo =
+            'CUADRADO';
+
+
+          if (
+            diferenciaUltimo < 0
+          ) {
+
+            textoUltimaDiferencia =
+              'Faltante: RD$ ' +
+              Math.abs(
+                diferenciaUltimo
+              ).toFixed(2);
+
+            claseUltima =
+              'diferencia-faltante';
+
+            estadoUltimo =
+              'FALTANTE';
+
+          } else if (
+            diferenciaUltimo > 0
+          ) {
+
+            textoUltimaDiferencia =
+              'Sobrante: RD$ ' +
+              diferenciaUltimo.toFixed(2);
+
+            claseUltima =
+              'diferencia-sobrante';
+
+            estadoUltimo =
+              'SOBRANTE';
+          }
+
+
+          ultimoCuadreElemento.innerHTML =
+
+            '<div class="cuadre-fila">' +
+
+            '<span class="cuadre-label">Fecha / hora</span>' +
+
+            '<span class="cuadre-valor">' +
+            formatearFechaHoraRD(
+              ultimo.fecha
+            ) +
+            '</span>' +
+
+            '</div>' +
+
+            '<div class="cuadre-fila">' +
+
+            '<span class="cuadre-label">Total vendido</span>' +
+
+            '<span class="cuadre-valor">RD$ ' +
+            (
+              Number(
+                ultimo.total_ventas
+              ) || 0
+            ).toFixed(2) +
+            '</span>' +
+
+            '</div>' +
+
+            '<div class="cuadre-fila">' +
+
+            '<span class="cuadre-label">Dinero contado</span>' +
+
+            '<span class="cuadre-valor">RD$ ' +
+            (
+              Number(
+                ultimo.efectivo_contado
+              ) || 0
+            ).toFixed(2) +
+            '</span>' +
+
+            '</div>' +
+
+            '<div class="cuadre-fila">' +
+
+            '<span class="cuadre-label">Resultado</span>' +
+
+            '<span class="cuadre-valor ' +
+            claseUltima +
+            '">' +
+            estadoUltimo +
+            ' — ' +
+            textoUltimaDiferencia +
+            '</span>' +
+
+            '</div>';
         }
 
 
@@ -2138,10 +3372,6 @@
         const ventas =
           resultado.data || [];
 
-
-        /*
-          Solo ventas con total válido.
-        */
 
         var ventasValidas =
           ventas.filter(
