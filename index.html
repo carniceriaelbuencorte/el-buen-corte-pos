@@ -988,6 +988,10 @@
     var rolActual = '';
     var carrito = [];
 
+    // Fecha que se estaba mostrando en el panel.
+    // Se usa para detectar automáticamente el cambio de día.
+    var ultimaFechaAdmin = '';
+
 
     // =========================================================
     // LOGIN
@@ -1078,6 +1082,9 @@
 
         document.getElementById('vista-admin').style.display =
           'block';
+
+        ultimaFechaAdmin =
+          obtenerFechaRD();
 
         actualizarAdmin();
 
@@ -1611,12 +1618,19 @@
 
     async function registrarModificacionEnNube(item, detalle) {
 
+      var ahora =
+        new Date();
+
+
       var horaActual =
-        new Date().toLocaleTimeString(
-          [],
+        ahora.toLocaleTimeString(
+          'es-DO',
           {
+            timeZone: 'America/Santo_Domingo',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
           }
         );
 
@@ -1628,9 +1642,15 @@
             .from('cancelaciones')
             .insert([
               {
+                fecha: ahora.toISOString(),
+
                 hora: horaActual,
+
                 corte: item.nombre,
-                precio: Number(item.precio) || 0,
+
+                precio:
+                  Number(item.precio) || 0,
+
                 motivo:
                   '[MODIFICADO] ' +
                   detalle
@@ -1698,12 +1718,19 @@
       }
 
 
+      var ahora =
+        new Date();
+
+
       var horaActual =
-        new Date().toLocaleTimeString(
-          [],
+        ahora.toLocaleTimeString(
+          'es-DO',
           {
+            timeZone: 'America/Santo_Domingo',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
           }
         );
 
@@ -1715,9 +1742,15 @@
             .from('cancelaciones')
             .insert([
               {
+                fecha: ahora.toISOString(),
+
                 hora: horaActual,
+
                 corte: item.nombre,
-                precio: Number(item.precio) || 0,
+
+                precio:
+                  Number(item.precio) || 0,
+
                 motivo:
                   'ANULADO: ' +
                   motivo
@@ -2681,6 +2714,11 @@
 
       try {
 
+        // Guardamos la fecha que se está mostrando.
+        ultimaFechaAdmin =
+          obtenerFechaRD();
+
+
         // =====================================================
         // VENTAS
         // =====================================================
@@ -2824,11 +2862,6 @@
 
         } else {
 
-          /*
-            Ordenamos de la más reciente
-            a la más antigua.
-          */
-
           ventasValidas.sort(
             function(a, b) {
 
@@ -2941,6 +2974,26 @@
           resultadoCancelaciones.data || [];
 
 
+        // IMPORTANTE:
+        // Solo mostramos en la aplicación las cancelaciones
+        // y modificaciones correspondientes al día actual.
+        // No se elimina ninguna fila de Supabase.
+
+        var cancelacionesHoy =
+          cancelaciones.filter(
+            function(cancelacion) {
+
+              return (
+                cancelacion.fecha &&
+                obtenerFechaVentaRD(
+                  cancelacion.fecha
+                ) === fechaHoyRD
+              );
+
+            }
+          );
+
+
         var tbodyAuditoria =
           document.getElementById(
             'cuerpo-tabla-auditoria'
@@ -2952,7 +3005,7 @@
 
 
         if (
-          cancelaciones.length === 0
+          cancelacionesHoy.length === 0
         ) {
 
           tbodyAuditoria.innerHTML =
@@ -2961,7 +3014,7 @@
 
             '<td colspan="4" style="text-align:center; color:#666; padding:25px;">' +
 
-            'No hay modificaciones ni anulaciones registradas.' +
+            'No hay modificaciones ni anulaciones registradas hoy.' +
 
             '</td>' +
 
@@ -2969,14 +3022,24 @@
 
         } else {
 
+          cancelacionesHoy.sort(
+            function(a, b) {
+
+              return new Date(b.fecha) -
+                     new Date(a.fecha);
+
+            }
+          );
+
+
           for (
-            var k = cancelaciones.length - 1;
-            k >= 0;
-            k--
+            var k = 0;
+            k < cancelacionesHoy.length;
+            k++
           ) {
 
             var motivo =
-              cancelaciones[k].motivo || '';
+              cancelacionesHoy[k].motivo || '';
 
 
             var esModif =
@@ -2993,7 +3056,7 @@
 
             var precioCancelacion =
               Number(
-                cancelaciones[k].precio
+                cancelacionesHoy[k].precio
               ) || 0;
 
 
@@ -3003,13 +3066,13 @@
 
               '<td>' +
               (
-                cancelaciones[k].hora || ''
+                cancelacionesHoy[k].hora || ''
               ) +
               '</td>' +
 
               '<td>' +
               (
-                cancelaciones[k].corte || ''
+                cancelacionesHoy[k].corte || ''
               ) +
               '</td>' +
 
@@ -3464,6 +3527,54 @@
         );
       }
     }
+
+
+    // =========================================================
+    // ACTUALIZACIÓN AUTOMÁTICA AL CAMBIAR EL DÍA
+    // REPÚBLICA DOMINICANA
+    // =========================================================
+
+    setInterval(
+      function() {
+
+        var fechaActualRD =
+          obtenerFechaRD();
+
+
+        /*
+          Si cambió la fecha en República Dominicana
+          y el administrador está abierto, actualizamos
+          inmediatamente las ventas y auditoría.
+
+          NO se elimina ningún registro de Supabase.
+        */
+
+        if (
+          fechaActualRD !== ultimaFechaAdmin
+        ) {
+
+          ultimaFechaAdmin =
+            fechaActualRD;
+
+
+          var vistaAdmin =
+            document.getElementById(
+              'vista-admin'
+            );
+
+
+          if (
+            vistaAdmin &&
+            vistaAdmin.style.display !== 'none'
+          ) {
+
+            actualizarAdmin();
+          }
+        }
+
+      },
+      60000
+    );
 
 
     // =========================================================
