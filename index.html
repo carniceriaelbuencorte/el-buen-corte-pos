@@ -30,6 +30,11 @@
       font-size: 0.95rem;
     }
 
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     .btn-gold {
       background: #d4af37;
       color: #000;
@@ -154,6 +159,10 @@
 
 <body>
 
+  <!-- =========================================================
+       LOGIN
+  ========================================================== -->
+
   <div id="vista-login"
        style="max-width:440px; margin:30px auto; text-align:center; background:#141414; padding:32px 24px; border-radius:12px; border:1px solid #262626;">
 
@@ -263,6 +272,10 @@
 
   </div>
 
+
+  <!-- =========================================================
+       CAJERO
+  ========================================================== -->
 
   <div id="vista-cajero"
        style="display:none; max-width:1100px; margin:0 auto;">
@@ -390,6 +403,10 @@
   </div>
 
 
+  <!-- =========================================================
+       ADMINISTRADOR
+  ========================================================== -->
+
   <div id="vista-admin"
        style="display:none; max-width:1100px; margin:0 auto;">
 
@@ -503,6 +520,10 @@
 
   </div>
 
+
+  <!-- =========================================================
+       MODAL COBRO
+  ========================================================== -->
 
   <div
     id="modal-cobro"
@@ -680,7 +701,6 @@
 
 
     var rolActual = '';
-
     var carrito = [];
 
 
@@ -932,15 +952,11 @@
         }
 
 
-        var nombre =
-          CORTES[plu];
-
-
         carrito.push({
 
           plu: plu,
 
-          nombre: nombre,
+          nombre: CORTES[plu],
 
           precio: precio,
 
@@ -1007,7 +1023,7 @@
       ) {
 
         total +=
-          carrito[i].precio;
+          Number(carrito[i].precio) || 0;
 
 
         tbody.innerHTML +=
@@ -1023,9 +1039,7 @@
 
           (
             carrito[i].modificado
-
               ? ' <span class="badge" style="font-size:0.65rem;">Modificado</span>'
-
               : ''
           ) +
 
@@ -1033,7 +1047,7 @@
 
           '<td>' +
           'RD$ ' +
-          carrito[i].precio.toFixed(2) +
+          Number(carrito[i].precio).toFixed(2) +
           '</td>' +
 
           '<td style="text-align:right;">' +
@@ -1080,13 +1094,14 @@
     // DESCUENTOS
     // =========================================================
 
-    async function aplicarDescuento(
-      idx,
-      porcentaje
-    ) {
+    async function aplicarDescuento(idx, porcentaje) {
 
       var item =
         carrito[idx];
+
+      if (!item) {
+        return;
+      }
 
 
       var rebaja =
@@ -1111,10 +1126,16 @@
         ')';
 
 
-      await registrarModificacionEnNube(
-        item,
-        item.detalleModificacion
-      );
+      var registrado =
+        await registrarModificacionEnNube(
+          item,
+          item.detalleModificacion
+        );
+
+
+      if (!registrado) {
+        return;
+      }
 
 
       dibujarCarrito();
@@ -1125,12 +1146,14 @@
     // PRECIO MANUAL
     // =========================================================
 
-    async function cambiarPrecioManual(
-      idx
-    ) {
+    async function cambiarPrecioManual(idx) {
 
       var item =
         carrito[idx];
+
+      if (!item) {
+        return;
+      }
 
 
       var nuevoPrecioStr =
@@ -1150,9 +1173,7 @@
 
 
       var nuevoPrecio =
-        parseFloat(
-          nuevoPrecioStr
-        );
+        parseFloat(nuevoPrecioStr);
 
 
       if (
@@ -1176,15 +1197,12 @@
 
 
       if (!motivo) {
-
-        motivo =
-          'Precio manual asignado';
+        motivo = 'Precio manual asignado';
       }
 
 
       item.precio =
         nuevoPrecio;
-
 
       item.modificado =
         true;
@@ -1198,10 +1216,16 @@
         ')';
 
 
-      await registrarModificacionEnNube(
-        item,
-        item.detalleModificacion
-      );
+      var registrado =
+        await registrarModificacionEnNube(
+          item,
+          item.detalleModificacion
+        );
+
+
+      if (!registrado) {
+        return;
+      }
 
 
       dibujarCarrito();
@@ -1212,10 +1236,7 @@
     // REGISTRAR MODIFICACIÓN
     // =========================================================
 
-    async function registrarModificacionEnNube(
-      item,
-      detalle
-    ) {
+    async function registrarModificacionEnNube(item, detalle) {
 
       var horaActual =
         new Date().toLocaleTimeString(
@@ -1236,12 +1257,13 @@
               {
                 hora: horaActual,
                 corte: item.nombre,
-                precio: item.precio,
+                precio: Number(item.precio) || 0,
                 motivo:
                   '[MODIFICADO] ' +
                   detalle
               }
-            ]);
+            ])
+            .select();
 
 
         if (resultado.error) {
@@ -1282,9 +1304,15 @@
     // ANULAR ARTÍCULO
     // =========================================================
 
-    async function borrarArticulo(
-      idx
-    ) {
+    async function borrarArticulo(idx) {
+
+      var item =
+        carrito[idx];
+
+      if (!item) {
+        return;
+      }
+
 
       var motivo =
         prompt(
@@ -1295,10 +1323,6 @@
       if (!motivo) {
         return;
       }
-
-
-      var item =
-        carrito[idx];
 
 
       var horaActual =
@@ -1320,12 +1344,13 @@
               {
                 hora: horaActual,
                 corte: item.nombre,
-                precio: item.precio,
+                precio: Number(item.precio) || 0,
                 motivo:
                   'ANULADO: ' +
                   motivo
               }
-            ]);
+            ])
+            .select();
 
 
         if (resultado.error) {
@@ -1447,7 +1472,7 @@
       }
 
 
-      return total;
+      return Number(total.toFixed(2));
     }
 
 
@@ -1488,6 +1513,11 @@
     // =========================================================
 
     async function finalizarVenta() {
+
+      console.log(
+        '=== INICIO FINALIZAR VENTA v2 ==='
+      );
+
 
       if (
         carrito.length === 0
@@ -1544,6 +1574,12 @@
           new Date().toISOString();
 
 
+        /*
+          IMPORTANTE:
+          Construimos explícitamente todos los valores.
+          No dejamos ningún campo importante como undefined.
+        */
+
         var registrosVenta =
           [];
 
@@ -1559,46 +1595,55 @@
 
 
           var precioFinal =
-            Number(item.precio) || 0;
+            Number(item.precio);
+
+
+          if (!Number.isFinite(precioFinal)) {
+            precioFinal = 0;
+          }
 
 
           var precioOriginal =
-            Number(item.originalPrecio) || precioFinal;
+            Number(item.originalPrecio);
+
+
+          if (!Number.isFinite(precioOriginal)) {
+            precioOriginal = precioFinal;
+          }
 
 
           var descuento =
-            precioOriginal - precioFinal;
+            precioOriginal -
+            precioFinal;
 
 
-          if (descuento < 0) {
+          if (
+            !Number.isFinite(descuento) ||
+            descuento < 0
+          ) {
             descuento = 0;
           }
 
 
-          var subtotal =
-            precioFinal;
+          precioFinal =
+            Number(precioFinal.toFixed(2));
+
+          descuento =
+            Number(descuento.toFixed(2));
 
 
-          var totalLinea =
-            precioFinal;
+          var registro = {
 
+            fecha: fechaVenta,
 
-          registrosVenta.push({
+            total: precioFinal,
 
-            fecha:
-              fechaVenta,
+            metodo_pago: 'Efectivo',
 
-            total:
-              totalLinea,
-
-            metodo_pago:
-              'Efectivo',
-
-            notas:
-              null,
+            notas: null,
 
             nombre:
-              item.nombre +
+              String(item.nombre) +
               (
                 item.modificado
                   ? ' (Modif)'
@@ -1606,7 +1651,7 @@
               ),
 
             plu:
-              item.plu,
+              String(item.plu),
 
             precio:
               precioFinal,
@@ -1615,30 +1660,52 @@
               1,
 
             subtotal:
-              subtotal,
+              precioFinal,
 
             descuento:
               descuento,
 
             motivo:
               null
+          };
 
-          });
+
+          registrosVenta.push(
+            registro
+          );
         }
 
 
         console.log(
-          'Enviando ventas completas a Supabase:',
-          registrosVenta
+          '=== REGISTROS QUE SE ENVIARÁN A SUPABASE ==='
         );
 
+        console.log(
+          JSON.stringify(
+            registrosVenta,
+            null,
+            2
+          )
+        );
+
+
+        /*
+          Insertamos exactamente esos registros.
+        */
 
         const resultado =
           await supabaseClient
             .from('ventas')
             .insert(
               registrosVenta
-            );
+            )
+            .select();
+
+
+        console.log(
+          '=== RESPUESTA COMPLETA DE SUPABASE ===',
+          resultado
+        );
 
 
         if (resultado.error) {
@@ -1649,14 +1716,12 @@
           );
 
 
-          var mensajeError =
-            resultado.error.message ||
-            'Error desconocido de Supabase.';
-
-
           alert(
             'NO SE GUARDÓ LA VENTA.\n\n' +
-            mensajeError
+            (
+              resultado.error.message ||
+              'Error desconocido de Supabase.'
+            )
           );
 
 
@@ -1671,11 +1736,97 @@
         }
 
 
+        /*
+          Si Supabase devuelve filas, verificamos
+          que realmente tengan total.
+        */
+
+        var filasGuardadas =
+          resultado.data || [];
+
+
         console.log(
-          'Venta guardada correctamente en Supabase:',
-          registrosVenta
+          '=== FILAS GUARDADAS REALMENTE ===',
+          filasGuardadas
         );
 
+
+        for (
+          var x = 0;
+          x < filasGuardadas.length;
+          x++
+        ) {
+
+          console.log(
+            'Fila guardada #' +
+            x +
+            ':',
+            filasGuardadas[x]
+          );
+
+          console.log(
+            'TOTAL GUARDADO:',
+            filasGuardadas[x].total
+          );
+        }
+
+
+        /*
+          Si Supabase devuelve una fila pero total
+          aparece NULL, detenemos el proceso y avisamos.
+        */
+
+        var totalInvalido =
+          false;
+
+
+        for (
+          var y = 0;
+          y < filasGuardadas.length;
+          y++
+        ) {
+
+          if (
+            filasGuardadas[y].total === null ||
+            filasGuardadas[y].total === undefined
+          ) {
+
+            totalInvalido =
+              true;
+
+            break;
+          }
+        }
+
+
+        if (totalInvalido) {
+
+          console.error(
+            'ATENCIÓN: Supabase devolvió una fila con total NULL.'
+          );
+
+
+          alert(
+            'SUPABASE GUARDÓ LA FILA PERO DEVOLVIÓ EL TOTAL COMO NULL.\n\n' +
+            'La venta NO se limpiará del carrito para evitar perderla.'
+          );
+
+
+          boton.disabled =
+            false;
+
+          boton.innerText =
+            'Confirmar';
+
+
+          return;
+        }
+
+
+        /*
+          Todo correcto.
+          Ahora sí vaciamos el carrito.
+        */
 
         carrito =
           [];
@@ -1685,6 +1836,12 @@
 
 
         cerrarModalCobro();
+
+
+        mostrarEstadoNube(
+          'Venta guardada correctamente en la nube.',
+          false
+        );
 
 
         alert(
@@ -1752,6 +1909,12 @@
 
       try {
 
+        /*
+          Solo utilizamos registros de ventas.
+          Las anulaciones viven en cancelaciones y
+          NO se suman aquí.
+        */
+
         const resultadoVentas =
           await supabaseClient
             .from('ventas')
@@ -1776,19 +1939,53 @@
         );
 
 
-        let total =
-          0;
+        /*
+          IMPORTANTE:
+          Solamente contamos filas que tengan un
+          total numérico válido.
+
+          Las filas antiguas con total NULL
+          no se contabilizan.
+        */
+
+        var ventasValidas =
+          [];
 
 
         for (
-          let i = 0;
+          var i = 0;
           i < ventas.length;
           i++
         ) {
 
+          var totalFila =
+            Number(ventas[i].total);
+
+
+          if (
+            Number.isFinite(totalFila)
+          ) {
+
+            ventasValidas.push(
+              ventas[i]
+            );
+          }
+        }
+
+
+        var total =
+          0;
+
+
+        for (
+          var j = 0;
+          j < ventasValidas.length;
+          j++
+        ) {
+
           total +=
             Number(
-              ventas[i].total
+              ventasValidas[j].total
             ) || 0;
         }
 
@@ -1803,9 +2000,13 @@
         document.getElementById(
           'admin-conteo-articulos'
         ).innerText =
-          ventas.length +
+          ventasValidas.length +
           ' artículos facturados en total';
 
+
+        // =====================================================
+        // AUDITORÍA
+        // =====================================================
 
         const resultadoCancelaciones =
           await supabaseClient
@@ -1836,14 +2037,17 @@
 
 
         for (
-          let k = 0;
+          var k = 0;
           k < cancelaciones.length;
           k++
         ) {
 
+          var motivo =
+            cancelaciones[k].motivo || '';
+
+
           var esModif =
-            cancelaciones[k].motivo &&
-            cancelaciones[k].motivo.includes(
+            motivo.includes(
               '[MODIFICADO]'
             );
 
@@ -1883,9 +2087,7 @@
             '<td style="' +
             colorTexto +
             '">' +
-            (
-              cancelaciones[k].motivo || ''
-            ) +
+            motivo +
             '</td>' +
 
             '</tr>';
@@ -1937,8 +2139,24 @@
           resultado.data || [];
 
 
+        /*
+          Solo ventas con total válido.
+        */
+
+        var ventasValidas =
+          ventas.filter(
+            function(venta) {
+
+              return Number.isFinite(
+                Number(venta.total)
+              );
+
+            }
+          );
+
+
         if (
-          ventas.length === 0
+          ventasValidas.length === 0
         ) {
 
           alert(
@@ -1955,12 +2173,13 @@
 
         for (
           var i = 0;
-          i < ventas.length;
+          i < ventasValidas.length;
           i++
         ) {
 
           var corte =
-            ventas[i].nombre;
+            ventasValidas[i].nombre ||
+            'Sin nombre';
 
 
           if (
