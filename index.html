@@ -462,10 +462,207 @@
           onclick="abrirModalCobro()"
           class="btn-green"
         >
-          Cobrar Venta
+          Cobrar
         </button>
 
-        <div id="estado-nube" class="estado-nube"></div>
+        <button
+          onclick="limpiarCarrito()"
+          class="btn-gray"
+          style="width:100%; margin-top:10px;"
+        >
+          Limpiar cuenta
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="estado-nube-cajero"
+      class="estado-nube"
+      style="color:#888;"
+    >
+      Conectando con la nube...
+    </div>
+
+
+    <!-- =====================================================
+         MODAL COBRO
+    ====================================================== -->
+
+    <div
+      id="modal-cobro"
+      style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); align-items:center; justify-content:center; z-index:1000; padding:20px;"
+    >
+
+      <div
+        style="width:100%; max-width:480px; background:#141414; border:1px solid #333; border-radius:12px; padding:24px;"
+      >
+
+        <h3
+          style="color:#d4af37; margin-bottom:15px;"
+        >
+          Registrar pago
+        </h3>
+
+        <label style="display:block; color:#999; font-size:.85rem; margin-bottom:5px;">
+          Método de pago
+        </label>
+
+        <select
+          id="metodo-pago"
+          class="caja-input"
+          style="margin-top:0;"
+        >
+          <option value="Efectivo">Efectivo</option>
+          <option value="Transferencia">Transferencia</option>
+          <option value="Tarjeta">Tarjeta</option>
+        </select>
+
+        <label style="display:block; color:#999; font-size:.85rem; margin-top:10px;">
+          Monto recibido
+        </label>
+
+        <input
+          type="number"
+          id="monto-recibido"
+          class="caja-input"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+        />
+
+        <div
+          style="display:flex; justify-content:space-between; margin:12px 0; color:#aaa;"
+        >
+          <span>Total</span>
+          <strong id="modal-total" style="color:#fff;">
+            RD$ 0.00
+          </strong>
+        </div>
+
+        <div
+          style="display:flex; justify-content:space-between; margin:12px 0 18px; color:#aaa;"
+        >
+          <span>Devuelta</span>
+          <strong id="modal-devuelta" style="color:#22c55e;">
+            RD$ 0.00
+          </strong>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+
+          <button
+            onclick="cerrarModalCobro()"
+            class="btn-gray"
+            style="flex:1;"
+          >
+            Cancelar
+          </button>
+
+          <button
+            onclick="confirmarCobro()"
+            class="btn-gold"
+            style="flex:1;"
+          >
+            Confirmar venta
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MODAL CUADRE
+    ====================================================== -->
+
+    <div
+      id="modal-cuadre"
+      style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); align-items:center; justify-content:center; z-index:1000; padding:20px;"
+    >
+
+      <div
+        style="width:100%; max-width:500px; background:#141414; border:1px solid #333; border-radius:12px; padding:24px;"
+      >
+
+        <h3 style="color:#d4af37; margin-bottom:15px;">
+          Cuadre de caja
+        </h3>
+
+        <div class="cuadre-resumen">
+
+          <div class="cuadre-fila">
+            <span class="cuadre-label">
+              Ventas del día
+            </span>
+
+            <span
+              id="cuadre-total-ventas"
+              class="cuadre-valor"
+            >
+              RD$ 0.00
+            </span>
+          </div>
+
+          <div class="cuadre-fila">
+            <span class="cuadre-label">
+              Artículos vendidos
+            </span>
+
+            <span
+              id="cuadre-articulos"
+              class="cuadre-valor"
+            >
+              0
+            </span>
+          </div>
+
+        </div>
+
+        <label
+          style="display:block; color:#999; font-size:.85rem; margin-top:16px;"
+        >
+          Efectivo contado
+        </label>
+
+        <input
+          type="number"
+          id="efectivo-contado"
+          class="caja-input"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+        />
+
+        <div
+          id="resultado-cuadre"
+          class="cuadre-resumen"
+          style="display:none;"
+        ></div>
+
+        <div style="display:flex; gap:10px; margin-top:16px;">
+
+          <button
+            onclick="cerrarModalCuadre()"
+            class="btn-gray"
+            style="flex:1;"
+          >
+            Cancelar
+          </button>
+
+          <button
+            onclick="guardarCuadre()"
+            class="btn-gold"
+            style="flex:1;"
+          >
+            Guardar cuadre
+          </button>
+
+        </div>
 
       </div>
 
@@ -478,8 +675,10 @@
        ADMINISTRADOR
   ========================================================== -->
 
-  <div id="vista-admin"
-       style="display:none; max-width:1200px; margin:0 auto;">
+  <div
+    id="vista-admin"
+    style="display:none; max-width:1200px; margin:0 auto;"
+  >
 
     <div
       style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:16px; margin-bottom:24px;"
@@ -488,11 +687,11 @@
       <div>
 
         <h2 style="font-size:1.4rem; font-weight:700;">
-          Panel de Administración
+          Panel de Administrador
         </h2>
 
         <span style="font-size:0.8rem; color:#888;">
-          Ventas, Cuadres y Auditoría
+          Supervisión de operaciones
         </span>
 
       </div>
@@ -500,15 +699,8 @@
       <div style="display:flex; gap:10px;">
 
         <button
-          onclick="actualizarAdmin()"
-          class="btn-gray"
-        >
-          Actualizar
-        </button>
-
-        <button
           onclick="mostrarFrecuentes()"
-          class="btn-gold"
+          class="btn-gray"
         >
           Ventas Frecuentes
         </button>
@@ -525,71 +717,26 @@
     </div>
 
 
-    <!-- RESUMEN DEL DÍA -->
-
-    <div style="display:flex; gap:24px;">
-
-      <div
-        style="flex:1; background:#141414; padding:28px 20px; border-radius:10px; text-align:center; border:1px solid #222; height:fit-content;"
-      >
-
-        <span style="color:#888; font-size:0.85rem;">
-          VENTAS DEL DÍA
-        </span>
-
-        <div
-          id="admin-total-dia"
-          style="font-size:2.6rem; color:#22c55e; font-weight:800; margin:15px 0;"
-        >
-          RD$ 0.00
-        </div>
-
-        <p
-          id="admin-conteo-articulos"
-          style="color:#888; font-size:0.9rem;"
-        >
-          0 artículos facturados hoy
-        </p>
-
-      </div>
-
-
-      <!-- RESUMEN ÚLTIMO CUADRE -->
-
-      <div
-        style="flex:1; background:#141414; padding:22px; border-radius:10px; border:1px solid #222;"
-      >
-
-        <h3
-          style="color:#d4af37; font-size:1.05rem; margin-bottom:10px;"
-        >
-          Último Cuadre
-        </h3>
-
-        <div id="ultimo-cuadre-admin">
-
-          <p style="color:#666; font-size:0.85rem;">
-            No hay cuadres registrados todavía.
-          </p>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- DETALLE DE VENTAS -->
+    <!-- =====================================================
+         VENTAS DEL DÍA
+    ====================================================== -->
 
     <div class="tarjeta-seccion">
 
-      <h3 class="titulo-seccion">
-        Detalle de Ventas del Día
-      </h3>
+      <div class="titulo-seccion">
+        Ventas del día
+      </div>
 
-      <p class="subtitulo-seccion">
-        Productos vendidos durante el día actual
-      </p>
+      <div class="subtitulo-seccion">
+        Solo se muestran las ventas correspondientes al día actual de República Dominicana.
+      </div>
+
+      <div
+        id="resumen-ventas-admin"
+        class="cuadre-resumen"
+      >
+        Cargando...
+      </div>
 
       <table class="tabla">
 
@@ -597,33 +744,67 @@
 
           <tr>
             <th>Hora</th>
-            <th>Producto</th>
-            <th>PLU</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-            <th>Subtotal</th>
+            <th>Corte</th>
+            <th>Monto</th>
+            <th>Método</th>
           </tr>
 
         </thead>
 
-        <tbody id="cuerpo-tabla-ventas"></tbody>
+        <tbody id="cuerpo-tabla-ventas-admin"></tbody>
 
       </table>
 
     </div>
 
 
-    <!-- CUADRES -->
+    <!-- =====================================================
+         AUDITORÍA
+    ====================================================== -->
 
     <div class="tarjeta-seccion">
 
-      <h3 class="titulo-seccion">
-        Cuadres de Caja
-      </h3>
+      <div class="titulo-seccion">
+        Auditoría: Modificaciones y Cancelaciones
+      </div>
 
-      <p class="subtitulo-seccion">
-        Historial de cuadres realizados por la cajera
-      </p>
+      <div class="subtitulo-seccion">
+        Registro de descuentos, precios de suplidor y anulaciones.
+      </div>
+
+      <table class="tabla">
+
+        <thead>
+
+          <tr>
+            <th>Hora</th>
+            <th>Corte</th>
+            <th>Monto</th>
+            <th>Detalle / Motivo</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="cuerpo-tabla-cancelaciones"></tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- =====================================================
+         CUADRES
+    ====================================================== -->
+
+    <div class="tarjeta-seccion">
+
+      <div class="titulo-seccion">
+        Historial de cuadres
+      </div>
+
+      <div class="subtitulo-seccion">
+        Historial almacenado en la nube.
+      </div>
 
       <table class="tabla">
 
@@ -647,225 +828,32 @@
     </div>
 
 
-    <!-- AUDITORÍA -->
+    <!-- =====================================================
+         ÚLTIMO CUADRE
+    ====================================================== -->
 
     <div class="tarjeta-seccion">
 
-      <h3 class="titulo-seccion">
-        Auditoría: Modificaciones y Cancelaciones
-      </h3>
-
-      <p class="subtitulo-seccion">
-        Registro de descuentos, precios de suplidor y anulaciones
-      </p>
-
-      <table class="tabla">
-
-        <thead>
-
-          <tr>
-            <th>Hora</th>
-            <th>Corte</th>
-            <th>Monto</th>
-            <th>Detalle / Motivo</th>
-          </tr>
-
-        </thead>
-
-        <tbody id="cuerpo-tabla-auditoria"></tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================================================
-       MODAL COBRO
-  ========================================================== -->
-
-  <div
-    id="modal-cobro"
-    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); align-items:center; justify-content:center;"
-  >
-
-    <div
-      style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:380px; max-width:95%; text-align:center;"
-    >
-
-      <h3 style="font-size:1.2rem;">
-        Comprobante de Pago
-      </h3>
-
-      <div
-        id="cobro-total-modal"
-        style="font-size:2rem; color:#d4af37; font-weight:800; margin:15px 0;"
-      >
-        RD$ 0.00
+      <div class="titulo-seccion">
+        Último cuadre
       </div>
 
-      <input
-        type="number"
-        id="monto-cliente"
-        class="caja-input"
-        placeholder="Monto recibido RD$"
-        oninput="calcularDevuelta()"
-      />
-
       <div
-        id="devuelta-texto"
-        style="font-size:1.25rem; color:#22c55e; margin-bottom:18px; font-weight:600;"
+        id="ultimo-cuadre-admin"
+        class="cuadre-resumen"
       >
-        Devuelta: RD$ 0.00
-      </div>
-
-      <div style="display:flex; gap:10px;">
-
-        <button
-          onclick="cerrarModalCobro()"
-          class="btn-gray"
-          style="flex:1;"
-        >
-          Cancelar
-        </button>
-
-        <button
-          id="btn-confirmar-venta"
-          onclick="finalizarVenta()"
-          class="btn-green"
-          style="flex:1; margin:0; font-size:1rem;"
-        >
-          Confirmar
-        </button>
-
+        Cargando...
       </div>
 
     </div>
 
-  </div>
-
-
-  <!-- =========================================================
-       MODAL CUADRE
-  ========================================================== -->
-
-  <div
-    id="modal-cuadre"
-    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); align-items:center; justify-content:center; z-index:1000;"
-  >
 
     <div
-      style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:430px; max-width:95%;"
+      id="estado-nube-admin"
+      class="estado-nube"
+      style="color:#888;"
     >
-
-      <h3
-        style="font-size:1.3rem; text-align:center;"
-      >
-        Cuadre de Caja
-      </h3>
-
-      <p
-        style="text-align:center; color:#777; font-size:0.85rem; margin-top:6px;"
-      >
-        Verifique el dinero físico antes de confirmar.
-      </p>
-
-
-      <div class="cuadre-resumen">
-
-        <div class="cuadre-fila">
-
-          <span class="cuadre-label">
-            Total vendido
-          </span>
-
-          <span
-            id="cuadre-total-vendido"
-            class="cuadre-valor"
-          >
-            RD$ 0.00
-          </span>
-
-        </div>
-
-
-        <div class="cuadre-fila">
-
-          <span class="cuadre-label">
-            Artículos vendidos
-          </span>
-
-          <span
-            id="cuadre-articulos"
-            class="cuadre-valor"
-          >
-            0
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <label
-        style="display:block; color:#ccc; font-size:0.9rem; margin-top:20px; text-align:left;"
-      >
-        Dinero físico contado
-      </label>
-
-      <input
-        type="number"
-        id="cuadre-efectivo"
-        class="caja-input"
-        placeholder="RD$"
-        step="0.01"
-        min="0"
-        oninput="calcularDiferenciaCuadre()"
-      />
-
-
-      <div
-        style="background:#0f0f0f; border:1px solid #292929; border-radius:8px; padding:15px; text-align:center;"
-      >
-
-        <div
-          style="color:#888; font-size:0.85rem;"
-        >
-          DIFERENCIA
-        </div>
-
-        <div
-          id="cuadre-diferencia"
-          style="font-size:1.8rem; font-weight:800; color:#fff; margin-top:5px;"
-        >
-          RD$ 0.00
-        </div>
-
-      </div>
-
-
-      <div style="display:flex; gap:10px; margin-top:20px;">
-
-        <button
-          onclick="cerrarModalCuadre()"
-          class="btn-gray"
-          style="flex:1;"
-        >
-          Cancelar
-        </button>
-
-        <button
-          id="btn-confirmar-cuadre"
-          onclick="confirmarCuadre()"
-          class="btn-green"
-          style="flex:1; margin:0;"
-        >
-          Confirmar Cuadre
-        </button>
-
-      </div>
-
+      Conectando con la nube...
     </div>
 
   </div>
@@ -874,91 +862,20 @@
   <script>
 
     // =========================================================
-    // CONEXIÓN CON SUPABASE
+    // SUPABASE
     // =========================================================
 
     const SUPABASE_URL =
       'https://xoaxbyiqpsmofwsyduzo.supabase.co';
 
-    const SUPABASE_ANON_KEY =
+    const SUPABASE_KEY =
       'sb_publishable_smjolIdspg9Gvh1d20LBYA_HhI9opvp';
 
     const supabaseClient =
-      supabase.createClient(
+      window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_ANON_KEY
+        SUPABASE_KEY
       );
-
-
-    // =========================================================
-    // LOGO
-    // =========================================================
-
-    function activarCargadorFallback() {
-
-      const guardado =
-        localStorage.getItem('logo_fijo');
-
-      if (guardado) {
-
-        document.getElementById('logo-sistema').src =
-          guardado;
-
-      } else {
-
-        document.getElementById('logo-sistema').style.display =
-          'none';
-
-        document.getElementById('cargador-manual').style.display =
-          'block';
-      }
-    }
-
-
-    function procesarLogoLocal(e) {
-
-      const archivo =
-        e.target.files[0];
-
-      if (archivo) {
-
-        const reader =
-          new FileReader();
-
-        reader.onload =
-          function(evt) {
-
-            const resultado =
-              evt.target.result;
-
-            localStorage.setItem(
-              'logo_fijo',
-              resultado
-            );
-
-            document.getElementById('logo-sistema').src =
-              resultado;
-
-            document.getElementById('logo-sistema').style.display =
-              'block';
-
-            document.getElementById('cargador-manual').style.display =
-              'none';
-          };
-
-        reader.readAsDataURL(archivo);
-      }
-    }
-
-
-    const guardadoPrevio =
-      localStorage.getItem('logo_fijo');
-
-    if (guardadoPrevio) {
-
-      document.getElementById('logo-sistema').src =
-        guardadoPrevio;
-    }
 
 
     // =========================================================
@@ -969,230 +886,49 @@
 
       "101": "Bistec (Res)",
       "102": "Bola (Res)",
-      "103": "Osso Buco (Res)",
+      "103": "Osso Buco S (Res)",
       "104": "Pecho (Res)",
       "105": "Punta de Palomilla (Res)",
       "106": "Roti (Res)",
-      "107": "Carne Molida (Res)",
-      "108": "Steaks (Res)",
+      "107": "Carne Molida de Primera (Res)",
+      "108": "Chuleta de Res",
+      "109": "Osso Buco C (Res)",
+      "110": "Res Corriente (Res)",
+      "111": "Carne Molida de Segunda (Res)",
 
       "201": "Chuleta (Cerdo)",
       "202": "Lomo (Cerdo)",
       "203": "Panceta (Cerdo)",
       "204": "Chicharrón (Cerdo)",
       "205": "Costilla (Cerdo)",
-      "206": "Carne Genérica (Cerdo)"
+      "206": "Carne Genérica (Cerdo)",
+      "208": "Pata de Cerdo (Cerdo)",
+      "209": "Carne Salada (Cerdo)",
+      "210": "Oreja de Cerdo (Cerdo)",
+      "211": "Hocico de Cerdo (Cerdo)",
+      "212": "Rabo de Cerdo (Cerdo)",
+      "213": "Asadura de Cerdo (Cerdo)",
+      "214": "Bofe de Cerdo (Cerdo)",
+      "215": "Vaso de Cerdo (Cerdo)",
+      "216": "Mondongo de Cerdo (Cerdo)",
+      "217": "Mondongo de Res (Res)",
+      "218": "Cerdo Yunque (Cerdo)",
+      "219": "Churrasco (Res)",
+      "220": "Pata de Res (Res)",
+      "221": "Filete de Res (Res)",
+      "222": "Chuleta de Cerdo c/Cuero (Cerdo)",
+      "223": "Carne Molida de Cerdo (Cerdo)"
     };
 
 
     var rolActual = '';
     var carrito = [];
 
-    // Fecha que se estaba mostrando en el panel.
-    // Se usa para detectar automáticamente el cambio de día.
     var ultimaFechaAdmin = '';
 
 
     // =========================================================
-    // LOGIN
-    // =========================================================
-
-    function seleccionarRol(rol) {
-
-      rolActual = rol;
-
-      document.getElementById('opciones-rol').style.display =
-        'none';
-
-      document.getElementById('cuadro-clave').style.display =
-        'block';
-
-      document.getElementById('input-clave').value =
-        '';
-
-      if (rol === 'cajero') {
-
-        document.getElementById('titulo-clave').innerText =
-          'Ingrese PIN de Caja:';
-
-        document.getElementById('input-clave').placeholder =
-          'PIN';
-
-        document.getElementById('link-olvido').style.display =
-          'none';
-
-      } else {
-
-        document.getElementById('titulo-clave').innerText =
-          'Ingrese Contraseña de Administrador:';
-
-        document.getElementById('input-clave').placeholder =
-          'Contraseña';
-
-        document.getElementById('link-olvido').style.display =
-          'block';
-      }
-
-      document.getElementById('input-clave').focus();
-    }
-
-
-    function cancelarLogin() {
-
-      document.getElementById('cuadro-clave').style.display =
-        'none';
-
-      document.getElementById('opciones-rol').style.display =
-        'flex';
-    }
-
-
-    async function verificarLogin() {
-
-      var clave =
-        document.getElementById('input-clave').value.trim();
-
-
-      if (
-        rolActual === 'cajero' &&
-        clave === '1810'
-      ) {
-
-        document.getElementById('vista-login').style.display =
-          'none';
-
-        document.getElementById('vista-cajero').style.display =
-          'block';
-
-        document.getElementById('escaner').focus();
-
-        comprobarConexionSupabase();
-
-        return;
-      }
-
-
-      if (
-        rolActual === 'admin' &&
-        clave === 'newyorksteak'
-      ) {
-
-        document.getElementById('vista-login').style.display =
-          'none';
-
-        document.getElementById('vista-admin').style.display =
-          'block';
-
-        ultimaFechaAdmin =
-          obtenerFechaRD();
-
-        actualizarAdmin();
-
-        return;
-      }
-
-
-      alert('Credenciales incorrectas.');
-    }
-
-
-    function cerrarSesion() {
-
-      document.getElementById('vista-cajero').style.display =
-        'none';
-
-      document.getElementById('vista-admin').style.display =
-        'none';
-
-      document.getElementById('modal-cobro').style.display =
-        'none';
-
-      document.getElementById('modal-cuadre').style.display =
-        'none';
-
-      cancelarLogin();
-
-      document.getElementById('vista-login').style.display =
-        'block';
-    }
-
-
-    // =========================================================
-    // SUPABASE
-    // =========================================================
-
-    async function comprobarConexionSupabase() {
-
-      try {
-
-        const resultado =
-          await supabaseClient
-            .from('ventas')
-            .select('plu')
-            .limit(1);
-
-
-        if (resultado.error) {
-
-          console.error(
-            'Error de conexión/lectura de ventas:',
-            resultado.error
-          );
-
-          mostrarEstadoNube(
-            'Error de conexión con Supabase.',
-            true
-          );
-
-          return false;
-        }
-
-
-        mostrarEstadoNube(
-          'Conectado a la nube.',
-          false
-        );
-
-        return true;
-
-      } catch (err) {
-
-        console.error(
-          'Error comprobando Supabase:',
-          err
-        );
-
-        mostrarEstadoNube(
-          'No se pudo conectar con la nube.',
-          true
-        );
-
-        return false;
-      }
-    }
-
-
-    function mostrarEstadoNube(mensaje, error) {
-
-      const elemento =
-        document.getElementById('estado-nube');
-
-      if (!elemento) {
-        return;
-      }
-
-      elemento.innerText =
-        mensaje;
-
-      elemento.style.color =
-        error
-          ? '#ef4444'
-          : '#22c55e';
-    }
-
-
-    // =========================================================
-    // FECHAS - REPÚBLICA DOMINICANA
+    // FECHAS REPÚBLICA DOMINICANA
     // =========================================================
 
     function obtenerFechaRD() {
@@ -1205,9 +941,7 @@
           month: '2-digit',
           day: '2-digit'
         }
-      ).format(
-        new Date()
-      );
+      ).format(new Date());
     }
 
 
@@ -1225,30 +959,7 @@
           month: '2-digit',
           day: '2-digit'
         }
-      ).format(
-        new Date(fecha)
-      );
-    }
-
-
-    function formatearHoraRD(fecha) {
-
-      if (!fecha) {
-        return '';
-      }
-
-      return new Intl.DateTimeFormat(
-        'es-DO',
-        {
-          timeZone: 'America/Santo_Domingo',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true
-        }
-      ).format(
-        new Date(fecha)
-      );
+      ).format(new Date(fecha));
     }
 
 
@@ -1270,127 +981,413 @@
           second: '2-digit',
           hour12: true
         }
-      ).format(
-        new Date(fecha)
+      ).format(new Date(fecha));
+    }
+
+
+    // =========================================================
+    // LOGO
+    // =========================================================
+
+    function activarCargadorFallback() {
+
+      var cargador =
+        document.getElementById(
+          'cargador-manual'
+        );
+
+      if (cargador) {
+        cargador.style.display = 'block';
+      }
+    }
+
+
+    function procesarLogoLocal(event) {
+
+      var archivo =
+        event.target.files[0];
+
+      if (!archivo) {
+        return;
+      }
+
+      var lector =
+        new FileReader();
+
+      lector.onload =
+        function(e) {
+
+          document.getElementById(
+            'logo-sistema'
+          ).src = e.target.result;
+
+        };
+
+      lector.readAsDataURL(
+        archivo
       );
     }
 
 
     // =========================================================
-    // ESCÁNER
+    // LOGIN
     // =========================================================
 
-    function leerCodigo(e) {
+    function seleccionarRol(rol) {
 
-      if (e.key !== 'Enter') {
-        return;
-      }
+      rolActual =
+        rol;
 
-      var cod =
-        e.target.value.trim();
+      document.getElementById(
+        'opciones-rol'
+      ).style.display =
+        'none';
 
-      e.target.value =
+      document.getElementById(
+        'cuadro-clave'
+      ).style.display =
+        'block';
+
+      document.getElementById(
+        'titulo-clave'
+      ).textContent =
+        rol === 'admin'
+          ? 'Ingrese clave de administrador'
+          : 'Ingrese clave de cajero';
+
+      document.getElementById(
+        'input-clave'
+      ).value =
         '';
 
+      document.getElementById(
+        'input-clave'
+      ).focus();
 
-      if (/^\d{13}$/.test(cod)) {
-
-        var plu =
-          cod.substring(2, 7);
-
-        plu =
-          plu.replace(/^0+/, '') || '0';
-
-
-        var totalCodificado =
-          cod.substring(7, 12);
-
-        var precio =
-          Number(totalCodificado) / 100;
+      document.getElementById(
+        'link-olvido'
+      ).style.display =
+        rol === 'admin'
+          ? 'block'
+          : 'none';
+    }
 
 
-        if (!CORTES[plu]) {
+    function cancelarLogin() {
 
-          alert(
-            'PLU no registrado: ' + plu
-          );
+      rolActual =
+        '';
 
-          return;
-        }
+      document.getElementById(
+        'cuadro-clave'
+      ).style.display =
+        'none';
 
+      document.getElementById(
+        'opciones-rol'
+      ).style.display =
+        'flex';
 
-        if (
-          !Number.isFinite(precio) ||
-          precio <= 0
-        ) {
-
-          alert(
-            'No se pudo leer correctamente el precio del código.'
-          );
-
-          return;
-        }
-
-
-        carrito.push({
-
-          plu: plu,
-
-          nombre: CORTES[plu],
-
-          precio: precio,
-
-          originalPrecio: precio,
-
-          modificado: false
-
-        });
+      document.getElementById(
+        'input-clave'
+      ).value =
+        '';
+    }
 
 
-        dibujarCarrito();
+    function verificarLogin() {
+
+      var clave =
+        document.getElementById(
+          'input-clave'
+        ).value;
+
+      if (
+        rolActual === 'admin' &&
+        clave === 'admin123'
+      ) {
+
+        document.getElementById(
+          'vista-login'
+        ).style.display =
+          'none';
+
+        document.getElementById(
+          'vista-admin'
+        ).style.display =
+          'block';
+
+        ultimaFechaAdmin =
+          obtenerFechaRD();
+
+        actualizarAdmin();
 
         return;
       }
 
 
-      if (cod.length > 0) {
+      if (
+        rolActual === 'cajero' &&
+        clave === 'cajero123'
+      ) {
 
-        var pluManual =
-          cod.replace(/^0+/, '') || '0';
+        document.getElementById(
+          'vista-login'
+        ).style.display =
+          'none';
 
+        document.getElementById(
+          'vista-cajero'
+        ).style.display =
+          'block';
 
-        if (!CORTES[pluManual]) {
-
-          alert(
-            'PLU no registrado: ' +
-            pluManual
+        var escaner =
+          document.getElementById(
+            'escaner'
           );
 
-          return;
+        if (escaner) {
+          escaner.focus();
         }
 
+        probarConexion();
 
-        alert(
-          'Para registrar el precio correctamente debe escanear la etiqueta de la balanza.'
+        return;
+      }
+
+
+      alert(
+        'Clave incorrecta.'
+      );
+    }
+
+
+    function cerrarSesion() {
+
+      carrito =
+        [];
+
+      actualizarTablaCaja();
+
+      document.getElementById(
+        'vista-admin'
+      ).style.display =
+        'none';
+
+      document.getElementById(
+        'vista-cajero'
+      ).style.display =
+        'none';
+
+      document.getElementById(
+        'vista-login'
+      ).style.display =
+        'block';
+
+      document.getElementById(
+        'opciones-rol'
+      ).style.display =
+        'flex';
+
+      document.getElementById(
+        'cuadro-clave'
+      ).style.display =
+        'none';
+
+      rolActual =
+        '';
+
+      var inputClave =
+        document.getElementById(
+          'input-clave'
         );
+
+      if (inputClave) {
+        inputClave.value = '';
       }
     }
 
 
     // =========================================================
-    // CARRITO
+    // CONEXIÓN
     // =========================================================
 
-    function dibujarCarrito() {
+    async function probarConexion() {
 
-      var tbody =
+      var estado =
+        document.getElementById(
+          'estado-nube-cajero'
+        );
+
+      try {
+
+        var resultado =
+          await supabaseClient
+            .from('ventas')
+            .select('id')
+            .limit(1);
+
+        if (resultado.error) {
+          throw resultado.error;
+        }
+
+        estado.textContent =
+          'Conectado a la nube.';
+
+        estado.style.color =
+          '#22c55e';
+
+      } catch (err) {
+
+        console.error(
+          err
+        );
+
+        estado.textContent =
+          'Sin conexión con la nube.';
+
+        estado.style.color =
+          '#ef4444';
+      }
+    }
+
+
+    // =========================================================
+    // LECTURA DEL CÓDIGO DE BALANZA
+    // =========================================================
+
+    function leerCodigo(event) {
+
+      if (
+        event.key !== 'Enter'
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      var codigo =
+        document.getElementById(
+          'escaner'
+        ).value.trim();
+
+      if (!codigo) {
+        return;
+      }
+
+      procesarCodigo(
+        codigo
+      );
+
+      document.getElementById(
+        'escaner'
+      ).value =
+        '';
+    }
+
+
+    function procesarCodigo(codigo) {
+
+      var plu =
+        '';
+
+      var monto =
+        0;
+
+
+      if (
+        CORTES[codigo]
+      ) {
+
+        plu =
+          codigo;
+
+        monto =
+          0;
+
+      } else if (
+        /^\d{13}$/.test(codigo)
+      ) {
+
+        plu =
+          codigo.substring(
+            0,
+            3
+          );
+
+        var precioTexto =
+          codigo.substring(
+            8,
+            13
+          );
+
+        monto =
+          Number(
+            precioTexto
+          ) / 100;
+
+      } else {
+
+        alert(
+          'Código no reconocido: ' +
+          codigo
+        );
+
+        return;
+      }
+
+
+      if (
+        !CORTES[plu]
+      ) {
+
+        alert(
+          'PLU no registrado: ' +
+          plu
+        );
+
+        return;
+      }
+
+
+      carrito.push(
+        {
+          idLocal:
+            Date.now() +
+            Math.random(),
+
+          plu:
+            plu,
+
+          nombre:
+            CORTES[plu],
+
+          total:
+            monto,
+
+          anulado:
+            false
+        }
+      );
+
+
+      actualizarTablaCaja();
+    }
+
+
+    // =========================================================
+    // TABLA CAJA
+    // =========================================================
+
+    function actualizarTablaCaja() {
+
+      var cuerpo =
         document.getElementById(
           'cuerpo-tabla-caja'
         );
 
-      tbody.innerHTML =
+      cuerpo.innerHTML =
         '';
-
 
       var total =
         0;
@@ -1402,294 +1399,102 @@
         i++
       ) {
 
+        var item =
+          carrito[i];
+
+
+        if (
+          item.anulado
+        ) {
+          continue;
+        }
+
+
         total +=
-          Number(carrito[i].precio) || 0;
+          Number(
+            item.total
+          ) || 0;
 
 
-        tbody.innerHTML +=
+        var fila =
+          document.createElement(
+            'tr'
+          );
 
-          '<tr>' +
+
+        fila.innerHTML =
 
           '<td>' +
-          carrito[i].plu +
+          item.plu +
           '</td>' +
 
           '<td>' +
-          carrito[i].nombre +
+          item.nombre +
+          '</td>' +
 
+          '<td>RD$ ' +
           (
-            carrito[i].modificado
-              ? ' <span class="badge" style="font-size:0.65rem;">Modificado</span>'
-              : ''
-          ) +
-
-          '</td>' +
-
-          '<td>' +
-          'RD$ ' +
-          Number(carrito[i].precio).toFixed(2) +
+            Number(
+              item.total
+            ) || 0
+          ).toFixed(2) +
           '</td>' +
 
           '<td style="text-align:right;">' +
 
-          '<button onclick="aplicarDescuento(' +
-          i +
-          ', 10)" class="btn-action">' +
-          '-10%' +
-          '</button>' +
-
-          '<button onclick="aplicarDescuento(' +
-          i +
-          ', 20)" class="btn-action">' +
-          '-20%' +
-          '</button>' +
-
-          '<button onclick="cambiarPrecioManual(' +
-          i +
-          ')" class="btn-action" style="background:#d4af37; color:#000;">' +
-          'Suplidor/Manual' +
-          '</button>' +
-
-          '<button onclick="borrarArticulo(' +
-          i +
-          ')" style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem;">' +
+          '<button class="btn-action" onclick="anularArticulo(\'' +
+          item.idLocal +
+          '\')">' +
           'Anular' +
           '</button>' +
 
-          '</td>' +
+          '<button class="btn-action" onclick="modificarArticulo(\'' +
+          item.idLocal +
+          '\')">' +
+          'Modificar' +
+          '</button>' +
 
-          '</tr>';
+          '</td>';
+
+
+        cuerpo.appendChild(
+          fila
+        );
       }
 
 
       document.getElementById(
         'total-cuenta-texto'
-      ).innerText =
+      ).textContent =
         'RD$ ' +
         total.toFixed(2);
     }
 
 
-    // =========================================================
-    // DESCUENTOS
-    // =========================================================
+    function obtenerTotalCarrito() {
 
-    async function aplicarDescuento(idx, porcentaje) {
+      var total =
+        0;
 
-      var item =
-        carrito[idx];
-
-      if (!item) {
-        return;
-      }
-
-
-      var rebaja =
-        item.originalPrecio *
-        (porcentaje / 100);
-
-
-      item.precio =
-        item.originalPrecio -
-        rebaja;
-
-
-      item.modificado =
-        true;
-
-
-      item.detalleModificacion =
-        'Descuento aplicado: ' +
-        porcentaje +
-        '% (Precio anterior: RD$ ' +
-        item.originalPrecio.toFixed(2) +
-        ')';
-
-
-      var registrado =
-        await registrarModificacionEnNube(
-          item,
-          item.detalleModificacion
-        );
-
-
-      if (!registrado) {
-        return;
-      }
-
-
-      dibujarCarrito();
-    }
-
-
-    // =========================================================
-    // PRECIO MANUAL
-    // =========================================================
-
-    async function cambiarPrecioManual(idx) {
-
-      var item =
-        carrito[idx];
-
-      if (!item) {
-        return;
-      }
-
-
-      var nuevoPrecioStr =
-        prompt(
-          'Ingrese precio especial (Suplidor / Manual) para ' +
-          item.nombre +
-          ':',
-          item.precio
-        );
-
-
-      if (
-        nuevoPrecioStr === null
-      ) {
-        return;
-      }
-
-
-      var nuevoPrecio =
-        parseFloat(nuevoPrecioStr);
-
-
-      if (
-        isNaN(nuevoPrecio) ||
-        nuevoPrecio < 0
+      for (
+        var i = 0;
+        i < carrito.length;
+        i++
       ) {
 
-        alert(
-          'Monto inválido.'
-        );
-
-        return;
-      }
-
-
-      var motivo =
-        prompt(
-          'Indique el motivo o nombre del suplidor para este cambio:',
-          'Venta a Suplidor'
-        );
-
-
-      if (!motivo) {
-        motivo = 'Precio manual asignado';
-      }
-
-
-      item.precio =
-        nuevoPrecio;
-
-      item.modificado =
-        true;
-
-
-      item.detalleModificacion =
-        'Precio manual/suplidor: RD$ ' +
-        nuevoPrecio.toFixed(2) +
-        ' (' +
-        motivo +
-        ')';
-
-
-      var registrado =
-        await registrarModificacionEnNube(
-          item,
-          item.detalleModificacion
-        );
-
-
-      if (!registrado) {
-        return;
-      }
-
-
-      dibujarCarrito();
-    }
-
-
-    // =========================================================
-    // REGISTRAR MODIFICACIÓN
-    // =========================================================
-
-    async function registrarModificacionEnNube(item, detalle) {
-
-      var ahora =
-        new Date();
-
-
-      var horaActual =
-        ahora.toLocaleTimeString(
-          'es-DO',
-          {
-            timeZone: 'America/Santo_Domingo',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-          }
-        );
-
-
-      try {
-
-        const resultado =
-          await supabaseClient
-            .from('cancelaciones')
-            .insert([
-              {
-                fecha: ahora.toISOString(),
-
-                hora: horaActual,
-
-                corte: item.nombre,
-
-                precio:
-                  Number(item.precio) || 0,
-
-                motivo:
-                  '[MODIFICADO] ' +
-                  detalle
-              }
-            ])
-            .select();
-
-
-        if (resultado.error) {
-
-          console.error(
-            'Error Supabase modificacion:',
-            resultado.error
-          );
-
-          alert(
-            'No se pudo registrar la modificación en la nube.\n\n' +
-            resultado.error.message
-          );
-
-          return false;
+        if (
+          carrito[i].anulado
+        ) {
+          continue;
         }
 
-
-        return true;
-
-      } catch (err) {
-
-        console.error(
-          'Error registrando modificación:',
-          err
-        );
-
-        alert(
-          'Error al registrar la modificación.'
-        );
-
-        return false;
+        total +=
+          Number(
+            carrito[i].total
+          ) || 0;
       }
+
+      return total;
     }
 
 
@@ -1697,10 +1502,32 @@
     // ANULAR ARTÍCULO
     // =========================================================
 
-    async function borrarArticulo(idx) {
+    async function anularArticulo(idLocal) {
 
       var item =
-        carrito[idx];
+        null;
+
+
+      for (
+        var i = 0;
+        i < carrito.length;
+        i++
+      ) {
+
+        if (
+          String(
+            carrito[i].idLocal
+          ) ===
+          String(idLocal)
+        ) {
+
+          item =
+            carrito[i];
+
+          break;
+        }
+      }
+
 
       if (!item) {
         return;
@@ -1709,11 +1536,28 @@
 
       var motivo =
         prompt(
-          'Indique motivo de anulación de este corte:'
+          'Motivo de la anulación:',
+          ''
         );
 
 
+      if (
+        motivo === null
+      ) {
+        return;
+      }
+
+
+      motivo =
+        motivo.trim();
+
+
       if (!motivo) {
+
+        alert(
+          'Debe indicar un motivo.'
+        );
+
         return;
       }
 
@@ -1722,66 +1566,45 @@
         new Date();
 
 
-      var horaActual =
-        ahora.toLocaleTimeString(
-          'es-DO',
-          {
-            timeZone: 'America/Santo_Domingo',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-          }
-        );
+      var registro =
+        {
+          corte:
+            item.nombre,
+
+          monto:
+            Number(
+              item.total
+            ) || 0,
+
+          detalle:
+            'ANULADO: ' +
+            motivo,
+
+          fecha:
+            ahora.toISOString()
+        };
 
 
       try {
 
-        const resultado =
+        var resultado =
           await supabaseClient
             .from('cancelaciones')
-            .insert([
-              {
-                fecha: ahora.toISOString(),
-
-                hora: horaActual,
-
-                corte: item.nombre,
-
-                precio:
-                  Number(item.precio) || 0,
-
-                motivo:
-                  'ANULADO: ' +
-                  motivo
-              }
-            ])
-            .select();
+            .insert(
+              [registro]
+            );
 
 
         if (resultado.error) {
-
-          console.error(
-            'Error Supabase anulación:',
-            resultado.error
-          );
-
-          alert(
-            'No se pudo registrar la anulación en la nube.\n\n' +
-            resultado.error.message
-          );
-
-          return;
+          throw resultado.error;
         }
 
 
-        carrito.splice(
-          idx,
-          1
-        );
+        item.anulado =
+          true;
 
-        dibujarCarrito();
 
+        actualizarTablaCaja();
 
       } catch (err) {
 
@@ -1790,52 +1613,268 @@
           err
         );
 
+
         alert(
-          'No se pudo registrar la anulación en la nube.'
+          'No se pudo registrar la anulación en la nube. El artículo no fue eliminado.\n\n' +
+          (
+            err.message ||
+            'Error desconocido.'
+          )
         );
       }
     }
 
 
     // =========================================================
-    // COBRO
+    // MODIFICAR ARTÍCULO
     // =========================================================
 
-    function abrirModalCobro() {
+    async function modificarArticulo(idLocal) {
+
+      var item =
+        null;
+
+
+      for (
+        var i = 0;
+        i < carrito.length;
+        i++
+      ) {
+
+        if (
+          String(
+            carrito[i].idLocal
+          ) ===
+          String(idLocal)
+        ) {
+
+          item =
+            carrito[i];
+
+          break;
+        }
+      }
+
+
+      if (!item) {
+        return;
+      }
+
 
       if (
-        carrito.length === 0
+        item.anulado
       ) {
 
         alert(
-          'No hay artículos agregados.'
+          'Este artículo ya está anulado.'
         );
 
         return;
       }
 
 
+      var nuevoMontoTexto =
+        prompt(
+          'Nuevo precio para ' +
+          item.nombre +
+          ':',
+          Number(
+            item.total
+          ).toFixed(2)
+        );
+
+
+      if (
+        nuevoMontoTexto === null
+      ) {
+        return;
+      }
+
+
+      var nuevoMonto =
+        Number(
+          nuevoMontoTexto
+        );
+
+
+      if (
+        !Number.isFinite(
+          nuevoMonto
+        ) ||
+        nuevoMonto < 0
+      ) {
+
+        alert(
+          'Precio inválido.'
+        );
+
+        return;
+      }
+
+
+      var motivo =
+        prompt(
+          'Motivo de la modificación:',
+          ''
+        );
+
+
+      if (
+        motivo === null
+      ) {
+        return;
+      }
+
+
+      motivo =
+        motivo.trim();
+
+
+      if (!motivo) {
+
+        alert(
+          'Debe indicar un motivo.'
+        );
+
+        return;
+      }
+
+
+      var precioAnterior =
+        Number(
+          item.total
+        ) || 0;
+
+
+      var registro =
+        {
+          corte:
+            item.nombre,
+
+          monto:
+            nuevoMonto,
+
+          detalle:
+            '[MODIFICADO] De RD$ ' +
+            precioAnterior.toFixed(2) +
+            ' a RD$ ' +
+            nuevoMonto.toFixed(2) +
+            ' — ' +
+            motivo,
+
+          fecha:
+            new Date().toISOString()
+        };
+
+
+      try {
+
+        var resultado =
+          await supabaseClient
+            .from('cancelaciones')
+            .insert(
+              [registro]
+            );
+
+
+        if (resultado.error) {
+          throw resultado.error;
+        }
+
+
+        item.total =
+          nuevoMonto;
+
+
+        actualizarTablaCaja();
+
+      } catch (err) {
+
+        console.error(
+          'Error registrando modificación:',
+          err
+        );
+
+
+        alert(
+          'No se pudo registrar la modificación en la nube. El precio no fue cambiado.\n\n' +
+          (
+            err.message ||
+            'Error desconocido.'
+          )
+        );
+      }
+    }
+
+
+    // =========================================================
+    // LIMPIAR CARRITO
+    // =========================================================
+
+    function limpiarCarrito() {
+
+      if (
+        carrito.length === 0
+      ) {
+        return;
+      }
+
+
+      if (
+        !confirm(
+          '¿Desea limpiar la cuenta actual?'
+        )
+      ) {
+        return;
+      }
+
+
+      carrito =
+        [];
+
+      actualizarTablaCaja();
+    }
+
+
+    // =========================================================
+    // MODAL COBRO
+    // =========================================================
+
+    function abrirModalCobro() {
+
       var total =
-        calcularTotalCarrito();
+        obtenerTotalCarrito();
+
+
+      if (
+        total <= 0
+      ) {
+
+        alert(
+          'No hay artículos para cobrar.'
+        );
+
+        return;
+      }
 
 
       document.getElementById(
-        'cobro-total-modal'
-      ).innerText =
-        'Total: RD$ ' +
+        'modal-total'
+      ).textContent =
+        'RD$ ' +
         total.toFixed(2);
 
 
       document.getElementById(
-        'monto-cliente'
+        'monto-recibido'
       ).value =
         '';
 
 
       document.getElementById(
-        'devuelta-texto'
-      ).innerText =
-        'Devuelta: RD$ 0.00';
+        'modal-devuelta'
+      ).textContent =
+        'RD$ 0.00';
 
 
       document.getElementById(
@@ -1844,9 +1883,16 @@
         'flex';
 
 
-      document.getElementById(
-        'monto-cliente'
-      ).focus();
+      setTimeout(
+        function() {
+
+          document.getElementById(
+            'monto-recibido'
+          ).focus();
+
+        },
+        100
+      );
     }
 
 
@@ -1859,517 +1905,288 @@
     }
 
 
-    function calcularTotalCarrito() {
+    document
+      .getElementById(
+        'monto-recibido'
+      )
+      .addEventListener(
+        'input',
+        function() {
 
-      var total =
-        0;
+          var total =
+            obtenerTotalCarrito();
 
+          var recibido =
+            Number(
+              this.value
+            ) || 0;
 
-      for (
-        var i = 0;
-        i < carrito.length;
-        i++
-      ) {
-
-        total +=
-          Number(
-            carrito[i].precio
-          ) || 0;
-      }
-
-
-      return Number(total.toFixed(2));
-    }
+          var devuelta =
+            recibido -
+            total;
 
 
-    function calcularDevuelta() {
-
-      var total =
-        calcularTotalCarrito();
-
-
-      var pagado =
-        parseFloat(
           document.getElementById(
-            'monto-cliente'
-          ).value
-        ) || 0;
-
-
-      var cambio =
-        pagado -
-        total;
-
-
-      document.getElementById(
-        'devuelta-texto'
-      ).innerText =
-        'Devuelta: RD$ ' +
-
-        (
-          cambio > 0
-            ? cambio.toFixed(2)
-            : '0.00'
-        );
-    }
-
-
-    // =========================================================
-    // FINALIZAR VENTA
-    // =========================================================
-
-    async function finalizarVenta() {
-
-      console.log(
-        '=== INICIO FINALIZAR VENTA v2 ==='
+            'modal-devuelta'
+          ).textContent =
+            'RD$ ' +
+            (
+              devuelta > 0
+                ? devuelta
+                : 0
+            ).toFixed(2);
+        }
       );
 
 
+    // =========================================================
+    // GUARDAR VENTA
+    // =========================================================
+
+    async function confirmarCobro() {
+
+      var total =
+        obtenerTotalCarrito();
+
+
       if (
-        carrito.length === 0
+        total <= 0
       ) {
 
         alert(
-          'No hay artículos para vender.'
+          'No hay artículos para cobrar.'
         );
 
         return;
       }
 
 
-      var totalVenta =
-        calcularTotalCarrito();
+      var metodo =
+        document.getElementById(
+          'metodo-pago'
+        ).value;
 
 
-      var pagado =
-        parseFloat(
+      var recibido =
+        Number(
           document.getElementById(
-            'monto-cliente'
+            'monto-recibido'
           ).value
         ) || 0;
 
 
       if (
-        pagado < totalVenta
+        metodo === 'Efectivo' &&
+        recibido < total
       ) {
 
         alert(
-          'El importe recibido es inferior al total facturado.'
+          'El monto recibido es menor que el total.'
         );
 
         return;
       }
 
 
-      var boton =
-        document.getElementById(
-          'btn-confirmar-venta'
+      var ahora =
+        new Date();
+
+
+      var articulosValidos =
+        carrito.filter(
+          function(item) {
+            return !item.anulado;
+          }
         );
 
 
-      boton.disabled =
-        true;
+      if (
+        articulosValidos.length === 0
+      ) {
 
-      boton.innerText =
-        'Guardando...';
+        alert(
+          'No hay artículos válidos para registrar.'
+        );
+
+        return;
+      }
+
+
+      var registros =
+        articulosValidos.map(
+          function(item) {
+
+            return {
+              fecha:
+                ahora.toISOString(),
+
+              total:
+                Number(
+                  item.total
+                ) || 0,
+
+              metodo_pago:
+                metodo,
+
+              notas:
+                '',
+
+              nombre:
+                item.nombre,
+
+              plu:
+                item.plu
+            };
+          }
+        );
 
 
       try {
 
-        var fechaVenta =
-          new Date().toISOString();
-
-
-        var registrosVenta =
-          [];
-
-
-        for (
-          var i = 0;
-          i < carrito.length;
-          i++
-        ) {
-
-          var item =
-            carrito[i];
-
-
-          var precioFinal =
-            Number(item.precio);
-
-
-          if (!Number.isFinite(precioFinal)) {
-            precioFinal = 0;
-          }
-
-
-          var precioOriginal =
-            Number(item.originalPrecio);
-
-
-          if (!Number.isFinite(precioOriginal)) {
-            precioOriginal = precioFinal;
-          }
-
-
-          var descuento =
-            precioOriginal -
-            precioFinal;
-
-
-          if (
-            !Number.isFinite(descuento) ||
-            descuento < 0
-          ) {
-
-            descuento = 0;
-          }
-
-
-          precioFinal =
-            Number(precioFinal.toFixed(2));
-
-          descuento =
-            Number(descuento.toFixed(2));
-
-
-          var registro = {
-
-            fecha: fechaVenta,
-
-            total: precioFinal,
-
-            metodo_pago: 'Efectivo',
-
-            notas: null,
-
-            nombre:
-              String(item.nombre) +
-              (
-                item.modificado
-                  ? ' (Modif)'
-                  : ''
-              ),
-
-            plu:
-              String(item.plu),
-
-            precio:
-              precioFinal,
-
-            cantidad:
-              1,
-
-            subtotal:
-              precioFinal,
-
-            descuento:
-              descuento,
-
-            motivo:
-              null
-          };
-
-
-          registrosVenta.push(
-            registro
-          );
-        }
-
-
-        console.log(
-          '=== REGISTROS QUE SE ENVIARÁN A SUPABASE ==='
-        );
-
-        console.log(
-          JSON.stringify(
-            registrosVenta,
-            null,
-            2
-          )
-        );
-
-
-        const resultado =
+        var resultado =
           await supabaseClient
             .from('ventas')
             .insert(
-              registrosVenta
-            )
-            .select();
-
-
-        console.log(
-          '=== RESPUESTA COMPLETA DE SUPABASE ===',
-          resultado
-        );
+              registros
+            );
 
 
         if (resultado.error) {
-
-          console.error(
-            'ERROR DE SUPABASE AL GUARDAR VENTA:',
-            resultado.error
-          );
-
-
-          alert(
-            'NO SE GUARDÓ LA VENTA.\n\n' +
-            (
-              resultado.error.message ||
-              'Error desconocido de Supabase.'
-            )
-          );
-
-
-          boton.disabled =
-            false;
-
-          boton.innerText =
-            'Confirmar';
-
-
-          return;
+          throw resultado.error;
         }
 
 
-        var filasGuardadas =
-          resultado.data || [];
+        var devuelta =
+          recibido -
+          total;
 
 
-        console.log(
-          '=== FILAS GUARDADAS REALMENTE ===',
-          filasGuardadas
+        alert(
+          'Venta registrada correctamente.\n\n' +
+          'Total: RD$ ' +
+          total.toFixed(2) +
+          '\n' +
+          (
+            metodo === 'Efectivo'
+              ? 'Devuelta: RD$ ' +
+                (
+                  devuelta > 0
+                    ? devuelta
+                    : 0
+                ).toFixed(2)
+              : ''
+          )
         );
-
-
-        var totalInvalido =
-          false;
-
-
-        for (
-          var y = 0;
-          y < filasGuardadas.length;
-          y++
-        ) {
-
-          if (
-            filasGuardadas[y].total === null ||
-            filasGuardadas[y].total === undefined
-          ) {
-
-            totalInvalido =
-              true;
-
-            break;
-          }
-        }
-
-
-        if (totalInvalido) {
-
-          console.error(
-            'ATENCIÓN: Supabase devolvió una fila con total NULL.'
-          );
-
-
-          alert(
-            'SUPABASE GUARDÓ LA FILA PERO DEVOLVIÓ EL TOTAL COMO NULL.\n\n' +
-            'La venta NO se limpiará del carrito para evitar perderla.'
-          );
-
-
-          boton.disabled =
-            false;
-
-          boton.innerText =
-            'Confirmar';
-
-
-          return;
-        }
 
 
         carrito =
           [];
 
-
-        dibujarCarrito();
-
+        actualizarTablaCaja();
 
         cerrarModalCobro();
-
-
-        mostrarEstadoNube(
-          'Venta guardada correctamente en la nube.',
-          false
-        );
-
-
-        alert(
-          'Venta guardada correctamente en la nube.'
-        );
-
-
-        document.getElementById(
-          'escaner'
-        ).focus();
-
 
       } catch (err) {
 
         console.error(
-          'ERROR GENERAL AL GUARDAR VENTA:',
+          'Error guardando venta:',
           err
         );
 
 
         alert(
-          'NO SE PUDO GUARDAR LA VENTA.\n\n' +
+          'No se pudo registrar la venta en la nube.\n\n' +
           (
             err.message ||
             'Error desconocido.'
           )
         );
-
-
-      } finally {
-
-        boton.disabled =
-          false;
-
-        boton.innerText =
-          'Confirmar';
       }
     }
 
 
     // =========================================================
-    // CUADRE - ABRIR
+    // CUADRE
     // =========================================================
 
     async function hacerCuadre() {
 
+      var fechaHoyRD =
+        obtenerFechaRD();
+
+
       try {
 
-        const resultadoVentas =
+        var resultado =
           await supabaseClient
             .from('ventas')
             .select('*');
 
 
-        if (resultadoVentas.error) {
-
-          throw resultadoVentas.error;
+        if (resultado.error) {
+          throw resultado.error;
         }
 
 
-        const ventas =
-          resultadoVentas.data || [];
-
-
-        var fechaHoyRD =
-          obtenerFechaRD();
+        var ventas =
+          resultado.data || [];
 
 
         var ventasHoy =
-          [];
+          ventas.filter(
+            function(venta) {
+
+              return (
+                venta.fecha &&
+                obtenerFechaVentaRD(
+                  venta.fecha
+                ) === fechaHoyRD
+              );
+
+            }
+          );
 
 
-        for (
-          var i = 0;
-          i < ventas.length;
-          i++
-        ) {
-
-          var totalVenta =
-            Number(ventas[i].total);
-
-
-          if (
-            !Number.isFinite(totalVenta)
-          ) {
-            continue;
-          }
-
-
-          if (
-            obtenerFechaVentaRD(
-              ventas[i].fecha
-            ) === fechaHoyRD
-          ) {
-
-            ventasHoy.push(
-              ventas[i]
-            );
-          }
-        }
-
-
-        var totalHoy =
+        var totalVentas =
           0;
 
 
         for (
-          var j = 0;
-          j < ventasHoy.length;
-          j++
+          var i = 0;
+          i < ventasHoy.length;
+          i++
         ) {
 
-          totalHoy +=
+          totalVentas +=
             Number(
-              ventasHoy[j].total
+              ventasHoy[i].total
             ) || 0;
         }
 
 
-        totalHoy =
-          Number(
-            totalHoy.toFixed(2)
-          );
-
-
         document.getElementById(
-          'cuadre-total-vendido'
-        ).innerText =
+          'cuadre-total-ventas'
+        ).textContent =
           'RD$ ' +
-          totalHoy.toFixed(2);
+          totalVentas.toFixed(2);
 
 
         document.getElementById(
           'cuadre-articulos'
-        ).innerText =
+        ).textContent =
           ventasHoy.length;
 
 
         document.getElementById(
-          'cuadre-efectivo'
+          'efectivo-contado'
         ).value =
           '';
 
 
         document.getElementById(
-          'cuadre-diferencia'
-        ).innerText =
-          'RD$ 0.00';
-
-
-        document.getElementById(
-          'cuadre-diferencia'
-        ).className =
-          'diferencia-normal';
-
-
-        document.getElementById(
-          'modal-cuadre'
-        ).dataset.total =
-          totalHoy;
-
-
-        document.getElementById(
-          'modal-cuadre'
-        ).dataset.articulos =
-          ventasHoy.length;
+          'resultado-cuadre'
+        ).style.display =
+          'none';
 
 
         document.getElementById(
@@ -2378,21 +2195,17 @@
           'flex';
 
 
-        document.getElementById(
-          'cuadre-efectivo'
-        ).focus();
-
+        window.totalVentasCuadre =
+          totalVentas;
 
       } catch (err) {
 
         console.error(
-          'Error preparando cuadre:',
           err
         );
 
-
         alert(
-          'No se pudo preparar el cuadre.\n\n' +
+          'No se pudo cargar el cuadre.\n\n' +
           (
             err.message ||
             'Error desconocido.'
@@ -2401,99 +2214,6 @@
       }
     }
 
-
-    // =========================================================
-    // CUADRE - CALCULAR DIFERENCIA
-    // =========================================================
-
-    function calcularDiferenciaCuadre() {
-
-      var modal =
-        document.getElementById(
-          'modal-cuadre'
-        );
-
-
-      var total =
-        Number(
-          modal.dataset.total
-        ) || 0;
-
-
-      var contado =
-        parseFloat(
-          document.getElementById(
-            'cuadre-efectivo'
-          ).value
-        );
-
-
-      if (
-        !Number.isFinite(contado)
-      ) {
-
-        contado = 0;
-      }
-
-
-      var diferencia =
-        contado -
-        total;
-
-
-      diferencia =
-        Number(
-          diferencia.toFixed(2)
-        );
-
-
-      var elemento =
-        document.getElementById(
-          'cuadre-diferencia'
-        );
-
-
-      if (
-        diferencia === 0
-      ) {
-
-        elemento.innerText =
-          'RD$ 0.00';
-
-        elemento.className =
-          'diferencia-normal';
-
-        return;
-      }
-
-
-      if (
-        diferencia < 0
-      ) {
-
-        elemento.innerText =
-          'Faltante: RD$ ' +
-          Math.abs(diferencia).toFixed(2);
-
-        elemento.className =
-          'diferencia-faltante';
-
-        return;
-      }
-
-
-      elemento.innerText =
-        'Sobrante: RD$ ' +
-        diferencia.toFixed(2);
-
-      elemento.className =
-        'diferencia-sobrante';
-    }
-
-
-    // =========================================================
-    // CUADRE - CERRAR MODAL
-    // =========================================================
 
     function cerrarModalCuadre() {
 
@@ -2504,205 +2224,183 @@
     }
 
 
-    // =========================================================
-    // CUADRE - GUARDAR
-    // =========================================================
+    document
+      .getElementById(
+        'efectivo-contado'
+      )
+      .addEventListener(
+        'input',
+        function() {
 
-    async function confirmarCuadre() {
-
-      var modal =
-        document.getElementById(
-          'modal-cuadre'
-        );
+          var contado =
+            Number(
+              this.value
+            ) || 0;
 
 
-      var totalVentas =
+          var total =
+            Number(
+              window.totalVentasCuadre
+            ) || 0;
+
+
+          var diferencia =
+            contado -
+            total;
+
+
+          var resultado =
+            document.getElementById(
+              'resultado-cuadre'
+            );
+
+
+          var estado =
+            'CUADRADO';
+
+
+          var estilo =
+            'diferencia-normal';
+
+
+          if (
+            diferencia < 0
+          ) {
+
+            estado =
+              'FALTANTE';
+
+            estilo =
+              'diferencia-faltante';
+
+          } else if (
+            diferencia > 0
+          ) {
+
+            estado =
+              'SOBRANTE';
+
+            estilo =
+              'diferencia-sobrante';
+          }
+
+
+          resultado.style.display =
+            'block';
+
+
+          resultado.innerHTML =
+
+            '<div class="cuadre-fila">' +
+
+            '<span class="cuadre-label">' +
+            'Resultado' +
+            '</span>' +
+
+            '<span class="cuadre-valor ' +
+            estilo +
+            '">' +
+            estado +
+            '</span>' +
+
+            '</div>' +
+
+            '<div class="cuadre-fila">' +
+
+            '<span class="cuadre-label">' +
+            'Diferencia' +
+            '</span>' +
+
+            '<span class="cuadre-valor ' +
+            estilo +
+            '">' +
+            'RD$ ' +
+            (
+              diferencia >= 0
+                ? '+'
+                : ''
+            ) +
+            diferencia.toFixed(2) +
+            '</span>' +
+
+            '</div>';
+        }
+      );
+
+
+    async function guardarCuadre() {
+
+      var total =
         Number(
-          modal.dataset.total
+          window.totalVentasCuadre
         ) || 0;
 
 
-      var articulos =
+      var contado =
         Number(
-          modal.dataset.articulos
+          document.getElementById(
+            'efectivo-contado'
+          ).value
         ) || 0;
-
-
-      var efectivoTexto =
-        document.getElementById(
-          'cuadre-efectivo'
-        ).value.trim();
-
-
-      if (
-        efectivoTexto === ''
-      ) {
-
-        alert(
-          'Debe ingresar el dinero físico contado.'
-        );
-
-        return;
-      }
-
-
-      var efectivoContado =
-        parseFloat(
-          efectivoTexto
-        );
-
-
-      if (
-        !Number.isFinite(efectivoContado) ||
-        efectivoContado < 0
-      ) {
-
-        alert(
-          'El dinero físico contado no es válido.'
-        );
-
-        return;
-      }
-
-
-      efectivoContado =
-        Number(
-          efectivoContado.toFixed(2)
-        );
 
 
       var diferencia =
-        efectivoContado -
-        totalVentas;
+        contado -
+        total;
 
 
-      diferencia =
-        Number(
-          diferencia.toFixed(2)
-        );
+      var fecha =
+        new Date();
 
 
-      var boton =
-        document.getElementById(
-          'btn-confirmar-cuadre'
-        );
-
-
-      boton.disabled =
-        true;
-
-      boton.innerText =
-        'Guardando...';
-
-
-      try {
-
-        const resultado =
-          await supabaseClient
-            .from('cuadres')
-            .insert([
+      var resultado =
+        await supabaseClient
+          .from('cuadres')
+          .insert(
+            [
               {
+                fecha:
+                  fecha.toISOString(),
+
                 total_ventas:
-                  totalVentas,
+                  total,
 
                 articulos:
-                  articulos,
+                  document.getElementById(
+                    'cuadre-articulos'
+                  ).textContent,
 
                 efectivo_contado:
-                  efectivoContado,
+                  contado,
 
                 diferencia:
                   diferencia
               }
-            ])
-            .select();
-
-
-        if (resultado.error) {
-
-          console.error(
-            'Error guardando cuadre:',
-            resultado.error
+            ]
           );
 
 
-          alert(
-            'NO SE PUDO GUARDAR EL CUADRE.\n\n' +
-            resultado.error.message
-          );
-
-
-          return;
-        }
-
-
-        cerrarModalCuadre();
-
-
-        var mensaje =
-          'CUADRE REALIZADO EXITOSAMENTE.\n\n' +
-          'Total vendido: RD$ ' +
-          totalVentas.toFixed(2) +
-          '\n' +
-          'Dinero contado: RD$ ' +
-          efectivoContado.toFixed(2) +
-          '\n';
-
-
-        if (
-          diferencia === 0
-        ) {
-
-          mensaje +=
-            'Diferencia: RD$ 0.00\n\n' +
-            'La caja está cuadrada.';
-
-        } else if (
-          diferencia < 0
-        ) {
-
-          mensaje +=
-            'Faltante: RD$ ' +
-            Math.abs(diferencia).toFixed(2);
-
-        } else {
-
-          mensaje +=
-            'Sobrante: RD$ ' +
-            diferencia.toFixed(2);
-        }
-
-
-        alert(
-          mensaje
-        );
-
-
-      } catch (err) {
+      if (resultado.error) {
 
         console.error(
-          'Error general guardando cuadre:',
-          err
+          resultado.error
         );
-
 
         alert(
-          'NO SE PUDO GUARDAR EL CUADRE.\n\n' +
-          (
-            err.message ||
-            'Error desconocido.'
-          )
+          'No se pudo guardar el cuadre.\n\n' +
+          resultado.error.message
         );
 
-
-      } finally {
-
-        boton.disabled =
-          false;
-
-        boton.innerText =
-          'Confirmar Cuadre';
+        return;
       }
+
+
+      alert(
+        'Cuadre guardado correctamente.'
+      );
+
+
+      cerrarModalCuadre();
     }
 
 
@@ -2712,11 +2410,16 @@
 
     async function actualizarAdmin() {
 
+      var fechaHoyRD =
+        obtenerFechaRD();
+
+
       try {
 
-        // Guardamos la fecha que se está mostrando.
-        ultimaFechaAdmin =
-          obtenerFechaRD();
+        document.getElementById(
+          'estado-nube-admin'
+        ).textContent =
+          'Cargando información...';
 
 
         // =====================================================
@@ -2726,7 +2429,14 @@
         const resultadoVentas =
           await supabaseClient
             .from('ventas')
-            .select('*');
+            .select('*')
+            .order(
+              'fecha',
+              {
+                ascending: false
+              }
+            )
+            .limit(500);
 
 
         if (
@@ -2741,102 +2451,75 @@
           resultadoVentas.data || [];
 
 
-        console.log(
-          'Ventas recibidas desde Supabase:',
-          ventas
-        );
+        var ventasHoy =
+          ventas.filter(
+            function(venta) {
 
+              return (
+                venta.fecha &&
+                obtenerFechaVentaRD(
+                  venta.fecha
+                ) === fechaHoyRD
+              );
 
-        var fechaHoyRD =
-          obtenerFechaRD();
-
-
-        var ventasValidas =
-          [];
-
-
-        for (
-          var i = 0;
-          i < ventas.length;
-          i++
-        ) {
-
-          var totalFila =
-            Number(
-              ventas[i].total
-            );
-
-
-          if (
-            !Number.isFinite(totalFila)
-          ) {
-            continue;
-          }
-
-
-          if (
-            obtenerFechaVentaRD(
-              ventas[i].fecha
-            ) !== fechaHoyRD
-          ) {
-            continue;
-          }
-
-
-          ventasValidas.push(
-            ventas[i]
+            }
           );
-        }
 
 
-        var total =
+        var totalVentasHoy =
           0;
 
 
         for (
-          var j = 0;
-          j < ventasValidas.length;
-          j++
+          var i = 0;
+          i < ventasHoy.length;
+          i++
         ) {
 
-          total +=
+          totalVentasHoy +=
             Number(
-              ventasValidas[j].total
+              ventasHoy[i].total
             ) || 0;
         }
 
 
-        total =
-          Number(
-            total.toFixed(2)
+        var resumenVentas =
+          document.getElementById(
+            'resumen-ventas-admin'
           );
 
 
-        document.getElementById(
-          'admin-total-dia'
-        ).innerText =
+        resumenVentas.innerHTML =
+
+          '<div class="cuadre-fila">' +
+
+          '<span class="cuadre-label">' +
+          'Total vendido hoy' +
+          '</span>' +
+
+          '<span class="cuadre-valor">' +
           'RD$ ' +
-          total.toFixed(2);
+          totalVentasHoy.toFixed(2) +
+          '</span>' +
 
+          '</div>' +
 
-        document.getElementById(
-          'admin-conteo-articulos'
-        ).innerText =
-          ventasValidas.length +
-          (
-            ventasValidas.length === 1
-              ? ' artículo facturado hoy'
-              : ' artículos facturados hoy'
-          );
+          '<div class="cuadre-fila">' +
 
+          '<span class="cuadre-label">' +
+          'Artículos vendidos' +
+          '</span>' +
 
-        // =====================================================
-        // DETALLE DE VENTAS
-        // =====================================================
+          '<span class="cuadre-valor">' +
+          ventasHoy.length +
+          '</span>' +
+
+          '</div>';
+
 
         var tbodyVentas =
           document.getElementById(
-            'cuerpo-tabla-ventas'
+            'cuerpo-tabla-ventas-admin'
           );
 
 
@@ -2845,14 +2528,14 @@
 
 
         if (
-          ventasValidas.length === 0
+          ventasHoy.length === 0
         ) {
 
           tbodyVentas.innerHTML =
 
             '<tr>' +
 
-            '<td colspan="6" style="text-align:center; color:#666; padding:25px;">' +
+            '<td colspan="4" style="text-align:center; color:#666; padding:25px;">' +
 
             'No hay ventas registradas hoy.' +
 
@@ -2862,53 +2545,14 @@
 
         } else {
 
-          ventasValidas.sort(
-            function(a, b) {
-
-              return new Date(b.fecha) -
-                     new Date(a.fecha);
-
-            }
-          );
-
-
           for (
             var v = 0;
-            v < ventasValidas.length;
+            v < ventasHoy.length;
             v++
           ) {
 
             var venta =
-              ventasValidas[v];
-
-
-            var precio =
-              Number(
-                venta.precio
-              ) || 0;
-
-
-            var cantidad =
-              Number(
-                venta.cantidad
-              ) || 1;
-
-
-            var subtotal =
-              Number(
-                venta.subtotal
-              );
-
-
-            if (
-              !Number.isFinite(subtotal)
-            ) {
-
-              subtotal =
-                Number(
-                  venta.total
-                ) || 0;
-            }
+              ventasHoy[v];
 
 
             tbodyVentas.innerHTML +=
@@ -2916,7 +2560,7 @@
               '<tr>' +
 
               '<td>' +
-              formatearHoraRD(
+              formatearFechaHoraRD(
                 venta.fecha
               ) +
               '</td>' +
@@ -2924,27 +2568,23 @@
               '<td>' +
               (
                 venta.nombre ||
-                'Sin nombre'
-              ) +
-              '</td>' +
-
-              '<td>' +
-              (
-                venta.plu ||
                 ''
               ) +
               '</td>' +
 
               '<td>RD$ ' +
-              precio.toFixed(2) +
+              (
+                Number(
+                  venta.total
+                ) || 0
+              ).toFixed(2) +
               '</td>' +
 
               '<td>' +
-              cantidad +
-              '</td>' +
-
-              '<td>RD$ ' +
-              subtotal.toFixed(2) +
+              (
+                venta.metodo_pago ||
+                'Efectivo'
+              ) +
               '</td>' +
 
               '</tr>';
@@ -2953,13 +2593,20 @@
 
 
         // =====================================================
-        // AUDITORÍA
+        // CANCELACIONES / MODIFICACIONES
         // =====================================================
 
         const resultadoCancelaciones =
           await supabaseClient
             .from('cancelaciones')
-            .select('*');
+            .select('*')
+            .order(
+              'fecha',
+              {
+                ascending: false
+              }
+            )
+            .limit(500);
 
 
         if (
@@ -2973,11 +2620,6 @@
         const cancelaciones =
           resultadoCancelaciones.data || [];
 
-
-        // IMPORTANTE:
-        // Solo mostramos en la aplicación las cancelaciones
-        // y modificaciones correspondientes al día actual.
-        // No se elimina ninguna fila de Supabase.
 
         var cancelacionesHoy =
           cancelaciones.filter(
@@ -2994,13 +2636,13 @@
           );
 
 
-        var tbodyAuditoria =
+        var tbodyCancelaciones =
           document.getElementById(
-            'cuerpo-tabla-auditoria'
+            'cuerpo-tabla-cancelaciones'
           );
 
 
-        tbodyAuditoria.innerHTML =
+        tbodyCancelaciones.innerHTML =
           '';
 
 
@@ -3008,29 +2650,19 @@
           cancelacionesHoy.length === 0
         ) {
 
-          tbodyAuditoria.innerHTML =
+          tbodyCancelaciones.innerHTML =
 
             '<tr>' +
 
             '<td colspan="4" style="text-align:center; color:#666; padding:25px;">' +
 
-            'No hay modificaciones ni anulaciones registradas hoy.' +
+            'No hay modificaciones ni cancelaciones hoy.' +
 
             '</td>' +
 
             '</tr>';
 
         } else {
-
-          cancelacionesHoy.sort(
-            function(a, b) {
-
-              return new Date(b.fecha) -
-                     new Date(a.fecha);
-
-            }
-          );
-
 
           for (
             var k = 0;
@@ -3039,40 +2671,38 @@
           ) {
 
             var motivo =
-              cancelacionesHoy[k].motivo || '';
-
-
-            var esModif =
-              motivo.includes(
-                '[MODIFICADO]'
-              );
-
-
-            var colorTexto =
-              esModif
-                ? 'color:#d4af37;'
-                : 'color:#ef4444;';
+              cancelacionesHoy[k].detalle ||
+              '';
 
 
             var precioCancelacion =
               Number(
-                cancelacionesHoy[k].precio
+                cancelacionesHoy[k].monto
               ) || 0;
 
 
-            tbodyAuditoria.innerHTML +=
+            var colorTexto =
+              motivo.indexOf(
+                'ANULADO'
+              ) === 0
+                ? 'color:#ef4444; font-weight:700;'
+                : 'color:#d4af37; font-weight:700;';
+
+
+            tbodyCancelaciones.innerHTML +=
 
               '<tr>' +
 
               '<td>' +
-              (
-                cancelacionesHoy[k].hora || ''
+              formatearFechaHoraRD(
+                cancelacionesHoy[k].fecha
               ) +
               '</td>' +
 
               '<td>' +
               (
-                cancelacionesHoy[k].corte || ''
+                cancelacionesHoy[k].corte ||
+                ''
               ) +
               '</td>' +
 
@@ -3188,7 +2818,9 @@
 
               textoDiferencia =
                 'RD$ -' +
-                Math.abs(diferencia).toFixed(2);
+                Math.abs(
+                  diferencia
+                ).toFixed(2);
 
             } else if (
               diferencia > 0
@@ -3391,12 +3023,38 @@
         }
 
 
+        document.getElementById(
+          'estado-nube-admin'
+        ).textContent =
+          'Información actualizada correctamente.';
+
+        document.getElementById(
+          'estado-nube-admin'
+        ).style.color =
+          '#22c55e';
+
+
       } catch (err) {
 
         console.error(
           'Error cargando datos del administrador:',
           err
         );
+
+
+        var estadoError =
+          document.getElementById(
+            'estado-nube-admin'
+          );
+
+        if (estadoError) {
+
+          estadoError.textContent =
+            'Error cargando información de la nube.';
+
+          estadoError.style.color =
+            '#ef4444';
+        }
 
 
         alert(
@@ -3540,14 +3198,6 @@
         var fechaActualRD =
           obtenerFechaRD();
 
-
-        /*
-          Si cambió la fecha en República Dominicana
-          y el administrador está abierto, actualizamos
-          inmediatamente las ventas y auditoría.
-
-          NO se elimina ningún registro de Supabase.
-        */
 
         if (
           fechaActualRD !== ultimaFechaAdmin
