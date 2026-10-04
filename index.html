@@ -263,6 +263,7 @@
 
   </div>
 
+
   <div id="vista-cajero"
        style="display:none; max-width:1100px; margin:0 auto;">
 
@@ -300,6 +301,7 @@
 
     </div>
 
+
     <div style="display:flex; gap:24px;">
 
       <div style="flex:2;">
@@ -326,9 +328,11 @@
                 <th>Código PLU</th>
                 <th>Corte</th>
                 <th>Monto (RD$)</th>
+
                 <th style="text-align:right;">
                   Opciones / Ajustes
                 </th>
+
               </tr>
 
             </thead>
@@ -340,6 +344,7 @@
         </div>
 
       </div>
+
 
       <div
         style="flex:1.1; background:#141414; padding:24px; border-radius:10px; border:1px solid #222; height:fit-content;"
@@ -383,6 +388,7 @@
     </div>
 
   </div>
+
 
   <div id="vista-admin"
        style="display:none; max-width:1100px; margin:0 auto;">
@@ -430,6 +436,7 @@
 
     </div>
 
+
     <div style="display:flex; gap:24px;">
 
       <div
@@ -455,6 +462,7 @@
         </p>
 
       </div>
+
 
       <div
         style="flex:2; background:#141414; padding:22px; border-radius:10px; border:1px solid #222;"
@@ -494,6 +502,7 @@
     </div>
 
   </div>
+
 
   <div
     id="modal-cobro"
@@ -554,6 +563,7 @@
     </div>
 
   </div>
+
 
   <script>
 
@@ -645,6 +655,10 @@
     }
 
 
+    // =========================================================
+    // PRODUCTOS
+    // =========================================================
+
     var CORTES = {
 
       "101": "Bistec (Res)",
@@ -669,6 +683,10 @@
 
     var carrito = [];
 
+
+    // =========================================================
+    // LOGIN
+    // =========================================================
 
     function seleccionarRol(rol) {
 
@@ -784,6 +802,10 @@
     }
 
 
+    // =========================================================
+    // SUPABASE
+    // =========================================================
+
     async function comprobarConexionSupabase() {
 
       try {
@@ -853,6 +875,10 @@
           : '#22c55e';
     }
 
+
+    // =========================================================
+    // ESCÁNER
+    // =========================================================
 
     function leerCodigo(e) {
 
@@ -955,6 +981,10 @@
     }
 
 
+    // =========================================================
+    // CARRITO
+    // =========================================================
+
     function dibujarCarrito() {
 
       var tbody =
@@ -1046,6 +1076,10 @@
     }
 
 
+    // =========================================================
+    // DESCUENTOS
+    // =========================================================
+
     async function aplicarDescuento(
       idx,
       porcentaje
@@ -1086,6 +1120,10 @@
       dibujarCarrito();
     }
 
+
+    // =========================================================
+    // PRECIO MANUAL
+    // =========================================================
 
     async function cambiarPrecioManual(
       idx
@@ -1170,6 +1208,10 @@
     }
 
 
+    // =========================================================
+    // REGISTRAR MODIFICACIÓN
+    // =========================================================
+
     async function registrarModificacionEnNube(
       item,
       detalle
@@ -1235,6 +1277,10 @@
       }
     }
 
+
+    // =========================================================
+    // ANULAR ARTÍCULO
+    // =========================================================
 
     async function borrarArticulo(
       idx
@@ -1319,6 +1365,10 @@
       }
     }
 
+
+    // =========================================================
+    // COBRO
+    // =========================================================
 
     function abrirModalCobro() {
 
@@ -1433,6 +1483,10 @@
     }
 
 
+    // =========================================================
+    // FINALIZAR VENTA
+    // =========================================================
+
     async function finalizarVenta() {
 
       if (
@@ -1447,7 +1501,7 @@
       }
 
 
-      var total =
+      var totalVenta =
         calcularTotalCarrito();
 
 
@@ -1460,7 +1514,7 @@
 
 
       if (
-        pagado < total
+        pagado < totalVenta
       ) {
 
         alert(
@@ -1486,6 +1540,10 @@
 
       try {
 
+        var fechaVenta =
+          new Date().toISOString();
+
+
         var registrosVenta =
           [];
 
@@ -1496,30 +1554,81 @@
           i++
         ) {
 
+          var item =
+            carrito[i];
+
+
+          var precioFinal =
+            Number(item.precio) || 0;
+
+
+          var precioOriginal =
+            Number(item.originalPrecio) || precioFinal;
+
+
+          var descuento =
+            precioOriginal - precioFinal;
+
+
+          if (descuento < 0) {
+            descuento = 0;
+          }
+
+
+          var subtotal =
+            precioFinal;
+
+
+          var totalLinea =
+            precioFinal;
+
+
           registrosVenta.push({
 
-            plu:
-              carrito[i].plu,
+            fecha:
+              fechaVenta,
+
+            total:
+              totalLinea,
+
+            metodo_pago:
+              'Efectivo',
+
+            notas:
+              null,
 
             nombre:
-              carrito[i].nombre +
+              item.nombre +
               (
-                carrito[i].modificado
+                item.modificado
                   ? ' (Modif)'
                   : ''
               ),
 
+            plu:
+              item.plu,
+
             precio:
-              Number(
-                carrito[i].precio
-              )
+              precioFinal,
+
+            cantidad:
+              1,
+
+            subtotal:
+              subtotal,
+
+            descuento:
+              descuento,
+
+            motivo:
+              null
 
           });
         }
 
 
         console.log(
-          'Enviando ventas a Supabase:',
+          'Enviando ventas completas a Supabase:',
           registrosVenta
         );
 
@@ -1563,7 +1672,8 @@
 
 
         console.log(
-          'Venta guardada correctamente en Supabase.'
+          'Venta guardada correctamente en Supabase:',
+          registrosVenta
         );
 
 
@@ -1615,6 +1725,10 @@
     }
 
 
+    // =========================================================
+    // CUADRE
+    // =========================================================
+
     async function hacerCuadre() {
 
       if (
@@ -1629,6 +1743,10 @@
       }
     }
 
+
+    // =========================================================
+    // ADMINISTRADOR
+    // =========================================================
 
     async function actualizarAdmin() {
 
@@ -1670,7 +1788,7 @@
 
           total +=
             Number(
-              ventas[i].precio
+              ventas[i].total
             ) || 0;
         }
 
@@ -1793,6 +1911,10 @@
     }
 
 
+    // =========================================================
+    // VENTAS FRECUENTES
+    // =========================================================
+
     async function mostrarFrecuentes() {
 
       try {
@@ -1894,6 +2016,10 @@
       }
     }
 
+
+    // =========================================================
+    // ENTER EN LOGIN
+    // =========================================================
 
     document
       .getElementById('input-clave')
