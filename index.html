@@ -398,6 +398,15 @@
           style="margin-top:0;"
         />
 
+        <!-- VENTA MANUAL -->
+        <button
+          onclick="abrirVentaManual()"
+          class="btn-gold"
+          style="width:100%; margin-bottom:15px;"
+        >
+          Venta Manual
+        </button>
+
         <div
           style="background:#141414; border-radius:10px; padding:18px; min-height:320px; border:1px solid #222;"
         >
@@ -675,6 +684,83 @@
         <tbody id="cuerpo-tabla-auditoria"></tbody>
 
       </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       MODAL VENTA MANUAL
+  ========================================================== -->
+
+  <div
+    id="modal-venta-manual"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); align-items:center; justify-content:center; z-index:1100;"
+  >
+
+    <div
+      style="background:#141414; border:1px solid #333; border-radius:12px; padding:28px; width:430px; max-width:95%;"
+    >
+
+      <h3
+        style="font-size:1.3rem; text-align:center;"
+      >
+        Venta Manual
+      </h3>
+
+      <p
+        style="text-align:center; color:#777; font-size:0.85rem; margin-top:6px;"
+      >
+        Seleccione el producto e indique el precio.
+      </p>
+
+      <label
+        style="display:block; color:#ccc; font-size:0.9rem; margin-top:20px; text-align:left;"
+      >
+        Producto
+      </label>
+
+      <select
+        id="venta-manual-producto"
+        class="caja-input"
+        style="text-align:left;"
+      ></select>
+
+      <label
+        style="display:block; color:#ccc; font-size:0.9rem; margin-top:10px; text-align:left;"
+      >
+        Precio de venta
+      </label>
+
+      <input
+        type="number"
+        id="venta-manual-precio"
+        class="caja-input"
+        placeholder="RD$"
+        step="0.01"
+        min="0"
+      />
+
+      <div style="display:flex; gap:10px; margin-top:20px;">
+
+        <button
+          onclick="cerrarVentaManual()"
+          class="btn-gray"
+          style="flex:1;"
+        >
+          Cancelar
+        </button>
+
+        <button
+          onclick="agregarVentaManual()"
+          class="btn-green"
+          style="flex:1; margin:0;"
+        >
+          Agregar
+        </button>
+
+      </div>
 
     </div>
 
@@ -1000,15 +1086,15 @@
       "220": "Pata de Res (Res)",
       "221": "Filete de Res (Res)",
       "222": "Chuleta de Cerdo c/Cuero (Cerdo)",
-      "223": "Carne Molida de Cerdo (Cerdo)"
+      "223": "Carne Molida de Cerdo (Cerdo)",
+
+      "224": "Cuero de Cerdo"
     };
 
 
     var rolActual = '';
     var carrito = [];
 
-    // Fecha que se estaba mostrando en el panel.
-    // Se usa para detectar automáticamente el cambio de día.
     var ultimaFechaAdmin = '';
 
 
@@ -1127,6 +1213,9 @@
         'none';
 
       document.getElementById('modal-cuadre').style.display =
+        'none';
+
+      document.getElementById('modal-venta-manual').style.display =
         'none';
 
       cancelarLogin();
@@ -1361,7 +1450,9 @@
 
           originalPrecio: precio,
 
-          modificado: false
+          modificado: false,
+
+          ventaManual: false
 
         });
 
@@ -1393,6 +1484,141 @@
           'Para registrar el precio correctamente debe escanear la etiqueta de la balanza.'
         );
       }
+    }
+
+
+    // =========================================================
+    // VENTA MANUAL
+    // =========================================================
+
+    function abrirVentaManual() {
+
+      var select =
+        document.getElementById(
+          'venta-manual-producto'
+        );
+
+
+      select.innerHTML =
+        '';
+
+
+      for (
+        var plu in CORTES
+      ) {
+
+        var opcion =
+          document.createElement('option');
+
+        opcion.value =
+          plu;
+
+        opcion.textContent =
+          plu +
+          ' - ' +
+          CORTES[plu];
+
+        select.appendChild(
+          opcion
+        );
+      }
+
+
+      document.getElementById(
+        'venta-manual-precio'
+      ).value =
+        '';
+
+
+      document.getElementById(
+        'modal-venta-manual'
+      ).style.display =
+        'flex';
+
+
+      select.focus();
+    }
+
+
+    function cerrarVentaManual() {
+
+      document.getElementById(
+        'modal-venta-manual'
+      ).style.display =
+        'none';
+    }
+
+
+    function agregarVentaManual() {
+
+      var plu =
+        document.getElementById(
+          'venta-manual-producto'
+        ).value;
+
+
+      var precio =
+        parseFloat(
+          document.getElementById(
+            'venta-manual-precio'
+          ).value
+        );
+
+
+      if (
+        !CORTES[plu]
+      ) {
+
+        alert(
+          'Seleccione un producto.'
+        );
+
+        return;
+      }
+
+
+      if (
+        !Number.isFinite(precio) ||
+        precio <= 0
+      ) {
+
+        alert(
+          'Ingrese un precio válido.'
+        );
+
+        return;
+      }
+
+
+      carrito.push({
+
+        plu: plu,
+
+        nombre: CORTES[plu],
+
+        precio: Number(
+          precio.toFixed(2)
+        ),
+
+        originalPrecio: Number(
+          precio.toFixed(2)
+        ),
+
+        modificado: false,
+
+        ventaManual: true
+
+      });
+
+
+      dibujarCarrito();
+
+      cerrarVentaManual();
+
+
+      document.getElementById(
+        'escaner'
+      ).focus();
     }
 
 
@@ -1435,6 +1661,12 @@
 
           '<td>' +
           carrito[i].nombre +
+
+          (
+            carrito[i].ventaManual
+              ? ' <span class="badge" style="font-size:0.65rem;">Manual</span>'
+              : ''
+          ) +
 
           (
             carrito[i].modificado
@@ -2084,6 +2316,85 @@
         }
 
 
+        // =====================================================
+        // REGISTRAR LAS VENTAS MANUALES EN AUDITORÍA
+        // =====================================================
+
+        var itemsManuales =
+          carrito.filter(
+            function(item) {
+              return item.ventaManual === true;
+            }
+          );
+
+
+        for (
+          var m = 0;
+          m < itemsManuales.length;
+          m++
+        ) {
+
+          try {
+
+            var manual =
+              itemsManuales[m];
+
+
+            var horaManual =
+              ahora.toLocaleTimeString(
+                'es-DO',
+                {
+                  timeZone: 'America/Santo_Domingo',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: true
+                }
+              );
+
+
+            const resultadoManual =
+              await supabaseClient
+                .from('cancelaciones')
+                .insert([
+                  {
+                    fecha:
+                      ahora.toISOString(),
+
+                    hora:
+                      horaManual,
+
+                    corte:
+                      manual.nombre,
+
+                    precio:
+                      Number(manual.precio) || 0,
+
+                    motivo:
+                      '[VENTA MANUAL]'
+                  }
+                ])
+                .select();
+
+
+            if (resultadoManual.error) {
+
+              console.error(
+                'No se pudo registrar la venta manual en auditoría:',
+                resultadoManual.error
+              );
+            }
+
+          } catch (errorManual) {
+
+            console.error(
+              'Error registrando auditoría de venta manual:',
+              errorManual
+            );
+          }
+        }
+
+
         var devuelta =
           montoCliente -
           total;
@@ -2585,7 +2896,6 @@
 
       try {
 
-        // Guardamos la fecha que se está mostrando.
         ultimaFechaAdmin =
           obtenerFechaRD();
 
@@ -2862,7 +3172,11 @@
                 'ANULADO'
               ) === 0
                 ? 'color:#ef4444; font-weight:700;'
-                : 'color:#d4af37; font-weight:700;';
+                : motivo.indexOf(
+                    '[VENTA MANUAL]'
+                  ) === 0
+                    ? 'color:#22c55e; font-weight:700;'
+                    : 'color:#d4af37; font-weight:700;';
 
 
             tbodyAuditoria.innerHTML +=
